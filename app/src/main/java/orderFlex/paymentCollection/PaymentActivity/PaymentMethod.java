@@ -1,4 +1,4 @@
-package orderFlex.paymentCollection;
+package orderFlex.paymentCollection.PaymentActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+
+import orderFlex.paymentCollection.MainActivity.MainActivity;
+import orderFlex.paymentCollection.R;
 
 public class PaymentMethod extends AppCompatActivity {
     Button paySubmit;
@@ -34,7 +37,7 @@ public class PaymentMethod extends AppCompatActivity {
         paySubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent =new Intent(PaymentMethod.this,MainActivity.class);
+                Intent intent =new Intent(PaymentMethod.this, MainActivity.class);
                 startActivity(intent);
             }
         });
