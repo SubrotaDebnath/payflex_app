@@ -15,8 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import orderFlex.paymentCollection.Model.APICallings.PullTotadyOrder;
-import orderFlex.paymentCollection.Model.TodayOrderRequest;
-import orderFlex.paymentCollection.Model.TodayOrderResponse;
+import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderRequest;
+import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderResponse;
 import orderFlex.paymentCollection.PaymentActivity.PaymentMethod;
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;

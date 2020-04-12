@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
-import orderFlex.paymentCollection.Model.TodayOrderResponse;
+import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderResponse;
 import orderFlex.paymentCollection.R;
 
 public class AdapterOrderList extends RecyclerView.Adapter<AdapterOrderList.ViewHolder>{

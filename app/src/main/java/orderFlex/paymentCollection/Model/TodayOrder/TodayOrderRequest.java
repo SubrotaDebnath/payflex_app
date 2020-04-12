@@ -1,4 +1,4 @@
-package orderFlex.paymentCollection.Model;
+package orderFlex.paymentCollection.Model.TodayOrder;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

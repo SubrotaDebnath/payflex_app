@@ -1,36 +1,14 @@
-package orderFlex.paymentCollection.Model.LoginData;
+package orderFlex.paymentCollection.Model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class LoginResponse {
-
+public class ClientListResponse {
     @SerializedName("id")
     @Expose
     private String id;
-    @SerializedName("username")
-    @Expose
-    private String username;
-    @SerializedName("password")
-    @Expose
-    private String password;
-    @SerializedName("created_time")
-    @Expose
-    private String createdTime;
-    @SerializedName("employee_id")
-    @Expose
-    private String employeeId;
-    @SerializedName("user_type")
-    @Expose
-    private String userType;
-    @SerializedName("permission")
-    @Expose
-    private String permission;
-    @SerializedName("client_id")
-    @Expose
-    private String clientId;
     @SerializedName("catagory_id")
     @Expose
     private String catagoryId;
@@ -77,62 +55,6 @@ public class LoginResponse {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(String createdTime) {
-        this.createdTime = createdTime;
-    }
-
-    public String getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(String employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    public String getUserType() {
-        return userType;
-    }
-
-    public void setUserType(String userType) {
-        this.userType = userType;
-    }
-
-    public String getPermission() {
-        return permission;
-    }
-
-    public void setPermission(String permission) {
-        this.permission = permission;
-    }
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
     }
 
     public String getCatagoryId() {
@@ -238,8 +160,6 @@ public class LoginResponse {
     public void setContacts(List<Contact> contacts) {
         this.contacts = contacts;
     }
-
-
     public class Contact {
 
         @SerializedName("id")
