@@ -52,13 +52,9 @@ public class UserLogin extends AppCompatActivity implements LoginAPICalling.Logi
             helper.showSnakBar(containerView,"Empty password");
             return;
         }
-        //if (helper.isInternetAvailable())
         {
             apiCalling.loginCall(u_name,u_pass);
         }
-//        else {
-//            helper.showSnakBar(containerView,"Please check you internet connection");
-//        }
     }
 
     @Override
@@ -69,15 +65,26 @@ public class UserLogin extends AppCompatActivity implements LoginAPICalling.Logi
                 prefManager.setLoggedInFlag(true);
                 prefManager.setUserNane(u_name);
                 prefManager.setUserPassword(u_pass);
-                prefManager.setUserType(response.getUser_type());
-                prefManager.setClientPairId(response.getClient_pairID());
-                prefManager.setClientId(response.getClient_id());
+                prefManager.setUserType(response.getUserType());
+                prefManager.setClientPairId(response.getClientPairID());
+                prefManager.setClientId(response.getClientId());
                 prefManager.setClientName(response.getName());
-                prefManager.setClientEmail(response.getEmail());
-                prefManager.setClientContactNumber(response.getContact_number());
-                prefManager.setClientAddress(response.getAddress());
-                prefManager.setPresenterName(response.getPresenter_name());
-                prefManager.setClientCode(response.getClient_code());
+                for (LoginResponse.Contact contact:response.getContacts()) {
+                    if (contact.getContactTypeId().equals("1")){
+                        prefManager.setClientContactNumber(contact.getContactValue());
+                    }
+                    if (contact.getContactTypeId().equals("4")){
+                        prefManager.setClientAddress(contact.getContactValue());
+                    }
+                    if (contact.getContactTypeId().equals("")){
+                        prefManager.setClientEmail(contact.getContactValue());
+                    }
+                }
+//                prefManager.setClientEmail(response.get);
+//                prefManager.setClientContactNumber(response.getContact_number());
+//                prefManager.setClientAddress(response.getAddress());
+                prefManager.setPresenterName(response.getRepresentativeName());
+                prefManager.setClientCode(response.getClientCode());
                 Intent intent=new Intent(UserLogin.this, MainActivity.class);
                 startActivity(intent);
                 finish();

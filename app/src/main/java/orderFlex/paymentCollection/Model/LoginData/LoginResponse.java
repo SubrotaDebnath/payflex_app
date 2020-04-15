@@ -42,7 +42,7 @@ public class LoginResponse {
     private String name;
     @SerializedName("representative_name")
     @Expose
-    private Object representativeName;
+    private String representativeName;
     @SerializedName("office_id")
     @Expose
     private String officeId;
@@ -158,15 +158,13 @@ public class LoginResponse {
     public void setName(String name) {
         this.name = name;
     }
-
-    public Object getRepresentativeName() {
+    public String getRepresentativeName() {
         return representativeName;
     }
 
-    public void setRepresentativeName(Object representativeName) {
+    public void setRepresentativeName(String representativeName) {
         this.representativeName = representativeName;
     }
-
     public String getOfficeId() {
         return officeId;
     }

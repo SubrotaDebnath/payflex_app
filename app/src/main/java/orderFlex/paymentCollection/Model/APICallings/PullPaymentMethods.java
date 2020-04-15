@@ -15,30 +15,29 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import orderFlex.paymentCollection.Model.LoginData.LoginResponse;
-import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentRequestBody;
-import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentResponse;
+import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentMothodsResponse;
 import orderFlex.paymentCollection.Utility.Constant;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class PushBills {
+public class PullPaymentMethods {
     private String TAG="LoginAPICalling";
     private APIinterface apIinterface;
     private Gson gson;
-    private PushBillListener listener;
+    private PaymentMethodsListener listener;
     private Context context;
     private ProgressDialog dialog;
-    private BillPaymentResponse billPaymentResponse=null;
+    private PaymentMothodsResponse paymentMothodsResponse=null;
 
 
-    public PushBills(Context context) {
-        listener= (PushBillListener) context;
+    public PullPaymentMethods(Context context) {
+        listener= (PaymentMethodsListener) context;
         this.context=context;
     }
 
-    public void pushBillCall(final String username, final String password, BillPaymentRequestBody body){
+    public void paymentMethodsCall(final String username, final String password){
         // preparing interceptor for retrofit
         // interceptor for runtime data checking
         dialog = new ProgressDialog(context);
@@ -46,6 +45,10 @@ public class PushBills {
         dialog.show();
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        //generate auth token
+        //final String authToken = Credentials.basic(username,password);
+        //authentication interceptor
+        //LoginRequestBody body=new LoginRequestBody(username,password);
         final String authToken = Credentials.basic(username, password);
         OkHttpClient okHttpClient=new OkHttpClient.Builder()
                 .addInterceptor(new Interceptor() {
@@ -67,29 +70,29 @@ public class PushBills {
                 .build();
 
         apIinterface=retrofit.create(APIinterface.class);
-        final Call<BillPaymentResponse> billPaymentResponseCall=apIinterface.pushOrderBill(body);
-        billPaymentResponseCall.enqueue(new Callback<BillPaymentResponse>() {
+        final Call<PaymentMothodsResponse> paymentMothodsResponseCall=apIinterface.getPaymentMethods();
+        paymentMothodsResponseCall.enqueue(new Callback<PaymentMothodsResponse>() {
             @Override
-            public void onResponse(Call<BillPaymentResponse> call, retrofit2.Response<BillPaymentResponse> response) {
+            public void onResponse(Call<PaymentMothodsResponse> call, retrofit2.Response<PaymentMothodsResponse> response) {
                 if (response.isSuccessful()){
-                    billPaymentResponse=response.body();
+                    paymentMothodsResponse=response.body();
                     gson=new Gson();
-                    String res= gson.toJson(billPaymentResponse);
+                    String res= gson.toJson(paymentMothodsResponse);
                     Log.i(TAG,"Login Response: "+res);
-                    listener.onResponse(billPaymentResponse,response.code());
+                    listener.onResponse(paymentMothodsResponse,response.code());
                     dialog.cancel();
                 }
             }
             @Override
-            public void onFailure(Call<BillPaymentResponse> call, Throwable t) {
-                listener.onResponse(billPaymentResponse,404);
+            public void onFailure(Call<PaymentMothodsResponse> call, Throwable t) {
+                listener.onResponse(paymentMothodsResponse,404);
                 dialog.cancel();
             }
         });
         return;
     }
 
-    public interface PushBillListener{
-        void onResponse(BillPaymentResponse response,int code);
+    public interface PaymentMethodsListener{
+        void onResponse(PaymentMothodsResponse response, int code);
     }
 }
