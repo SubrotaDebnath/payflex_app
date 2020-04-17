@@ -139,7 +139,7 @@ public class PaymentMethod extends AppCompatActivity implements PullPaymentMetho
     }
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
+//
     }
     @Override
     public void onResponse(BillPaymentResponse response, int code) {
