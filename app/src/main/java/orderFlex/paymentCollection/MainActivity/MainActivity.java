@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
     private Helper helper;
     private AdapterOrderList adapter;
     private TextView totalBill,clientCode,name,presenterName,phoneNo,address;
+    private View containerVied;
+    private TodayOrderResponse orderResponse=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         orderList=findViewById(R.id.orderList);
         totalBill=findViewById(R.id.totalBill);
         prefManager=new SharedPrefManager(this);
-
+        containerVied=findViewById(R.id.mainActivity);
         updateProfile();
         pullTotadyOrder=new PullTotadyOrder(this);
         helper=new Helper(this);
@@ -51,13 +53,26 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         Log.i(TAG,"Username: "+prefManager.getUsername());
         Log.i(TAG,"Password: "+prefManager.getUserPassword());
         TodayOrderRequest request=new TodayOrderRequest(prefManager.getClientId(),helper.getDate());
-        pullTotadyOrder.pullOrderCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
+        if (helper.isInternetAvailable()){
+            pullTotadyOrder.pullOrderCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
+        }else {
+            helper.showSnakBar(containerVied,"Please check your internet connection!");
+        }
+
 
         addNewPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent =new Intent(MainActivity.this, PaymentMethod.class);
-                startActivity(intent);
+                if (orderResponse!=null){
+                    Intent intent =new Intent(MainActivity.this, PaymentMethod.class);
+                    intent.putExtra("order_id",orderResponse.getOrderDetails().get(0).getOrderForClientId());
+                    startActivity(intent);
+                }else {
+                    Intent intent =new Intent(MainActivity.this, PaymentMethod.class);
+                    intent.putExtra("order_id","test01");
+                    startActivity(intent);
+                }
+
                 //
             }
         });
@@ -75,7 +90,11 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         switch (item.getItemId()) {
             case R.id.refresh:
                 TodayOrderRequest request=new TodayOrderRequest(prefManager.getClientId(),helper.getDate());
-                pullTotadyOrder.pullOrderCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
+                if (helper.isInternetAvailable()){
+                    pullTotadyOrder.pullOrderCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
+                }else {
+                    helper.showSnakBar(containerVied,"Please check your internet connection!");
+                }
                 break;
             case R.id.logout:
                 prefManager.setLoggedInFlag(false);
@@ -92,10 +111,15 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
     @Override
     public void onResponse(TodayOrderResponse response, int code) {
         Log.i(TAG,"Response Code:"+code);
-        adapter=new AdapterOrderList(this,response.getOrderDetails());
-        layoutManager = new LinearLayoutManager(this);
-        orderList.setLayoutManager(layoutManager);
-        orderList.setAdapter(adapter);
+        if (response!=null&&code==202){
+            adapter=new AdapterOrderList(this,response.getOrderDetails());
+            layoutManager = new LinearLayoutManager(this);
+            orderList.setLayoutManager(layoutManager);
+            orderList.setAdapter(adapter);
+        }else {
+            helper.showSnakBar(containerVied,"Server not Responding");
+        }
+
     }
 
     @Override

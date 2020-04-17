@@ -14,16 +14,17 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
-import orderFlex.paymentCollection.Model.LoginData.LoginResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentMothodsResponse;
+import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderResponse;
 import orderFlex.paymentCollection.Utility.Constant;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PullPaymentMethods {
-    private String TAG="LoginAPICalling";
+    private String TAG="PullPaymentMethods";
     private APIinterface apIinterface;
     private Gson gson;
     private PaymentMethodsListener listener;
@@ -31,24 +32,17 @@ public class PullPaymentMethods {
     private ProgressDialog dialog;
     private PaymentMothodsResponse paymentMothodsResponse=null;
 
-
     public PullPaymentMethods(Context context) {
         listener= (PaymentMethodsListener) context;
         this.context=context;
     }
-
     public void paymentMethodsCall(final String username, final String password){
-        // preparing interceptor for retrofit
-        // interceptor for runtime data checking
+        Log.i(TAG,"Called.....");
         dialog = new ProgressDialog(context);
-        dialog.setMessage("Login...");
+        dialog.setMessage("Pulling...");
         dialog.show();
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        //generate auth token
-        //final String authToken = Credentials.basic(username,password);
-        //authentication interceptor
-        //LoginRequestBody body=new LoginRequestBody(username,password);
         final String authToken = Credentials.basic(username, password);
         OkHttpClient okHttpClient=new OkHttpClient.Builder()
                 .addInterceptor(new Interceptor() {
@@ -62,7 +56,6 @@ public class PullPaymentMethods {
                 })
                 .addInterceptor(loggingInterceptor)
                 .build();
-
         Retrofit retrofit=new Retrofit.Builder()
                 .baseUrl(Constant.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -70,22 +63,22 @@ public class PullPaymentMethods {
                 .build();
 
         apIinterface=retrofit.create(APIinterface.class);
-        final Call<PaymentMothodsResponse> paymentMothodsResponseCall=apIinterface.getPaymentMethods();
-        paymentMothodsResponseCall.enqueue(new Callback<PaymentMothodsResponse>() {
+        final Call<PaymentMothodsResponse> responseCall = apIinterface.getPaymentMethods();
+        responseCall.enqueue(new Callback<PaymentMothodsResponse>() {
             @Override
-            public void onResponse(Call<PaymentMothodsResponse> call, retrofit2.Response<PaymentMothodsResponse> response) {
-                if (response.isSuccessful()){
-                    paymentMothodsResponse=response.body();
-                    gson=new Gson();
-                    String res= gson.toJson(paymentMothodsResponse);
-                    Log.i(TAG,"Login Response: "+res);
-                    listener.onResponse(paymentMothodsResponse,response.code());
-                    dialog.cancel();
-                }
+            public void onResponse(Call<PaymentMothodsResponse> call, Response<PaymentMothodsResponse> response) {
+                Log.i(TAG,"Response Code: "+response.code());
+                paymentMothodsResponse=response.body();
+                gson=new Gson();
+                String res=gson.toJson(response.body());
+                Log.i(TAG,"Response: "+res);
+                listener.onPreResponse(paymentMothodsResponse,response.code());
+                dialog.cancel();
             }
+
             @Override
             public void onFailure(Call<PaymentMothodsResponse> call, Throwable t) {
-                listener.onResponse(paymentMothodsResponse,404);
+                listener.onPreResponse(paymentMothodsResponse,404);
                 dialog.cancel();
             }
         });
@@ -93,6 +86,6 @@ public class PullPaymentMethods {
     }
 
     public interface PaymentMethodsListener{
-        void onResponse(PaymentMothodsResponse response, int code);
+        void onPreResponse(PaymentMothodsResponse response, int code);
     }
 }

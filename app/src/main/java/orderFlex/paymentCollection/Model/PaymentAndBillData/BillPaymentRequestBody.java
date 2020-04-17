@@ -11,9 +11,9 @@ public class BillPaymentRequestBody {
     @SerializedName("payment_mode_id")
     @Expose
     private String paymentModeId;
-    @SerializedName("bank_id")
+    @SerializedName("financial_institution_id")
     @Expose
-    private String bankId;
+    private String financial_institution_id;
     @SerializedName("payment_date_time")
     @Expose
     private String paymentDateTime;
@@ -26,6 +26,17 @@ public class BillPaymentRequestBody {
     @SerializedName("order_code")
     @Expose
     private String orderCode;
+    @SerializedName("amount")
+    @Expose
+    private String amount;
+
+    public String getAmount() {
+        return amount;
+    }
+
+    public void setAmount(String amount) {
+        this.amount = amount;
+    }
 
     public String getTrxid() {
         return trxid;
@@ -43,12 +54,12 @@ public class BillPaymentRequestBody {
         this.paymentModeId = paymentModeId;
     }
 
-    public String getBankId() {
-        return bankId;
+    public String getFinancial_institution_id() {
+        return financial_institution_id;
     }
 
-    public void setBankId(String bankId) {
-        this.bankId = bankId;
+    public void setFinancial_institution_id(String financial_institution_id) {
+        this.financial_institution_id = financial_institution_id;
     }
 
     public String getPaymentDateTime() {

@@ -21,6 +21,6 @@ public interface APIinterface {
     @POST("SavePaymentData")
     Call<BillPaymentResponse>pushOrderBill(@Body BillPaymentRequestBody body);
 
-    @GET("Payment_methodes")
+    @POST("Payment_methodes")
     Call<PaymentMothodsResponse>getPaymentMethods();
 }

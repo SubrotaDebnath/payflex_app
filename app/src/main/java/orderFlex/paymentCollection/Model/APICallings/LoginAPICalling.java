@@ -80,8 +80,8 @@ public class LoginAPICalling {
                     String res= gson.toJson(loginResponse);
                     Log.i(TAG,"Login Response: "+res);
                     listener.onResponse(loginResponse,response.code());
-                    dialog.cancel();
                 }
+                dialog.cancel();
             }
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
