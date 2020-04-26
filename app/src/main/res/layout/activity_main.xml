@@ -144,12 +144,17 @@
                         android:layout_marginRight="3dp"
                         android:textColor="#000000" />
                 </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/paymentList"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
             </LinearLayout>
 
 
 
             <!--        <include-->
-            <!--            layout="@layout/row_payment_method"/>-->
+            <!--            layout="@layout/row_payments"/>-->
 
         </RelativeLayout>
     </ScrollView>

@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         PullPaymentsList.PullPaymentsListListener {
 
     LinearLayout addNewPayment;
-    private RecyclerView orderList;
+    private RecyclerView orderList,paymentList;
     private RecyclerView.LayoutManager layoutManager;
     private SharedPrefManager prefManager;
     private String TAG="MainActivity";
@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
     private CardView updateOrder;
     private TextView noOrder;
     private PullPaymentsList pullPaymentsList;
+    private AdapterPaymentList adapterPaymentList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         containerVied=findViewById(R.id.mainActivity);
         updateOrder=findViewById(R.id.updateOrder);
         updateOrder.setVisibility(View.GONE);
+        paymentList=findViewById(R.id.paymentList);
 
         updateProfile();
         pullTotadyOrder=new PullTotadyOrder(this);
@@ -182,6 +184,11 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
 
     @Override
     public void onPaymentListResponse(PaymentListResponse response, int code) {
-
+        if (response!=null && code==202){
+            adapterPaymentList=new AdapterPaymentList(this,response.getPaymentList());
+            layoutManager = new LinearLayoutManager(this);
+            paymentList.setLayoutManager(layoutManager);
+            paymentList.setAdapter(adapterPaymentList);
+        }
     }
 }
