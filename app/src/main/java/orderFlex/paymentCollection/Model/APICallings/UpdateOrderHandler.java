@@ -5,7 +5,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.Credentials;
 import okhttp3.Headers;
@@ -13,29 +15,31 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
-import orderFlex.paymentCollection.Model.LoginData.LoginResponse;
+import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentResponse;
+import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderRequestBody;
+import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderResponse;
 import orderFlex.paymentCollection.Utility.Constant;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class LoginAPICalling {
+public class UpdateOrderHandler {
     private String TAG="LoginAPICalling";
     private APIinterface apIinterface;
     private Gson gson;
-    private LoginListener listener;
+    private UpdateOrderListener listener;
     private Context context;
     private ProgressDialog dialog;
-    private LoginResponse loginResponse=null;
+    private UpdateOrderResponse updateOrderResponse=null;
 
 
-    public LoginAPICalling(Context context) {
-        listener= (LoginListener) context;
+    public UpdateOrderHandler(Context context) {
+        listener= (UpdateOrderListener) context;
         this.context=context;
     }
 
-    public void loginCall(final String username, final String password){
+    public void pushUpdatedOrder(final String username, final String password, List<UpdateOrderRequestBody> body){
         // preparing interceptor for retrofit
         // interceptor for runtime data checking
         dialog = new ProgressDialog(context);
@@ -43,10 +47,6 @@ public class LoginAPICalling {
         dialog.show();
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        //generate auth token
-        //final String authToken = Credentials.basic(username,password);
-        //authentication interceptor
-        //LoginRequestBody body=new LoginRequestBody(username,password);
         final String authToken = Credentials.basic(username, password);
         OkHttpClient okHttpClient=new OkHttpClient.Builder()
                 .addInterceptor(new Interceptor() {
@@ -62,35 +62,36 @@ public class LoginAPICalling {
                 .build();
 
         Retrofit retrofit=new Retrofit.Builder()
-                .baseUrl(Constant.BASE_URL_PAYFLEX)
+                .baseUrl(Constant.BASE_URL_ORDERFLEX)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();
 
         apIinterface=retrofit.create(APIinterface.class);
-        final Call<LoginResponse> loginResponseCall=apIinterface.login();
-        loginResponseCall.enqueue(new Callback<LoginResponse>() {
+        final Call<UpdateOrderResponse> updateOrderResponseCall=apIinterface.updateOrder(body);
+        updateOrderResponseCall.enqueue(new Callback<UpdateOrderResponse>() {
             @Override
-            public void onResponse(Call<LoginResponse> call, retrofit2.Response<LoginResponse> response) {
+            public void onResponse(Call<UpdateOrderResponse> call, retrofit2.Response<UpdateOrderResponse> response) {
                 if (response.isSuccessful()){
-                    loginResponse=response.body();
+                    updateOrderResponse=response.body();
                     gson=new Gson();
-                    String res= gson.toJson(loginResponse);
+                    String res= gson.toJson(updateOrderResponse);
                     Log.i(TAG,"Login Response: "+res);
-                    listener.onResponse(loginResponse,response.code());
+                    listener.onUpdateResponse(updateOrderResponse,response.code());
+                    dialog.cancel();
                 }
-                dialog.cancel();
             }
             @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
-                listener.onResponse(loginResponse,404);
+            public void onFailure(Call<UpdateOrderResponse> call, Throwable t) {
+                listener.onUpdateResponse(updateOrderResponse,404);
                 dialog.cancel();
             }
         });
         return;
     }
 
-    public interface LoginListener{
-        void onResponse(LoginResponse response,int code);
+    public interface UpdateOrderListener{
+        void onUpdateResponse(UpdateOrderResponse response,int code);
     }
 }
+

@@ -32,9 +32,13 @@
                         android:layout_centerVertical="true"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
+                        android:padding="2dp"
                         android:src="@drawable/ic_person_sky"
-                        android:layout_marginLeft="2dp" />
+                        android:background="@drawable/circuler_shape_border_back"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="5dp"/>
                     <TextView
+                        android:id="@+id/name"
                         android:layout_gravity="center"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -64,25 +68,25 @@
                         android:layout_weight="1.5"
                         android:text="104749" />
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="1dp"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_gravity="center"
-                        android:text="NAME :"
-                        android:textColor="#000000"/>
-                    <TextView
-                        android:id="@+id/name"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.5"
-                        android:text="Alam Enterprise" />
-                </LinearLayout>
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_margin="1dp"-->
+<!--                    android:orientation="horizontal">-->
+<!--                    <TextView-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:text="NAME :"-->
+<!--                        android:textColor="#000000"/>-->
+<!--                    <TextView-->
+<!--                        android:id="@+id/name"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_weight="1.5"-->
+<!--                        android:text="Alam Enterprise" />-->
+<!--                </LinearLayout>-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -107,13 +111,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="1dp"
+                    android:background="@color/barColor"
                     android:orientation="horizontal">
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_gravity="center"
-                        android:text="Mobile No"
+                        android:text="Mobile No:"
                         android:textColor="#000000"/>
                     <TextView
                         android:id="@+id/phoneNo"

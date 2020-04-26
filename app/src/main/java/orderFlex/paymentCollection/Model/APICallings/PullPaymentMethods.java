@@ -15,7 +15,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentMothodsResponse;
-import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderResponse;
 import orderFlex.paymentCollection.Utility.Constant;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,7 +56,7 @@ public class PullPaymentMethods {
                 .addInterceptor(loggingInterceptor)
                 .build();
         Retrofit retrofit=new Retrofit.Builder()
-                .baseUrl(Constant.BASE_URL)
+                .baseUrl(Constant.BASE_URL_PAYFLEX)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();

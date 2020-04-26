@@ -4,7 +4,7 @@
     android:innerRadius="5dp"
     android:innerRadiusRatio="5">
     <stroke
-        android:width="5dp"
+        android:width="1dp"
         android:color="@color/colorPrimaryDark">
 
     </stroke>

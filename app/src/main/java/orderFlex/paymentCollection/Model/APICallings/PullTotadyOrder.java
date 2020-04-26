@@ -60,7 +60,7 @@ public class PullTotadyOrder {
                 .build();
 
         Retrofit retrofit=new Retrofit.Builder()
-                .baseUrl(Constant.BASE_URL)
+                .baseUrl(Constant.BASE_URL_PAYFLEX)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();
@@ -73,8 +73,8 @@ public class PullTotadyOrder {
                 if (response.isSuccessful()){
                     todayOrderResponse=response.body();
                     gson=new Gson();
-                    String res= gson.toJson(todayOrderResponse);
-                    Log.i(TAG,"Login Response: "+res);
+//                    String res= gson.toJson(todayOrderResponse);
+//                    Log.i(TAG,"Login Response: "+res);
                     listener.onResponse(todayOrderResponse,response.code());
                     dialog.cancel();
                 }

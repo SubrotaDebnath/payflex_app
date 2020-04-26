@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,18 +9,19 @@
     android:id="@+id/mainActivity"
     tools:context=".MainActivity.MainActivity">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_above="@id/addNewPayment">
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
             <include
+                android:id="@+id/userProfile"
                 layout="@layout/profile_card"/>
-
             <TextView
+                android:id="@+id/orderTitle"
+                android:layout_below="@id/userProfile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -29,118 +30,171 @@
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="#000000"/>
-            <LinearLayout
+
+            <!--        Oder details section -->
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
-                android:padding="5dp"
-                android:orientation="horizontal">
+                android:layout_height="match_parent">
+            </RelativeLayout>
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_weight="1.3"
-                    android:text="Sl."
-                    android:textStyle="bold"
-                    android:textColor="#FFFFFF"/>
+            <TextView
+                android:id="@+id/noOrder"
+                android:layout_below="@id/orderTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:textSize="25sp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:text="No order found!">
+            </TextView>
 
-                <TextView
-                    android:layout_width="0dp"
+            <LinearLayout
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/orderTitle"
+                android:id="@+id/orderDetailsBlock"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_weight="5"
-                    android:text="Item Description"
-                    android:textStyle="bold"
-                    android:textColor="#FFFFFF"/>
+                    android:background="@color/colorPrimary"
+                    android:padding="5dp"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_weight="2.2"
-                    android:text="Unit Price"
-                    android:textStyle="bold"
-                    android:textColor="#FFFFFF"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_weight="1.3"
+                        android:text="Sl."
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"/>
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_weight="2"
-                    android:text="Quantity"
-                    android:textStyle="bold"
-                    android:textColor="#FFFFFF"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_weight="5"
+                        android:text="Item Description"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"/>
 
-                <TextView
-                    android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_weight="2.2"
+                        android:text="Rate"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_weight="2"
+                        android:text="Quantity"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_weight="3"
+                        android:text="Amount"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"/>
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/orderList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_weight="3"
-                    android:text="Total Value"
-                    android:textStyle="bold"
-                    android:textColor="#FFFFFF"/>
+                    android:padding="1px"
+                    android:background="#000000"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="3dp"
+                    android:background="@color/colorPrimary">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textStyle="bold"
+                        android:text="Total Amount:"
+                        android:textColor="#000000"/>
+                    <TextView
+                        android:id="@+id/totalBill"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textStyle="bold"
+                        android:text="0.0"
+                        android:gravity="right"
+                        android:layout_marginRight="3dp"
+                        android:textColor="#000000" />
+                </LinearLayout>
             </LinearLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/orderList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="1px"
-            android:background="#000000"/>
+            <!--        <include-->
+            <!--            layout="@layout/row_payment_method"/>-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="3dp"
-            android:background="@color/colorPrimary">
+        </RelativeLayout>
+    </ScrollView>
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textStyle="bold"
-                android:text="Total Order Value:"
-                android:textColor="#000000"/>
-            <TextView
-                android:id="@+id/totalBill"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textStyle="bold"
-                android:text="0.0"
-                android:gravity="right"
-                android:layout_marginRight="3dp"
-                android:textColor="#000000" />
-        </LinearLayout>
-        <include
-            layout="@layout/row_payment_method"/>
-        <LinearLayout
-            android:id="@+id/addNewPayment"
-            android:padding="5dp"
-            android:background="@drawable/squre_shape_fill_back"
+    <LinearLayout
+        android:id="@+id/addNewPayment"
+        android:padding="5dp"
+        android:background="@drawable/back_squre_border_fill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal">
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add new payment"
-                android:layout_marginRight="2dp"
-                android:textColor="#000000"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_add_circle_skay"/>
-        </LinearLayout>
-
+            android:text="Add new payment"
+            android:layout_marginRight="2dp"
+            android:textColor="#000000"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add_circle_skay"/>
     </LinearLayout>
-</ScrollView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/updateOrder"
+        android:background="@drawable/back_squre_border_fill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="2dp"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Update"
+            android:background="@color/barColor"
+            android:textSize="15sp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="#000000"/>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

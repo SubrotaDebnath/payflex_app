@@ -99,6 +99,54 @@ public class TodayOrderResponse {
         @Expose
         private Object pDiscription;
 
+        public String getpName() {
+            return pName;
+        }
+
+        public void setpName(String pName) {
+            this.pName = pName;
+        }
+
+        public String getpType() {
+            return pType;
+        }
+
+        public void setpType(String pType) {
+            this.pType = pType;
+        }
+
+        public String getpRetailPrice() {
+            return pRetailPrice;
+        }
+
+        public void setpRetailPrice(String pRetailPrice) {
+            this.pRetailPrice = pRetailPrice;
+        }
+
+        public String getpWholesalePrice() {
+            return pWholesalePrice;
+        }
+
+        public void setpWholesalePrice(String pWholesalePrice) {
+            this.pWholesalePrice = pWholesalePrice;
+        }
+
+        public String getpSpecialPrice() {
+            return pSpecialPrice;
+        }
+
+        public void setpSpecialPrice(String pSpecialPrice) {
+            this.pSpecialPrice = pSpecialPrice;
+        }
+
+        public Object getpDiscription() {
+            return pDiscription;
+        }
+
+        public void setpDiscription(Object pDiscription) {
+            this.pDiscription = pDiscription;
+        }
+
         public String getId() {
             return id;
         }

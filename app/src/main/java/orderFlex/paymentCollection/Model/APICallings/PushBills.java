@@ -14,7 +14,6 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
-import orderFlex.paymentCollection.Model.LoginData.LoginResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentRequestBody;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentResponse;
 import orderFlex.paymentCollection.Utility.Constant;
@@ -61,7 +60,7 @@ public class PushBills {
                 .build();
 
         Retrofit retrofit=new Retrofit.Builder()
-                .baseUrl(Constant.BASE_URL)
+                .baseUrl(Constant.BASE_URL_PAYFLEX)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();
