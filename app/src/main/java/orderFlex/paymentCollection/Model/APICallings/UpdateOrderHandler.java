@@ -25,7 +25,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UpdateOrderHandler {
-    private String TAG="LoginAPICalling";
+    private String TAG="UpdateOrderHandler";
     private APIinterface apIinterface;
     private Gson gson;
     private UpdateOrderListener listener;
@@ -43,7 +43,7 @@ public class UpdateOrderHandler {
         // preparing interceptor for retrofit
         // interceptor for runtime data checking
         dialog = new ProgressDialog(context);
-        dialog.setMessage("Login...");
+        dialog.setMessage("Updating orders...");
         dialog.show();
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -54,6 +54,24 @@ public class UpdateOrderHandler {
                     public okhttp3.Response intercept(Chain chain) throws IOException {
                         Request request = chain.request();
                         Headers headers = request.headers().newBuilder().add("Authorization", authToken).build();
+                        request = request.newBuilder().headers(headers).build();
+                        return chain.proceed(request);
+                    }
+                })
+                .addInterceptor(new Interceptor() {
+                    @Override
+                    public okhttp3.Response intercept(Chain chain) throws IOException {
+                        Request request = chain.request();
+                        Headers headers = request.headers().newBuilder().add("userName", username).build();
+                        request = request.newBuilder().headers(headers).build();
+                        return chain.proceed(request);
+                    }
+                })
+                .addInterceptor(new Interceptor() {
+                    @Override
+                    public okhttp3.Response intercept(Chain chain) throws IOException {
+                        Request request = chain.request();
+                        Headers headers = request.headers().newBuilder().add("password", password).build();
                         request = request.newBuilder().headers(headers).build();
                         return chain.proceed(request);
                     }

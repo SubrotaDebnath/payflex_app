@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".PaymentActivity.PaymentMethod">
+    tools:context=".PaymentActivity.PaymentActivity">
     <androidx.cardview.widget.CardView
         android:layout_margin="3dp"
         android:layout_width="match_parent"

@@ -53,7 +53,15 @@ public class UserLogin extends AppCompatActivity implements LoginAPICalling.Logi
             return;
         }
         {
-            apiCalling.loginCall(u_name,u_pass);
+            if(helper.isInternetAvailable())
+            {
+                apiCalling.loginCall(u_name,u_pass);
+            }
+            else
+                {
+                helper.showSnakBar(containerView,"Please check your internet connection!");
+            }
+
         }
     }
 

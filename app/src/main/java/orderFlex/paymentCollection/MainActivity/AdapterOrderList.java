@@ -92,7 +92,7 @@ public class AdapterOrderList extends RecyclerView.Adapter<AdapterOrderList.View
         }
     }
     public interface UpdateTotalBill{
-        public void billUpdate(float totalTaka, boolean change);
+        public void billUpdate(List<TodayOrderResponse.OrderDetail> list,float totalTaka, boolean change);
     }
     private void billCalculation(List<TodayOrderResponse.OrderDetail> list){
         totalBills=0;
@@ -101,6 +101,6 @@ public class AdapterOrderList extends RecyclerView.Adapter<AdapterOrderList.View
             totalBills=totalBills+orderedPrice;
             Log.i(TAG,"Order: "+details.getQuantityes()+" Rate: "+details.getPWholesalePrice()+" Qum. Bill: "+totalBills);
         }
-        updateTotalBill.billUpdate(totalBills,change);
+        updateTotalBill.billUpdate(list,totalBills,change);
     }
 }

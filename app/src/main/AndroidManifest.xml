@@ -22,7 +22,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PaymentActivity.PaymentMethod"></activity>
+        <activity android:name=".PaymentActivity.PaymentActivity"></activity>
         <activity android:name=".MainActivity.MainActivity"></activity>
         <activity android:name=".login.UserLogin">
             <intent-filter>
@@ -34,12 +34,12 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.android.fileprovider"
+            android:authorities="com.payflex_file_provider.FileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/provider_paths"></meta-data>
         </provider>
 
     </application>

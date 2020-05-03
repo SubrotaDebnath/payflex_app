@@ -15,20 +15,26 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import orderFlex.paymentCollection.Model.APICallings.PullPaymentsList;
 import orderFlex.paymentCollection.Model.APICallings.PullTotadyOrder;
+import orderFlex.paymentCollection.Model.APICallings.UpdateOrderHandler;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListRequest;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListResponse;
 import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderResponse;
-import orderFlex.paymentCollection.PaymentActivity.PaymentMethod;
+import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderRequestBody;
+import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderResponse;
+import orderFlex.paymentCollection.PaymentActivity.PaymentActivity;
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;
 import orderFlex.paymentCollection.Utility.SharedPrefManager;
 import orderFlex.paymentCollection.login.UserLogin;
 
 public class MainActivity extends AppCompatActivity implements PullTotadyOrder.TodayOrderListener,AdapterOrderList.UpdateTotalBill,
-        PullPaymentsList.PullPaymentsListListener {
+        PullPaymentsList.PullPaymentsListListener,UpdateOrderHandler.UpdateOrderListener {
 
     LinearLayout addNewPayment;
     private RecyclerView orderList,paymentList;
@@ -46,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
     private TextView noOrder;
     private PullPaymentsList pullPaymentsList;
     private AdapterPaymentList adapterPaymentList;
+    List<UpdateOrderRequestBody> updateOrderRequestBodyList=new ArrayList<>();
+    private UpdateOrderHandler updateOrderHandler=new UpdateOrderHandler(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,22 +79,26 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         Log.i(TAG,"Username: "+prefManager.getUsername());
         Log.i(TAG,"Password: "+prefManager.getUserPassword());
         TodayOrderRequest request=new TodayOrderRequest(prefManager.getClientId(),helper.getDate());
-        if (helper.isInternetAvailable()){
+        if (helper.isInternetAvailable())
+        {
             pullTotadyOrder.pullOrderCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
-        }else {
+        }
+        else
+            {
             helper.showSnakBar(containerVied,"Please check your internet connection!");
         }
         addNewPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (orderResponse!=null){
-                    Intent intent =new Intent(MainActivity.this, PaymentMethod.class);
-                    intent.putExtra("order_id",orderResponse.getOrderDetails().get(0).getOrderForClientId());
+                    Intent intent =new Intent(MainActivity.this, PaymentActivity.class);
+                    Log.i(TAG,"Order Code: "+orderResponse.getOrderDetails().get(0).getOrderCode());
+                    intent.putExtra("order_code",orderResponse.getOrderDetails().get(0).getOrderCode());
                     startActivity(intent);
                 }else {
-                    Intent intent =new Intent(MainActivity.this, PaymentMethod.class);
-                    intent.putExtra("order_id","test01");
-                    startActivity(intent);
+//                    Intent intent =new Intent(MainActivity.this, PaymentActivity.class);
+//                    intent.putExtra("order_id",orderResponse.getOrderDetails().get(0).getOrderCode());
+//                    startActivity(intent);
                 }
             }
         });
@@ -94,7 +106,9 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         updateOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (updateOrderRequestBodyList.size()>0){
+                    updateOrderHandler.pushUpdatedOrder("admin@total.com","abcdtotal",updateOrderRequestBodyList);
+                }
             }
         });
     }
@@ -135,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         Log.i(TAG,"Response Code:"+code);
         if (response!=null && code==202){
             if (response.getOrderDetails().size()>0){
+                orderResponse=response;
                 adapter=new AdapterOrderList(this,response.getOrderDetails());
                 layoutManager = new LinearLayoutManager(this);
                 orderList.setLayoutManager(layoutManager);
@@ -156,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
     }
 
     @Override
-    public void billUpdate(float totalTaka, boolean change) {
+    public void billUpdate(List<TodayOrderResponse.OrderDetail> list,float totalTaka, boolean change) {
         totalBill.setText(String.valueOf(totalTaka));
         Log.i(TAG,"Total bill: "+totalTaka);
         if (change){
@@ -165,6 +180,14 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         }else {
             updateOrder.setVisibility(View.GONE);
             Log.i(TAG,"Bill has no change");
+        }
+
+        for (TodayOrderResponse.OrderDetail updateData:list){
+            UpdateOrderRequestBody data=new UpdateOrderRequestBody(updateData.getTxid(),updateData.getProductId(),updateData.getPName(),
+                    updateData.getPType(),updateData.getQuantityes(),updateData.getOrderForClientId(),updateData.getTakerId(),updateData.getDeliveryDate(),
+                    updateData.getPlant(),updateData.getTakingDate(),updateData.getOrderType());
+
+            updateOrderRequestBodyList.add(data);
         }
     }
 
@@ -190,5 +213,10 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
             paymentList.setLayoutManager(layoutManager);
             paymentList.setAdapter(adapterPaymentList);
         }
+    }
+
+    @Override
+    public void onUpdateResponse(UpdateOrderResponse response, int code) {
+
     }
 }

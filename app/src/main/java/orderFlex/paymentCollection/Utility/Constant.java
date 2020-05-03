@@ -1,6 +1,8 @@
 package orderFlex.paymentCollection.Utility;
 
 public class Constant {
-    public static final String BASE_URL_PAYFLEX = "http://192.168.43.33/totalforecast_api/1v1/";//link will be changed
-    public static final String BASE_URL_ORDERFLEX = "http://192.168.43.33/totalforecast_api/1v1/";//link will be changed
+//    public static final String BASE_URL_PAYFLEX = "http://192.168.43.33/payflex/1v1/";//link will be changed
+    public static final String BASE_URL_PAYFLEX = "https://clients.onukit.com/total/payflex/API/1v1/";//link will be changed
+//    public static final String BASE_URL_ORDERFLEX = "http://192.168.43.33/totalforecast_api/1v1/";//link will be changed
+    public static final String BASE_URL_ORDERFLEX = "https://clients.onukit.com/totalforecast/0v1/";//link will be changed
 }

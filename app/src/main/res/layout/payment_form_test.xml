@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:id="@+id/paymentMethodeActivity"
     android:background="@color/backgroundColor"
-    tools:context=".PaymentActivity.PaymentMethod">
+    tools:context=".PaymentActivity.PaymentActivity">
 
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
@@ -26,6 +26,7 @@
                 android:background="@drawable/back_squere_border"
                 android:layout_gravity="center">
                 <ImageView
+                    android:id="@+id/referenceImg"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:src="@drawable/icon"
@@ -127,6 +128,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="right"
                         android:hint=""
+                        android:inputType="text"
                         android:layout_weight="2"/>
                 </LinearLayout>
                 <LinearLayout
@@ -148,6 +150,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="right"
                         android:hint=""
+                        android:inputType="number"
                         android:layout_weight="2"/>
                 </LinearLayout>
             </LinearLayout>

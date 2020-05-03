@@ -99,21 +99,21 @@ public class TodayOrderResponse {
         @Expose
         private Object pDiscription;
 
-        public String getpName() {
-            return pName;
-        }
+//        public String getpName() {
+//            return pName;
+//        }
+//
+//        public void setpName(String pName) {
+//            this.pName = pName;
+//        }
 
-        public void setpName(String pName) {
-            this.pName = pName;
-        }
-
-        public String getpType() {
-            return pType;
-        }
-
-        public void setpType(String pType) {
-            this.pType = pType;
-        }
+//        public String getpType() {
+//            return pType;
+//        }
+//
+//        public void setpType(String pType) {
+//            this.pType = pType;
+//        }
 
         public String getpRetailPrice() {
             return pRetailPrice;
