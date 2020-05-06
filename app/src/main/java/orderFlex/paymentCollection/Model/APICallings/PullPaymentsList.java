@@ -43,7 +43,7 @@ public class PullPaymentsList {
         // preparing interceptor for retrofit
         // interceptor for runtime data checking
         dialog = new ProgressDialog(context);
-        dialog.setMessage("Login...");
+        dialog.setMessage("Pulling the payments...");
         dialog.show();
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -76,10 +76,11 @@ public class PullPaymentsList {
                     paymentListResponse=response.body();
                     gson=new Gson();
                     String res= gson.toJson(paymentListResponse);
-                    Log.i(TAG,"Login Response: "+res);
+                    Log.i(TAG,"Payment List Response: "+res);
                     listener.onPaymentListResponse(paymentListResponse,response.code());
                     dialog.cancel();
                 }
+                dialog.cancel();
             }
             @Override
             public void onFailure(Call<PaymentListResponse> call, Throwable t) {

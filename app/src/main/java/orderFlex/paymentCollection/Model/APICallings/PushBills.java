@@ -78,6 +78,7 @@ public class PushBills {
                     listener.onResponse(billPaymentResponse,response.code());
                     dialog.cancel();
                 }
+                dialog.cancel();
             }
             @Override
             public void onFailure(Call<BillPaymentResponse> call, Throwable t) {

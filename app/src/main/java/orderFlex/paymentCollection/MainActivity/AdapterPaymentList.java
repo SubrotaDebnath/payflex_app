@@ -1,13 +1,17 @@
 package orderFlex.paymentCollection.MainActivity;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -17,6 +21,7 @@ import orderFlex.paymentCollection.R;
 public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.Holder>{
     private Context context;
     private List<PaymentListResponse.PaymentList> list;
+    private String TAG="AdapterPaymentList";
 
     public AdapterPaymentList(Context context, List<PaymentListResponse.PaymentList> list) {
         this.context = context;
@@ -39,6 +44,13 @@ public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.
         holder.referenceNo.setText(list.get(position).getReferenceNo());
         holder.bankName.setText(list.get(position).getBankName());
         holder.methodName.setText(list.get(position).getMethodeName());
+        if (list.get(position).getImage_url()!=null){
+            Picasso.get().load(list.get(position).getImage_url()).into(holder.refImgView);
+            Log.i(TAG,"Image URL: "+list.get(position).getImage_url());
+        }else {
+            Log.i(TAG,"No Image found!");
+        }
+
     }
 
     @Override
@@ -48,6 +60,7 @@ public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.
 
     public class Holder extends RecyclerView.ViewHolder{
         TextView methodName,bankName,referenceNo,paymentDate,payedAmount,index;
+        ImageView refImgView;
         public Holder(@NonNull View itemView) {
             super(itemView);
             methodName=itemView.findViewById(R.id.methodName);
@@ -56,6 +69,7 @@ public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.
             paymentDate=itemView.findViewById(R.id.paymentDate);
             payedAmount=itemView.findViewById(R.id.payedAmount);
             index=itemView.findViewById(R.id.index);
+            refImgView=itemView.findViewById(R.id.refImgView);
         }
     }
 }

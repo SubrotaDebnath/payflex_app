@@ -98,6 +98,7 @@ public class UpdateOrderHandler {
                     listener.onUpdateResponse(updateOrderResponse,response.code());
                     dialog.cancel();
                 }
+                dialog.cancel();
             }
             @Override
             public void onFailure(Call<UpdateOrderResponse> call, Throwable t) {
@@ -107,7 +108,6 @@ public class UpdateOrderHandler {
         });
         return;
     }
-
     public interface UpdateOrderListener{
         void onUpdateResponse(UpdateOrderResponse response,int code);
     }

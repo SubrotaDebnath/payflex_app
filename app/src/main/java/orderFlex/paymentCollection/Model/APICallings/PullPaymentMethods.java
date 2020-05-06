@@ -38,7 +38,7 @@ public class PullPaymentMethods {
     public void paymentMethodsCall(final String username, final String password){
         Log.i(TAG,"Called.....");
         dialog = new ProgressDialog(context);
-        dialog.setMessage("Pulling...");
+        dialog.setMessage("Preparing...");
         dialog.show();
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -66,12 +66,15 @@ public class PullPaymentMethods {
         responseCall.enqueue(new Callback<PaymentMothodsResponse>() {
             @Override
             public void onResponse(Call<PaymentMothodsResponse> call, Response<PaymentMothodsResponse> response) {
-                Log.i(TAG,"Response Code: "+response.code());
-                paymentMothodsResponse=response.body();
-                gson=new Gson();
-                String res=gson.toJson(response.body());
-                Log.i(TAG,"Response: "+res);
-                listener.onPreResponse(paymentMothodsResponse,response.code());
+                if (response.isSuccessful()){
+                    Log.i(TAG,"Response Code: "+response.code());
+                    paymentMothodsResponse=response.body();
+                    gson=new Gson();
+                    String res=gson.toJson(response.body());
+                    Log.i(TAG,"Response: "+res);
+                    listener.onPreResponse(paymentMothodsResponse,response.code());
+                    dialog.cancel();
+                }
                 dialog.cancel();
             }
 

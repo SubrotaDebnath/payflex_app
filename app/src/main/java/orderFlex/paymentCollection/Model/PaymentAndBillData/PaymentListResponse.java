@@ -78,6 +78,30 @@ public class PaymentListResponse {
         @Expose
         private Object customMethode;
 
+        @SerializedName("img_trxid")
+        @Expose
+        private String img_trxid;
+
+        @SerializedName("image_url")
+        @Expose
+        private String image_url;
+
+        public String getImage_url() {
+            return image_url;
+        }
+
+        public void setImage_url(String image_url) {
+            this.image_url = image_url;
+        }
+
+        public String getImg_trxid() {
+            return img_trxid;
+        }
+
+        public void setImg_trxid(String img_trxid) {
+            this.img_trxid = img_trxid;
+        }
+
         public String getId() {
             return id;
         }

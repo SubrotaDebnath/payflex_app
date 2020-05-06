@@ -75,11 +75,11 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
                         android:layout_weight="5"
+                        android:gravity="center"
                         android:text="Item Description"
-                        android:textStyle="bold"
-                        android:textColor="#FFFFFF"/>
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -131,7 +131,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textStyle="bold"
-                        android:text="Total Amount:"
+                        android:text="Total Order Amount:"
                         android:textColor="#000000"/>
                     <TextView
                         android:id="@+id/totalBill"
