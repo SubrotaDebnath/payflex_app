@@ -8,25 +8,32 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
+import orderFlex.paymentCollection.Model.PaymentAndBillData.ProductListResponse;
+import orderFlex.paymentCollection.Model.PaymentAndBillData.SaveOrderRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderResponse;
 import orderFlex.paymentCollection.R;
 
-public class AdapterOrderList extends RecyclerView.Adapter<AdapterOrderList.ViewHolder>{
+public class AdapterOrderTakeForm extends RecyclerView.Adapter<AdapterOrderTakeForm.ViewHolder>{
     private Context context;
-    private List<TodayOrderResponse.OrderDetail> list;
+    private List<SaveOrderRequest> list;
+    List<ProductListResponse.ProductList> productLists;
     private UpdateTotalBill updateTotalBill;
     private float totalBills = 0;
-    private String TAG="AdapterOrderList";
+    private String TAG="AdapterOrderTakeForm";
     private int counter=0;
     private boolean change=false;
 
-    public AdapterOrderList(Context context, List<TodayOrderResponse.OrderDetail> list) {
+    public AdapterOrderTakeForm(Context context, List<SaveOrderRequest> list,List<ProductListResponse.ProductList> productLists) {
         this.context = context;
         this.list = list;
+        this.productLists=productLists;
+        Log.i(TAG,"Products Size: "+list.size());
         updateTotalBill= (UpdateTotalBill) context;
         billCalculation(list);
     }
@@ -42,14 +49,14 @@ public class AdapterOrderList extends RecyclerView.Adapter<AdapterOrderList.View
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         holder.index.setText(String.valueOf(position+1));
-        if (list.get(position).getPType().equals("1")){
-            holder.productName.setText(list.get(position).getPName() + " New Cylinder");
-        } else if (list.get(position).getPType().equals("2")){
-            holder.productName.setText(list.get(position).getPName() + " Refill Cylinder");
+        if (list.get(position).getProduct_type().equals("1")){
+            holder.productName.setText(list.get(position).getProduct_name() + " New Cylinder");
+        } else if (list.get(position).getProduct_type().equals("2")){
+            holder.productName.setText(list.get(position).getProduct_name() + " Refill Cylinder");
         }
-        holder.unitePrice.setText(list.get(position).getPWholesalePrice());
-        holder.quantity.setText(list.get(position).getQuantityes());
-        float orderedPrice=(Float.valueOf(list.get(position).getPWholesalePrice()))*(Float.valueOf(list.get(position).getQuantityes()));
+        holder.unitePrice.setText(productLists.get(position).getPWholesalePrice());
+        holder.quantity.setText(list.get(position).getQuantities());
+        float orderedPrice=(Float.valueOf(productLists.get(position).getPWholesalePrice()))*(Float.valueOf(list.get(position).getQuantities()));
         totalBills=totalBills+orderedPrice;
         //Log.i(TAG,"Cum.Bill: "+totalBills);
         holder.total.setText(String.valueOf(orderedPrice));
@@ -58,22 +65,23 @@ public class AdapterOrderList extends RecyclerView.Adapter<AdapterOrderList.View
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 counter++;
-                if (!holder.quantity.getText().toString().isEmpty()){
-                    list.get(index).setQuantityes(holder.quantity.getText().toString());
+                if (!holder.quantity.getText().toString().isEmpty())
+                {
+                    list.get(index).setQuantities(holder.quantity.getText().toString());
                 }else {
-                    list.get(index).setQuantityes("0");
+                    list.get(index).setQuantities("0");
                 }
 
                 if (counter==2){
                     Log.i(TAG,"Changed to: ");
                     Log.i(TAG,"Index: "+index);
-                    Log.i(TAG,"Quantity: "+list.get(index).getQuantityes()+" Price: "+list.get(index).getPWholesalePrice());
+                    Log.i(TAG,"Quantity: "+list.get(index).getQuantities()+" Price: "+productLists.get(index).getPWholesalePrice());
                     change=true;
                     billCalculation(list);
                     notifyDataSetChanged();
                     counter=0;
                 }
-                //billCalculation(list);
+                billCalculation(list);
                 return false;
             }
         });
@@ -97,15 +105,17 @@ public class AdapterOrderList extends RecyclerView.Adapter<AdapterOrderList.View
         }
     }
     public interface UpdateTotalBill{
-        public void billUpdate(List<TodayOrderResponse.OrderDetail> list,float totalTaka, boolean change);
+        public void saveBillUpdate(List<SaveOrderRequest> list,float totalTaka, boolean change);
     }
-    private void billCalculation(List<TodayOrderResponse.OrderDetail> list){
+    private void billCalculation(List<SaveOrderRequest> list){
         totalBills=0;
-        for (TodayOrderResponse.OrderDetail details:list) {
-            float orderedPrice=(Float.valueOf(details.getPWholesalePrice()))*(Float.valueOf(details.getQuantityes()));
+        int count=0;
+        for (SaveOrderRequest details:list) {
+            float orderedPrice=(Float.valueOf(productLists.get(count).getPWholesalePrice()))*(Float.valueOf(details.getQuantities()));
             totalBills=totalBills+orderedPrice;
-            Log.i(TAG,"Order: "+details.getQuantityes()+" Rate: "+details.getPWholesalePrice()+" Qum. Bill: "+totalBills);
+            Log.i(TAG,"Order: "+details.getQuantities()+" Rate: "+productLists.get(count).getPWholesalePrice()+" Qum. Bill: "+totalBills);
+            count++;
         }
-        updateTotalBill.billUpdate(list,totalBills,change);
+        updateTotalBill.saveBillUpdate(list,totalBills,change);
     }
 }

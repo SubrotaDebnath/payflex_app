@@ -15,14 +15,20 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import orderFlex.paymentCollection.Model.APICallings.GetProductList;
 import orderFlex.paymentCollection.Model.APICallings.PullPaymentsList;
 import orderFlex.paymentCollection.Model.APICallings.PullTotadyOrder;
+import orderFlex.paymentCollection.Model.APICallings.SaveOrderHandler;
 import orderFlex.paymentCollection.Model.APICallings.UpdateOrderHandler;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListRequest;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListResponse;
+import orderFlex.paymentCollection.Model.PaymentAndBillData.ProductListResponse;
+import orderFlex.paymentCollection.Model.PaymentAndBillData.SaveOrderRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderResponse;
 import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderRequestBody;
@@ -34,26 +40,30 @@ import orderFlex.paymentCollection.Utility.SharedPrefManager;
 import orderFlex.paymentCollection.login.UserLogin;
 
 public class MainActivity extends AppCompatActivity implements PullTotadyOrder.TodayOrderListener,AdapterOrderList.UpdateTotalBill,
-        PullPaymentsList.PullPaymentsListListener,UpdateOrderHandler.UpdateOrderListener {
+        PullPaymentsList.PullPaymentsListListener,UpdateOrderHandler.UpdateOrderListener, GetProductList.GetProductListListener,
+        AdapterOrderTakeForm.UpdateTotalBill, SaveOrderHandler.SaveOrderListener {
 
     LinearLayout addNewPayment;
-    private RecyclerView orderList,paymentList;
+    private RecyclerView orderList,paymentList,takeOrderList;
     private RecyclerView.LayoutManager layoutManager;
     private SharedPrefManager prefManager;
     private String TAG="MainActivity";
     private PullTotadyOrder pullTotadyOrder;
     private Helper helper;
     private AdapterOrderList adapter;
-    private TextView totalBill,clientCode,name,presenterName,phoneNo,address;
+    private TextView totalBill,clientCode,name,presenterName,phoneNo,address,orderTitle;
     private View containerVied;
     private TodayOrderResponse orderResponse=null;
-    private LinearLayout orderDetailsBlock;
-    private CardView updateOrder;
-    private TextView noOrder;
+    private LinearLayout orderDetailsBlock,orderTakeSegment;
+    private CardView updateOrder,saveOrder;
+    private TextView noOrder,totalTakenBill;
     private PullPaymentsList pullPaymentsList;
     private AdapterPaymentList adapterPaymentList;
-    List<UpdateOrderRequestBody> updateOrderRequestBodyList=new ArrayList<>();
+    private List<UpdateOrderRequestBody> updateOrderRequestBodyList=new ArrayList<>();
     private UpdateOrderHandler updateOrderHandler=new UpdateOrderHandler(this);
+    private AdapterOrderTakeForm adapterOrderTakeForm;
+    private List<SaveOrderRequest> saveOrderRequestsBody;
+    private SaveOrderHandler saveOrderHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +79,13 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         updateOrder=findViewById(R.id.updateOrder);
         updateOrder.setVisibility(View.GONE);
         paymentList=findViewById(R.id.paymentList);
+        orderTitle=findViewById(R.id.orderTitle);
+
+        orderTakeSegment=findViewById(R.id.orderTakeSegment);
+        takeOrderList=findViewById(R.id.takeOrderList);
+        totalTakenBill=findViewById(R.id.totalTakenBill);
+        saveOrder=findViewById(R.id.saveOrder);
+        saveOrderHandler=new SaveOrderHandler(this);
 
         updateProfile();
         pullTotadyOrder=new PullTotadyOrder(this);
@@ -85,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         }
         else
             {
-            helper.showSnakBar(containerVied,"Please check your internet connection!");
+            helper.showSnakBar(containerVied,"No internet! Please check your internet connection!");
         }
         addNewPayment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +128,20 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
                 }
             }
         });
+
+        saveOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (helper.isInternetAvailable()){
+                    Gson gson=new Gson();
+                    String response=gson.toJson(saveOrderRequestsBody);
+                    Log.i(TAG,"Response Body: "+response);
+                    saveOrderHandler.pushUpdatedOrder(prefManager.getUsername(),prefManager.getUserPassword(),saveOrderRequestsBody);
+                }else {
+                    helper.showSnakBar(containerVied,"No internet! Please check your internet connection!");
+                }
+            }
+        });
     }
 
     @Override
@@ -119,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         inflater.inflate(R.menu.main_menu, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
@@ -149,25 +181,36 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         Log.i(TAG,"Response Code:"+code);
         if (response!=null && code==202){
             if (response.getOrderDetails().size()>0){
+                orderTitle.setText("ORDER DETAILS: ");
                 orderResponse=response;
                 adapter=new AdapterOrderList(this,response.getOrderDetails());
                 layoutManager = new LinearLayoutManager(this);
                 orderList.setLayoutManager(layoutManager);
                 orderList.setAdapter(adapter);
+
                 orderDetailsBlock.setVisibility(View.VISIBLE);
                 noOrder.setVisibility(View.GONE);
+                orderTakeSegment.setVisibility(View.GONE);
+                saveOrder.setVisibility(View.GONE);
+
                 PaymentListRequest listRequest=new PaymentListRequest(prefManager.getClientId(),response.getOrderDetails().get(0).getOrderCode());
                 pullPaymentsList.pullPaymentListCall(prefManager.getUsername(),prefManager.getUserPassword(),listRequest);
             }else {
-                noOrder.setVisibility(View.VISIBLE);
+                //noOrder.setVisibility(View.VISIBLE);
                 orderDetailsBlock.setVisibility(View.GONE);
+                orderTakeSegment.setVisibility(View.VISIBLE);
+                saveOrder.setVisibility(View.VISIBLE);
+                noOrder.setVisibility(View.GONE);
+
+                new GetProductList(this).pullProductListCall(prefManager.getUsername(),prefManager.getUserPassword());
             }
         }else {
-            helper.showSnakBar(containerVied,"Server not Responding");
+            helper.showSnakBar(containerVied,"Server not Responding! Please check your internet connection.");
             noOrder.setVisibility(View.VISIBLE);
             orderDetailsBlock.setVisibility(View.GONE);
+            noOrder.setVisibility(View.GONE);
+            saveOrder.setVisibility(View.GONE);
         }
-
     }
 
     @Override
@@ -186,9 +229,53 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
             UpdateOrderRequestBody data=new UpdateOrderRequestBody(updateData.getTxid(),updateData.getProductId(),updateData.getPName(),
                     updateData.getPType(),updateData.getQuantityes(),updateData.getOrderForClientId(),updateData.getTakerId(),updateData.getDeliveryDate(),
                     updateData.getPlant(),updateData.getTakingDate(),updateData.getOrderType());
-
             updateOrderRequestBodyList.add(data);
         }
+    }
+
+    @Override
+    public void onPaymentListResponse(PaymentListResponse response, int code) {
+        if (response!=null && code==202){
+            adapterPaymentList=new AdapterPaymentList(this,response.getPaymentList());
+            layoutManager = new LinearLayoutManager(this);
+            paymentList.setLayoutManager(layoutManager);
+            paymentList.setAdapter(adapterPaymentList);
+        }else {
+            helper.showSnakBar(containerVied,"Server not responding! Please check your internet connection.");
+        }
+    }
+
+    @Override
+    public void onUpdateResponse(UpdateOrderResponse response, int code) {
+
+    }
+
+    @Override
+    public void onProductListResponse(ProductListResponse response, int code) {
+        if (response!=null&&code==202){
+            orderTitle.setText("NEW ORDER DETAILS: ");
+            List<SaveOrderRequest> orderRequestList=new ArrayList<>();
+            for (ProductListResponse.ProductList product:response.getProductList()) {
+                SaveOrderRequest order=new SaveOrderRequest(helper.makeUniqueID(),product.getId(),product.getPName(),product.getType(),
+                        "0",prefManager.getClientId(),prefManager.getHandlerId(),helper.getDate(),"",helper.getDate(),"2");
+                orderRequestList.add(order);
+            }
+            //adapter operation
+            Log.i(TAG,"Total products: "+response.getProductList().size());
+            adapterOrderTakeForm=new AdapterOrderTakeForm(this,orderRequestList,response.getProductList());
+            layoutManager = new LinearLayoutManager(this);
+            takeOrderList.setLayoutManager(layoutManager);
+            takeOrderList.setAdapter(adapterOrderTakeForm);
+            //
+        }else {
+            helper.showSnakBar(containerVied,"Server not responding! Please check your internet connection.");
+        }
+
+    }
+    @Override
+    public void saveBillUpdate(List<SaveOrderRequest> list, float totalTaka, boolean change) {
+        saveOrderRequestsBody=list;
+        totalTakenBill.setText(String.valueOf(totalTaka));
     }
 
     private void updateProfile(){
@@ -206,17 +293,14 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
     }
 
     @Override
-    public void onPaymentListResponse(PaymentListResponse response, int code) {
-        if (response!=null && code==202){
-            adapterPaymentList=new AdapterPaymentList(this,response.getPaymentList());
-            layoutManager = new LinearLayoutManager(this);
-            paymentList.setLayoutManager(layoutManager);
-            paymentList.setAdapter(adapterPaymentList);
+    public void onSaveResponse(UpdateOrderResponse response, int code) {
+        if (response!=null && code==200){
+            TodayOrderRequest request=new TodayOrderRequest(prefManager.getClientId(),helper.getDate());
+            if (helper.isInternetAvailable()){
+                pullTotadyOrder.pullOrderCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
+            }else {
+                helper.showSnakBar(containerVied,"Please check your internet connection!");
+            }
         }
-    }
-
-    @Override
-    public void onUpdateResponse(UpdateOrderResponse response, int code) {
-
     }
 }

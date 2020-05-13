@@ -24,6 +24,7 @@ public class SharedPrefManager {
     private static final String CLIENT_CONTACT_NUMBER = "client_contact_number";
     private static final String CLIENT_ADDRESS = "CLIENT_address";
     private static final String PRESENTER="presenter_name";
+    private static final String HANDLER_ID="handler_id";
 
 
 
@@ -128,5 +129,14 @@ public class SharedPrefManager {
     }
     public String getClientCode(){
         return preferences.getString(CLIENT_CODE,"");
+    }
+
+    ////////////////////////////
+    public void setHandlerId(String id){
+        editor.putString(HANDLER_ID,id);
+        editor.commit();
+    }
+    public String getHandlerId(){
+        return preferences.getString(HANDLER_ID,"");
     }
 }

@@ -11,4 +11,12 @@
         <item>bKash</item>
         <item>Rocket</item>
     </string-array>
+
+    <string-array name="plantList">
+        <item><font fgcolor='#FFFFFF'>CTG</font></item>
+        <item><font fgcolor='#FFFFFF'>TALTOLA</font></item>
+        <item><font fgcolor='#FFFFFF'>BOGRA</font></item>
+        <item><font fgcolor='#FFFFFF'>MONGLA</font></item>
+    </string-array>
+
 </resources>

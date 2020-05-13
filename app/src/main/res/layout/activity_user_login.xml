@@ -26,15 +26,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="User Name"
-            android:text="adiba-gas@total.com"
+            android:gravity="center"
             android:inputType="text"/>
+<!--        android:text="adiba-gas@total.com"-->
         <EditText
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Password"
-            android:text="abcdtotal"
+            android:gravity="center"
             android:inputType="textPassword"/>
+<!--        android:text="abcdtotal"-->
         <TextView
             android:id="@+id/loginStatus"
             android:layout_width="match_parent"
