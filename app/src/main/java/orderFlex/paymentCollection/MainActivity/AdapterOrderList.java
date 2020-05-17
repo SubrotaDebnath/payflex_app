@@ -70,7 +70,7 @@ public class AdapterOrderList extends RecyclerView.Adapter<AdapterOrderList.View
                     Log.i(TAG,"Quantity: "+list.get(index).getQuantityes()+" Price: "+list.get(index).getPWholesalePrice());
                     change=true;
                     billCalculation(list);
-                    notifyDataSetChanged();
+                    //notifyDataSetChanged();
                     counter=0;
                 }
                 //billCalculation(list);

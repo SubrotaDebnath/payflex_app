@@ -78,7 +78,7 @@ public class AdapterOrderTakeForm extends RecyclerView.Adapter<AdapterOrderTakeF
                     Log.i(TAG,"Quantity: "+list.get(index).getQuantities()+" Price: "+productLists.get(index).getPWholesalePrice());
                     change=true;
                     billCalculation(list);
-                    notifyDataSetChanged();
+//                    notifyDataSetChanged();
                     counter=0;
                 }
                 billCalculation(list);

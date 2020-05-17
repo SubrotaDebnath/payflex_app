@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -254,12 +255,17 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
     public void onProductListResponse(ProductListResponse response, int code) {
         if (response!=null&&code==202){
             orderTitle.setText("NEW ORDER DETAILS: ");
-            List<SaveOrderRequest> orderRequestList=new ArrayList<>();
-            for (ProductListResponse.ProductList product:response.getProductList()) {
-                SaveOrderRequest order=new SaveOrderRequest(helper.makeUniqueID(),product.getId(),product.getPName(),product.getType(),
+            final List<SaveOrderRequest> orderRequestList=new ArrayList<>();
+            int count=0;
+            for (final ProductListResponse.ProductList product:response.getProductList()) {
+                SaveOrderRequest order=new SaveOrderRequest(helper.makeUniqueID()+String.valueOf(count),product.getId(),product.getPName(),product.getPType(),
                         "0",prefManager.getClientId(),prefManager.getHandlerId(),helper.getDate(),"",helper.getDate(),"2");
                 orderRequestList.add(order);
+                Log.i(TAG,"Name: "+product.getPName()+" Type: "+product.getPType());
+                count++;
             }
+            count=0;
+
             //adapter operation
             Log.i(TAG,"Total products: "+response.getProductList().size());
             adapterOrderTakeForm=new AdapterOrderTakeForm(this,orderRequestList,response.getProductList());
