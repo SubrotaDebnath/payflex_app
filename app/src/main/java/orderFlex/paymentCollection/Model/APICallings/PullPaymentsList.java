@@ -43,7 +43,7 @@ public class PullPaymentsList {
         // preparing interceptor for retrofit
         // interceptor for runtime data checking
         dialog = new ProgressDialog(context);
-        dialog.setMessage("Pulling the payments...");
+        dialog.setMessage("Updating...");
         dialog.show();
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);

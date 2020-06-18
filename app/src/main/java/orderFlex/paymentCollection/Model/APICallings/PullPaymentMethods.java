@@ -38,7 +38,7 @@ public class PullPaymentMethods {
     public void paymentMethodsCall(final String username, final String password){
         Log.i(TAG,"Called.....");
         dialog = new ProgressDialog(context);
-        dialog.setMessage("Preparing...");
+        dialog.setMessage("Updating...");
         dialog.show();
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);

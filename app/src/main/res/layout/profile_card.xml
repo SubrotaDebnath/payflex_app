@@ -66,7 +66,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.5"
-                        android:text="104749" />
+                        android:text="" />
                 </LinearLayout>
 <!--                <LinearLayout-->
 <!--                    android:layout_width="match_parent"-->
@@ -105,7 +105,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.5"
-                        android:text="Md Shahin Fakir"/>
+                        android:text=""/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -126,7 +126,29 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1.5"
                         android:layout_marginRight="10dp"
-                        android:text="8801711233457"/>
+                        android:text=""/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
+                    android:background="@color/barColor"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:text="Delivery  Location:"
+                        android:textColor="#000000" />
+                    <TextView
+                        android:id="@+id/address"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:hint=""
+                        android:layout_weight="1.5"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -139,14 +161,35 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_gravity="center"
-                        android:text="Delivery  Location:"
+                        android:text="Order Code:"
                         android:textColor="#000000"/>
                     <TextView
-                        android:id="@+id/address"
+                        android:id="@+id/orderCode"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.5"
+                        android:layout_marginRight="10dp"
+                        android:text=""/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
+                    android:background="@color/barColor"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:text="Date:"
+                        android:textColor="#000000"/>
+                    <TextView
+                        android:id="@+id/orderDate"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
-                        android:hint="Rohitpur, Keranigonj, Dhaka"
+                        android:hint=""
                         android:layout_weight="1.5"/>
                 </LinearLayout>
             </LinearLayout>

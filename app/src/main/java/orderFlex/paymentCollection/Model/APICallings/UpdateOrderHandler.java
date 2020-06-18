@@ -80,7 +80,7 @@ public class UpdateOrderHandler {
                 .build();
 
         Retrofit retrofit=new Retrofit.Builder()
-                .baseUrl(Constant.BASE_URL_ORDERFLEX)
+                .baseUrl(Constant.BASE_URL_PAYFLEX)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();
@@ -94,7 +94,7 @@ public class UpdateOrderHandler {
                     updateOrderResponse=response.body();
                     gson=new Gson();
                     String res= gson.toJson(updateOrderResponse);
-                    Log.i(TAG,"Login Response: "+res);
+                    Log.i(TAG,"Update Response: "+res);
                     listener.onUpdateResponse(updateOrderResponse,response.code());
                     dialog.cancel();
                 }

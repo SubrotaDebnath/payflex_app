@@ -25,7 +25,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SaveOrderHandler {
-    private String TAG="UpdateOrderHandler";
+    private String TAG="SaveOrderHandler";
     private APIinterface apIinterface;
     private Gson gson;
     private SaveOrderListener listener;
@@ -39,11 +39,11 @@ public class SaveOrderHandler {
         this.context=context;
     }
 
-    public void pushUpdatedOrder(final String username, final String password, List<SaveOrderRequest> body){
+    public void pushSaveOrder(final String username, final String password, List<SaveOrderRequest> body){
         // preparing interceptor for retrofit
         // interceptor for runtime data checking
         dialog = new ProgressDialog(context);
-        dialog.setMessage("Updating orders...");
+        dialog.setMessage("Saving orders...");
         dialog.show();
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -94,7 +94,8 @@ public class SaveOrderHandler {
                     updateOrderResponse=response.body();
                     gson=new Gson();
                     String res= gson.toJson(updateOrderResponse);
-                    Log.i(TAG,"Login Response: "+res);
+                    Log.i(TAG,"Save Response: "+res);
+                    Log.i(TAG,"Code:"+response.code());
                     listener.onSaveResponse(updateOrderResponse,response.code());
                     dialog.cancel();
                 }

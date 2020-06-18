@@ -45,7 +45,12 @@ public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.
         holder.bankName.setText(list.get(position).getBankName());
         holder.methodName.setText(list.get(position).getMethodeName());
         if (list.get(position).getImage_url()!=null){
-            Picasso.get().load(list.get(position).getImage_url()).into(holder.refImgView);
+            Picasso.get()
+                    .load(list.get(position).getImage_url())
+                    .placeholder(R.drawable.filter_loader)
+                    .resize(75, 75)
+                    .centerCrop()
+                    .into(holder.refImgView);
             Log.i(TAG,"Image URL: "+list.get(position).getImage_url());
         }else {
             Log.i(TAG,"No Image found!");

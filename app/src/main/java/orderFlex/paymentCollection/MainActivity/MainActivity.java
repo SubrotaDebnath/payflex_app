@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
     private TodayOrderResponse orderResponse=null;
     private LinearLayout orderDetailsBlock,orderTakeSegment;
     private CardView updateOrder,saveOrder;
-    private TextView noOrder,totalTakenBill;
+    private TextView noOrder,totalTakenBill,orderCode,orderDate;
     private PullPaymentsList pullPaymentsList;
     private AdapterPaymentList adapterPaymentList;
     private List<UpdateOrderRequestBody> updateOrderRequestBodyList=new ArrayList<>();
@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         addNewPayment=findViewById(R.id.addNewPayment);
         orderList=findViewById(R.id.orderList);
         totalBill=findViewById(R.id.totalBill);
@@ -81,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         updateOrder.setVisibility(View.GONE);
         paymentList=findViewById(R.id.paymentList);
         orderTitle=findViewById(R.id.orderTitle);
+        orderCode=findViewById(R.id.orderCode);
+        orderDate=findViewById(R.id.orderDate);
 
         orderTakeSegment=findViewById(R.id.orderTakeSegment);
         takeOrderList=findViewById(R.id.takeOrderList);
@@ -125,7 +128,8 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
             @Override
             public void onClick(View v) {
                 if (updateOrderRequestBodyList.size()>0){
-                    updateOrderHandler.pushUpdatedOrder("admin@total.com","abcdtotal",updateOrderRequestBodyList);
+//                    updateOrderHandler.pushUpdatedOrder("admin@total.com","abcdtotal",updateOrderRequestBodyList);
+                    updateOrderHandler.pushUpdatedOrder(prefManager.getUsername(),prefManager.getUserPassword(),updateOrderRequestBodyList);
                 }
             }
         });
@@ -137,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
                     Gson gson=new Gson();
                     String response=gson.toJson(saveOrderRequestsBody);
                     Log.i(TAG,"Response Body: "+response);
-                    saveOrderHandler.pushUpdatedOrder(prefManager.getUsername(),prefManager.getUserPassword(),saveOrderRequestsBody);
+                    saveOrderHandler.pushSaveOrder(prefManager.getUsername(),prefManager.getUserPassword(),saveOrderRequestsBody);
                 }else {
                     helper.showSnakBar(containerVied,"No internet! Please check your internet connection!");
                 }
@@ -193,6 +197,8 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
                 noOrder.setVisibility(View.GONE);
                 orderTakeSegment.setVisibility(View.GONE);
                 saveOrder.setVisibility(View.GONE);
+                orderCode.setText(orderResponse.getOrderDetails().get(0).getOrderCode());
+                orderDate.setText(orderResponse.getOrderDetails().get(0).getDeliveryDate());
 
                 PaymentListRequest listRequest=new PaymentListRequest(prefManager.getClientId(),response.getOrderDetails().get(0).getOrderCode());
                 pullPaymentsList.pullPaymentListCall(prefManager.getUsername(),prefManager.getUserPassword(),listRequest);
@@ -258,14 +264,30 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
             final List<SaveOrderRequest> orderRequestList=new ArrayList<>();
             int count=0;
             for (final ProductListResponse.ProductList product:response.getProductList()) {
-                SaveOrderRequest order=new SaveOrderRequest(helper.makeUniqueID()+String.valueOf(count),product.getId(),product.getPName(),product.getPType(),
-                        "0",prefManager.getClientId(),prefManager.getHandlerId(),helper.getDate(),"",helper.getDate(),"2");
+                SaveOrderRequest order=new SaveOrderRequest(helper.makeUniqueID()+String.valueOf(count),
+                        product.getId(),product.getPName(),product.getPType(),
+                        "0",prefManager.getClientId(),prefManager.getHandlerId(),
+                        helper.getDate(),"",helper.getDate(),"2");
                 orderRequestList.add(order);
                 Log.i(TAG,"Name: "+product.getPName()+" Type: "+product.getPType());
                 count++;
             }
             count=0;
 
+//            for (int i=0;i<orderRequestList.size();i++){
+//                if (i%2==0){
+//                    Log.i(TAG, "Check Index: "+i);
+//                    SaveOrderRequest temp=orderRequestList.get(i);
+//                    orderRequestList.set(0,orderRequestList.get(i+1));
+//                    orderRequestList.set(i+1,temp);
+//                    Log.i(TAG,"Index: "+i+" Name: "+orderRequestList.get(i).getProduct_name()+" Type: "+orderRequestList.get(i).getProduct_type());
+//                    Log.i(TAG,"Index: "+(i+1)+" Name: "+orderRequestList.get(i+1).getProduct_name()+" Type: "+orderRequestList.get(i+1).getProduct_type());
+//                }
+//            }
+
+            for (SaveOrderRequest data:orderRequestList) {
+                Log.i(TAG,"Recheck: "+" Name: "+data.getProduct_name()+" Type: "+data.getProduct_type());
+            }
             //adapter operation
             Log.i(TAG,"Total products: "+response.getProductList().size());
             adapterOrderTakeForm=new AdapterOrderTakeForm(this,orderRequestList,response.getProductList());
@@ -276,7 +298,6 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         }else {
             helper.showSnakBar(containerVied,"Server not responding! Please check your internet connection.");
         }
-
     }
     @Override
     public void saveBillUpdate(List<SaveOrderRequest> list, float totalTaka, boolean change) {
@@ -300,13 +321,17 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
 
     @Override
     public void onSaveResponse(UpdateOrderResponse response, int code) {
-        if (response!=null && code==200){
+        if (response!=null && code==202){
             TodayOrderRequest request=new TodayOrderRequest(prefManager.getClientId(),helper.getDate());
+            helper.showSnakBar(containerVied,response.getMessage());
             if (helper.isInternetAvailable()){
                 pullTotadyOrder.pullOrderCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
+                saveOrder.setVisibility(View.GONE);
             }else {
                 helper.showSnakBar(containerVied,"Please check your internet connection!");
             }
+        }else {
+            helper.showSnakBar(containerVied,"Server not responding! Please check your internet connection.");
         }
     }
 }

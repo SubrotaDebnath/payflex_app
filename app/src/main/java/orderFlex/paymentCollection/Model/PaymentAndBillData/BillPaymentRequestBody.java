@@ -20,9 +20,6 @@ public class BillPaymentRequestBody {
     @SerializedName("reference_no")
     @Expose
     private String referenceNo;
-    @SerializedName("image_id")
-    @Expose
-    private String imageId;
     @SerializedName("order_code")
     @Expose
     private String orderCode;
@@ -76,14 +73,6 @@ public class BillPaymentRequestBody {
 
     public void setReferenceNo(String referenceNo) {
         this.referenceNo = referenceNo;
-    }
-
-    public String getImageId() {
-        return imageId;
-    }
-
-    public void setImageId(String imageId) {
-        this.imageId = imageId;
     }
 
     public String getOrderCode() {

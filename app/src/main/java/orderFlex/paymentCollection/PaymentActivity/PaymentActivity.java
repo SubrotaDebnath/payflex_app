@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import orderFlex.paymentCollection.MainActivity.MainActivity;
 import orderFlex.paymentCollection.Model.APICallings.FileUploader;
 import orderFlex.paymentCollection.Model.APICallings.ImageFileUploader;
 import orderFlex.paymentCollection.Model.APICallings.PullPaymentMethods;
@@ -41,6 +42,7 @@ import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentMothodsRespon
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;
 import orderFlex.paymentCollection.Utility.SharedPrefManager;
+import orderFlex.paymentCollection.login.UserLogin;
 
 import static androidx.core.content.FileProvider.getUriForFile;
 
@@ -105,7 +107,6 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
             public void onClick(View view) {
                 String refNo=referenceNo.getText().toString();
                 String payed=payAmount.getText().toString();
-                requestBody.setImageId("");
                 requestBody.setOrderCode(orderCode);
                 requestBody.setPaymentDateTime(payDate.getText().toString());
                 requestBody.setReferenceNo(refNo);
@@ -185,6 +186,9 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
 //            new FileUploader(this,prefManager.getClientId(),
 //                    imageName,"","2",".jpg",
 //                    orderCode,response.getInserted_code()).execute();
+            Intent intent=new Intent(PaymentActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
         }else {
             helper.showSnakBar(containerView,"Failed to submit!");
         }
