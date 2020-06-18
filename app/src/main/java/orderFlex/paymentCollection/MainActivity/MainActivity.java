@@ -254,7 +254,18 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
 
     @Override
     public void onUpdateResponse(UpdateOrderResponse response, int code) {
-
+        if (response!=null && code==202){
+            TodayOrderRequest request=new TodayOrderRequest(prefManager.getClientId(),helper.getDate());
+            helper.showSnakBar(containerVied,response.getMessage());
+            if (helper.isInternetAvailable()){
+                pullTotadyOrder.pullOrderCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
+                updateOrder.setVisibility(View.GONE);
+            }else {
+                helper.showSnakBar(containerVied,"Please check your internet connection!");
+            }
+        }else {
+            helper.showSnakBar(containerVied,"Server not responding! Please check your internet connection.");
+        }
     }
 
     @Override

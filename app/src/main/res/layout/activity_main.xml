@@ -12,7 +12,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/addNewPayment">
+        >
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -270,44 +270,55 @@
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/addNewPayment"
-        android:padding="5dp"
-        android:background="@drawable/back_squre_border_fill"
+    <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/addNewPaymentCard"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
-        android:orientation="horizontal">
-        <TextView
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintVertical_bias="1.0">
+        <LinearLayout
+            android:id="@+id/addNewPayment"
+            android:padding="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add new payment"
-            android:layout_marginRight="2dp"
-            android:textColor="#000000"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_add_circle_skay"/>
-    </LinearLayout>
+
+            android:layout_gravity="bottom"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add new payment"
+                android:layout_marginRight="2dp"
+                android:textColor="#000000"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_add_circle_skay"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
 
     <androidx.cardview.widget.CardView
         android:id="@+id/updateOrder"
-        android:background="@drawable/back_squre_border_fill"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="2dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintVertical_bias="1.0"
         android:layout_gravity="bottom"
         android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Update"
-            android:background="@color/barColor"
-            android:textSize="15sp"
+
+            android:textSize="18sp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"
@@ -318,11 +329,14 @@
     <androidx.cardview.widget.CardView
         android:visibility="gone"
         android:id="@+id/saveOrder"
-        android:background="@drawable/back_squre_border_fill"
+        android:background="@color/barColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="2dp"
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintVertical_bias="1.0"
         android:layout_gravity="bottom"
         android:orientation="horizontal">
         <TextView
@@ -330,7 +344,7 @@
             android:layout_height="wrap_content"
             android:text="Save new order"
             android:background="@color/barColor"
-            android:textSize="15sp"
+            android:textSize="18sp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"
