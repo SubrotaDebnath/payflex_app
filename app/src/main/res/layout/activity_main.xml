@@ -12,7 +12,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
+        android:layout_above="@id/addNewPaymentCard">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -275,8 +275,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/addNewPaymentCard"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="10dp"
+        android:layout_alignParentBottom="true"
+
+        android:layout_margin="5dp"
         app:cardCornerRadius="20dp"
         app:layout_constraintVertical_bias="1.0">
         <LinearLayout
@@ -307,8 +308,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
+        android:layout_margin="5dp"
         app:cardCornerRadius="20dp"
         app:layout_constraintVertical_bias="1.0"
         android:layout_gravity="bottom"
@@ -318,7 +318,7 @@
             android:layout_height="wrap_content"
             android:text="Update"
 
-            android:textSize="18sp"
+            android:textSize="15sp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"
@@ -333,8 +333,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:layout_centerHorizontal="true"
+        android:layout_margin="5dp"
         app:cardCornerRadius="20dp"
         app:layout_constraintVertical_bias="1.0"
         android:layout_gravity="bottom"
@@ -344,7 +343,7 @@
             android:layout_height="wrap_content"
             android:text="Save new order"
             android:background="@color/barColor"
-            android:textSize="18sp"
+            android:textSize="15sp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"

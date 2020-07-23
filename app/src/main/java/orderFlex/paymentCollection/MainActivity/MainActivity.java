@@ -100,6 +100,9 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         Log.i(TAG,"Username: "+prefManager.getUsername());
         Log.i(TAG,"Password: "+prefManager.getUserPassword());
         TodayOrderRequest request=new TodayOrderRequest(prefManager.getClientId(),helper.getDate());
+
+        orderDate.setText(helper.getDate());
+
         if (helper.isInternetAvailable())
         {
             pullTotadyOrder.pullOrderCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
@@ -199,6 +202,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
                 saveOrder.setVisibility(View.GONE);
                 orderCode.setText(orderResponse.getOrderDetails().get(0).getOrderCode());
                 orderDate.setText(orderResponse.getOrderDetails().get(0).getDeliveryDate());
+                orderCode.setText(response.getOrderDetails().get(0).getOrderCode());
 
                 PaymentListRequest listRequest=new PaymentListRequest(prefManager.getClientId(),response.getOrderDetails().get(0).getOrderCode());
                 pullPaymentsList.pullPaymentListCall(prefManager.getUsername(),prefManager.getUserPassword(),listRequest);
@@ -208,7 +212,6 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
                 orderTakeSegment.setVisibility(View.VISIBLE);
                 saveOrder.setVisibility(View.VISIBLE);
                 noOrder.setVisibility(View.GONE);
-
                 new GetProductList(this).pullProductListCall(prefManager.getUsername(),prefManager.getUserPassword());
             }
         }else {
@@ -273,6 +276,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         if (response!=null&&code==202){
             orderTitle.setText("NEW ORDER DETAILS: ");
             final List<SaveOrderRequest> orderRequestList=new ArrayList<>();
+
             int count=0;
             for (final ProductListResponse.ProductList product:response.getProductList()) {
                 SaveOrderRequest order=new SaveOrderRequest(helper.makeUniqueID()+String.valueOf(count),
@@ -299,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
             for (SaveOrderRequest data:orderRequestList) {
                 Log.i(TAG,"Recheck: "+" Name: "+data.getProduct_name()+" Type: "+data.getProduct_type());
             }
-            //adapter operation
+            //adapter operation 01726574448 hadibur zaman
             Log.i(TAG,"Total products: "+response.getProductList().size());
             adapterOrderTakeForm=new AdapterOrderTakeForm(this,orderRequestList,response.getProductList());
             layoutManager = new LinearLayoutManager(this);
