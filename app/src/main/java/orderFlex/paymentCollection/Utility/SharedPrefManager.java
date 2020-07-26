@@ -19,6 +19,7 @@ public class SharedPrefManager {
     private static final String CLIENT_PAIR_ID = "client_pair_id";
     private static final String CLIENT_ID = "client_id";
     private static final String CLIENT_CODE = "client_code";
+    private static final String CLIENT_VIRTUAL_ACCOUNT = "client_vartual_acount";
     private static final String CLIENT_NAME = "client_name";
     private static final String CLIENT_EMAIL = "client_email";
     private static final String CLIENT_CONTACT_NUMBER = "client_contact_number";
@@ -88,6 +89,14 @@ public class SharedPrefManager {
     }
     public String getClientName(){
         return preferences.getString(CLIENT_NAME,"");
+    }
+    ////////////////////////////
+    public void setClientVirtualAccountNumber(String id){
+        editor.putString(CLIENT_VIRTUAL_ACCOUNT,id);
+        editor.commit();
+    }
+    public String getClientVirtualAccountNumber(){
+        return preferences.getString(CLIENT_VIRTUAL_ACCOUNT,"");
     }
     ////////////////////////////
     public void setClientEmail(String id){

@@ -37,6 +37,9 @@ public class LoginResponse {
     @SerializedName("client_code")
     @Expose
     private String clientCode;
+    @SerializedName("virtual_account_no")
+    @Expose
+    private String virtualAccountNo;
     @SerializedName("name")
     @Expose
     private String name;
@@ -81,6 +84,14 @@ public class LoginResponse {
 
     public String getUsername() {
         return username;
+    }
+
+    public String getVirtualAccountNo() {
+        return virtualAccountNo;
+    }
+
+    public void setVirtualAccountNo(String virtualAccountNo) {
+        this.virtualAccountNo = virtualAccountNo;
     }
 
     public void setUsername(String username) {

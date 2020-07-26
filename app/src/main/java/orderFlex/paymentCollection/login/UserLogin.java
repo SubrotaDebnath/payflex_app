@@ -94,6 +94,7 @@ public class UserLogin extends AppCompatActivity implements LoginAPICalling.Logi
                 prefManager.setPresenterName(response.getRepresentativeName());
                 prefManager.setClientCode(response.getClientCode());
                 prefManager.setHandlerId(response.getHandlerId());
+                prefManager.setClientVirtualAccountNumber(response.getVirtualAccountNo());
                 Intent intent=new Intent(UserLogin.this, MainActivity.class);
                 startActivity(intent);
                 finish();

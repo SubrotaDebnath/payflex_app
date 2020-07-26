@@ -17,6 +17,10 @@ public class BillPaymentRequestBody {
     @SerializedName("payment_date_time")
     @Expose
     private String paymentDateTime;
+    @SerializedName("submitted_date")
+    @Expose
+    private String submittedDateTime;
+
     @SerializedName("reference_no")
     @Expose
     private String referenceNo;
@@ -37,6 +41,14 @@ public class BillPaymentRequestBody {
 
     public String getTrxid() {
         return trxid;
+    }
+
+    public String getSubmittedDateTime() {
+        return submittedDateTime;
+    }
+
+    public void setSubmittedDateTime(String submittedDateTime) {
+        this.submittedDateTime = submittedDateTime;
     }
 
     public void setTrxid(String trxid) {

@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -59,11 +60,12 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
     private View containerView;
     private BillPaymentRequestBody requestBody;
     private EditText referenceNo,payAmount;
-    private TextView payDate;
+    private TextView payDate,virtualAccount;
     private String orderCode;
     private PushBills pushBills;
     private String imageName;
     private ImageView addImg,referenceImg;
+    private LinearLayout payDatePick;
    // private ImageFileUploader imageFileUploader;
 
     @Override
@@ -82,7 +84,11 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
         requestBody=new BillPaymentRequestBody();
         addImg=findViewById(R.id.addImg);
         referenceImg=findViewById(R.id.referenceImg);
+        virtualAccount=findViewById(R.id.virtualAccount);
+        virtualAccount.setText(prefManager.getClientVirtualAccountNumber());
+        payDatePick=findViewById(R.id.payDatePick);
         pushBills=new PushBills(this);
+
 
         Intent intent=getIntent();
         orderCode=intent.getStringExtra("order_code");
@@ -102,17 +108,27 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
         spinnerBank =findViewById(R.id.bankList);
         spinnerBank.setOnItemSelectedListener(this);
         paySubmit=findViewById(R.id.paySubmit);
+
+        payDatePick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                helper.getCalenderDate(payDate);
+            }
+        });
+
         paySubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String refNo=referenceNo.getText().toString();
                 String payed=payAmount.getText().toString();
                 requestBody.setOrderCode(orderCode);
-                requestBody.setPaymentDateTime(payDate.getText().toString());
+                String paymentDate=payDate.getText().toString();
+                requestBody.setPaymentDateTime(paymentDate);
                 requestBody.setReferenceNo(refNo);
                 requestBody.setTrxid(helper.makeUniqueID());
                 requestBody.setAmount(payed);
-                if (refNo.isEmpty()||payed.isEmpty()){
+                requestBody.setSubmittedDateTime(helper.getDateTime());
+                if (refNo.isEmpty()||payed.isEmpty()||paymentDate.isEmpty()){
                     helper.showSnakBar(containerView,"Some fields are empty!");
                 }else {
                     if (helper.isInternetAvailable())
