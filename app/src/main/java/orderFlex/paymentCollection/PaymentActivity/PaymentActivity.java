@@ -25,6 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -37,9 +39,11 @@ import orderFlex.paymentCollection.Model.APICallings.FileUploader;
 import orderFlex.paymentCollection.Model.APICallings.ImageFileUploader;
 import orderFlex.paymentCollection.Model.APICallings.PullPaymentMethods;
 import orderFlex.paymentCollection.Model.APICallings.PushBills;
+import orderFlex.paymentCollection.Model.APICallings.UpdateBill;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentRequestBody;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentMothodsResponse;
+import orderFlex.paymentCollection.Model.PaymentAndBillData.UpdatePaymenResponse;
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;
 import orderFlex.paymentCollection.Utility.SharedPrefManager;
@@ -48,7 +52,7 @@ import orderFlex.paymentCollection.login.UserLogin;
 import static androidx.core.content.FileProvider.getUriForFile;
 
 public class PaymentActivity extends AppCompatActivity implements PullPaymentMethods.PaymentMethodsListener,
-        AdapterView.OnItemSelectedListener, PushBills.PushBillListener {
+        AdapterView.OnItemSelectedListener, PushBills.PushBillListener,UpdateBill.UpdateBillListener {
     private Button paySubmit;
     private Spinner spinnerMethod, spinnerBank;
     private SharedPrefManager prefManager;
@@ -63,9 +67,13 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
     private TextView payDate,virtualAccount;
     private String orderCode;
     private PushBills pushBills;
+    private UpdateBill updateBill;
     private String imageName;
     private ImageView addImg,referenceImg;
     private LinearLayout payDatePick;
+    private String bankName="",methodeName="";
+    private boolean updateFlag=false;
+    private String paymentId;
    // private ImageFileUploader imageFileUploader;
 
     @Override
@@ -87,27 +95,57 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
         virtualAccount=findViewById(R.id.virtualAccount);
         virtualAccount.setText(prefManager.getClientVirtualAccountNumber());
         payDatePick=findViewById(R.id.payDatePick);
-        pushBills=new PushBills(this);
-
-
-        Intent intent=getIntent();
-        orderCode=intent.getStringExtra("order_code");
-        Log.i(TAG,"Order Code: "+orderCode);
-        //Log.i(TAG,orderCode);
-
-        pullPaymentMethods=new PullPaymentMethods(this);
-//        if (helper.isInternetAvailable())
-        {
-            pullPaymentMethods.paymentMethodsCall(prefManager.getUsername(),prefManager.getUserPassword());
-        }
-//        else {
-//            helper.showSnakBar(containerView,"Please check your internet connection!");
-//        }
         spinnerMethod =findViewById(R.id.paymentMethod);
         spinnerMethod.setOnItemSelectedListener(this);
         spinnerBank =findViewById(R.id.bankList);
         spinnerBank.setOnItemSelectedListener(this);
         paySubmit=findViewById(R.id.paySubmit);
+
+        pushBills=new PushBills(this);
+        updateBill=new UpdateBill(this);
+
+        try {
+            Intent intent=getIntent();
+            if (intent.getStringExtra("order_code")!=null){
+                orderCode=intent.getStringExtra("order_code");
+                Log.i(TAG,"Order Code From Main: "+orderCode);
+                updateFlag=false;
+            }else {
+                requestBody= (BillPaymentRequestBody) intent.getSerializableExtra("payment_data");
+                Log.i(TAG,"Order Code From Payment List: "+ requestBody.getOrderCode());
+                referenceNo.setText(requestBody.getReferenceNo());
+                payAmount.setText(requestBody.getAmount());
+                paySubmit.setText("Update");
+                bankName=intent.getStringExtra("bank_name");
+                methodeName=intent.getStringExtra("method_name");
+                String imgUrl=intent.getStringExtra("img_url");
+                orderCode=requestBody.getOrderCode();
+                paymentId=intent.getStringExtra("payment_id");
+                updateFlag=true;
+                if (imgUrl!=null){
+                    Picasso.get()
+                            .load(imgUrl)
+                            .placeholder(R.drawable.filter_loader)
+                            .resize(100, 100)
+                            .into(referenceImg);
+                    Log.i(TAG,"Image URL: "+imgUrl);
+                }else {
+                    Log.i(TAG,"No Image found!");
+                }
+            }
+        }catch (Exception e){
+            Log.i(TAG,"Exception in catch Intent: "+e.toString());
+        }
+
+        pullPaymentMethods=new PullPaymentMethods(this);
+        if (helper.isInternetAvailable())
+        {
+            pullPaymentMethods.paymentMethodsCall(prefManager.getUsername(),prefManager.getUserPassword());
+        }
+        else {
+            helper.showSnakBar(containerView,"Please check your internet connection!");
+        }
+
 
         payDatePick.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,7 +163,9 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
                 String paymentDate=payDate.getText().toString();
                 requestBody.setPaymentDateTime(paymentDate);
                 requestBody.setReferenceNo(refNo);
-                requestBody.setTrxid(helper.makeUniqueID());
+                if (requestBody.getTrxid()==null){
+                    requestBody.setTrxid(helper.makeUniqueID());
+                }
                 requestBody.setAmount(payed);
                 requestBody.setSubmittedDateTime(helper.getDateTime());
                 if (refNo.isEmpty()||payed.isEmpty()||paymentDate.isEmpty()){
@@ -133,7 +173,12 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
                 }else {
                     if (helper.isInternetAvailable())
                     {
-                        pushBills.pushBillCall(prefManager.getUsername(),prefManager.getUserPassword(),requestBody);
+                        if (updateFlag){
+                            updateBill.updateBillCall(prefManager.getUsername(),prefManager.getUserPassword(),requestBody);
+                        }else {
+                            pushBills.pushBillCall(prefManager.getUsername(),prefManager.getUserPassword(),requestBody);
+                        }
+
                     }
                     else {
                         helper.showSnakBar(containerView,"Please check your internet connection!");
@@ -161,19 +206,40 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
         List<String>methodList=new ArrayList<>();
 
         if (response!=null && code==202){
+            int bankID=0, bankCount=0;
             for (PaymentMothodsResponse.BankList bank:response.getBankList()) {
                 bankList.add(bank.getBankName());
+                if (bank.getBankName().equals(bankName)){
+                    bankID=bankCount;
+                }
+                bankCount++;
             }
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item,bankList);
             spinnerBank.setAdapter(adapter);
-            spinnerBank.setSelection(bankList.indexOf(0));
+            if (requestBody.getFinancial_institution_id()!=null){
+                spinnerBank.setSelection(bankID);
+                Log.i(TAG,"Bank ID: "+bankID);
+            }else {
+                spinnerBank.setSelection(0);
+            }
 
+            int methodeID=0,methodeCounter=0;
             for (PaymentMothodsResponse.PaymentMethode methode:response.getPaymentMethode()) {
                 methodList.add(methode.getMethodeName());
+                if (methode.getMethodeName().equals(methodeName)){
+                    methodeID=methodeCounter;
+                }
+                methodeCounter++;
             }
             ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item,methodList);
             spinnerMethod.setAdapter(adapter2);
-            spinnerMethod.setSelection(bankList.indexOf(0));
+            if (requestBody.getPaymentModeId()!=null){
+                spinnerMethod.setSelection(methodeID);
+                Log.i(TAG,"Methode ID: "+methodeID);
+            }else {
+                spinnerMethod.setSelection(0);
+            }
+
         }
     }
     @Override
@@ -198,10 +264,8 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
     public void onResponse(BillPaymentResponse response, int code) {
         if (code==202){
             helper.showSnakBar(containerView,"Thank you for your payment!");
-            new ImageFileUploader(this, prefManager.getClientId(),imageName,"", "2",".jpg",orderCode,response.getInserted_code()).execute();
-//            new FileUploader(this,prefManager.getClientId(),
-//                    imageName,"","2",".jpg",
-//                    orderCode,response.getInserted_code()).execute();
+            paymentId=response.getInserted_code();
+            new ImageFileUploader(this, prefManager.getClientId(),imageName,"", "2",".jpg",orderCode,paymentId).execute();
             Intent intent=new Intent(PaymentActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
@@ -236,7 +300,6 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
     ///////////////////////////////////////////////////////
     String currentPhotoPath;
     private File createImageFile() throws IOException{
-
         String timeStamp = helper.makeUniqueID();
         imageName = "pay"+timeStamp;
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -323,5 +386,22 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void onUpdateResponse(UpdatePaymenResponse response, int code) {
+        if (code==202){
+            helper.showSnakBar(containerView,response.getMessage());
+            if (imageName!=null){
+                Log.i(TAG,"Update Image");
+                new ImageFileUploader(this, prefManager.getClientId(),imageName,"", "2",".jpg",orderCode,paymentId).execute();
+            }
+
+            Intent intent=new Intent(PaymentActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }else {
+            helper.showSnakBar(containerView,"Failed to update!");
+        }
     }
 }

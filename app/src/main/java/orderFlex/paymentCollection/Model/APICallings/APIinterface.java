@@ -12,6 +12,7 @@ import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentMothodsResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.ProductListResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.SaveOrderRequest;
+import orderFlex.paymentCollection.Model.PaymentAndBillData.UpdatePaymenResponse;
 import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderResponse;
 import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderRequestBody;
@@ -30,6 +31,9 @@ public interface APIinterface {
 
     @POST("SavePaymentData")
     Call<BillPaymentResponse>pushOrderBill(@Body BillPaymentRequestBody body);
+
+    @POST("UpdatePaymentData")
+    Call<UpdatePaymenResponse>updateOrderPayment(@Body BillPaymentRequestBody body);
 
     @POST("Payment_methodes")
     Call<PaymentMothodsResponse>getPaymentMethods();

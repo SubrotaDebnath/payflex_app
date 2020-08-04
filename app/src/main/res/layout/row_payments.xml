@@ -6,6 +6,7 @@
     android:layout_height="180dp"
     tools:context=".PaymentActivity.PaymentActivity">
     <androidx.cardview.widget.CardView
+        android:id="@+id/paymentViewCrad"
         android:layout_margin="3dp"
         android:layout_width="match_parent"
         app:cardCornerRadius="5dp"

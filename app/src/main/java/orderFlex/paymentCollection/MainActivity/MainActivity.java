@@ -120,9 +120,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
                     intent.putExtra("order_code",orderResponse.getOrderDetails().get(0).getOrderCode());
                     startActivity(intent);
                 }else {
-//                    Intent intent =new Intent(MainActivity.this, PaymentActivity.class);
-//                    intent.putExtra("order_id",orderResponse.getOrderDetails().get(0).getOrderCode());
-//                    startActivity(intent);
+                    helper.showSnakBar(containerVied,"You don't have previous order! Please save an order first");
                 }
             }
         });
@@ -246,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
     @Override
     public void onPaymentListResponse(PaymentListResponse response, int code) {
         if (response!=null && code==202){
-            adapterPaymentList=new AdapterPaymentList(this,response.getPaymentList());
+            adapterPaymentList=new AdapterPaymentList(this,response.getPaymentList(),containerVied);
             layoutManager = new LinearLayoutManager(this);
             paymentList.setLayoutManager(layoutManager);
             paymentList.setAdapter(adapterPaymentList);

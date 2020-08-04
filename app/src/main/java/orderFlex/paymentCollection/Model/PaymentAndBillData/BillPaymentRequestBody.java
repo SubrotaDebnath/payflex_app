@@ -3,7 +3,9 @@ package orderFlex.paymentCollection.Model.PaymentAndBillData;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class BillPaymentRequestBody {
+import java.io.Serializable;
+
+public class BillPaymentRequestBody implements Serializable {
 
     @SerializedName("trxid")
     @Expose

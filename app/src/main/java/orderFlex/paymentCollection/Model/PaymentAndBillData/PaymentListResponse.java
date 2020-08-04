@@ -86,6 +86,18 @@ public class PaymentListResponse {
         @Expose
         private String image_url;
 
+        @SerializedName("action_flag")
+        @Expose
+        private String action_flag;
+
+        public String getAction_flag() {
+            return action_flag;
+        }
+
+        public void setAction_flag(String action_flag) {
+            this.action_flag = action_flag;
+        }
+
         public String getImage_url() {
             return image_url;
         }
