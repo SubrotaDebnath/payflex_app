@@ -213,7 +213,12 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
                 new GetProductList(this).pullProductListCall(prefManager.getUsername(),prefManager.getUserPassword());
             }
         }else {
-            helper.showSnakBar(containerVied,"Server not Responding! Please check your internet connection.");
+            if (code==401){
+                helper.showSnakBar(containerVied,"Unauthorized Username or Password!");
+            }else {
+                helper.showSnakBar(containerVied,"Server not Responding! Please check your internet connection.");
+            }
+
             noOrder.setVisibility(View.VISIBLE);
             orderDetailsBlock.setVisibility(View.GONE);
             noOrder.setVisibility(View.GONE);
@@ -249,7 +254,11 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
             paymentList.setLayoutManager(layoutManager);
             paymentList.setAdapter(adapterPaymentList);
         }else {
-            helper.showSnakBar(containerVied,"Server not responding! Please check your internet connection.");
+            if (code==401){
+                helper.showSnakBar(containerVied,"Unauthorized Username or Password!");
+            }else {
+                helper.showSnakBar(containerVied,"Server not Responding! Please check your internet connection.");
+            }
         }
     }
 
@@ -265,7 +274,11 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
                 helper.showSnakBar(containerVied,"Please check your internet connection!");
             }
         }else {
-            helper.showSnakBar(containerVied,"Server not responding! Please check your internet connection.");
+            if (code==401){
+                helper.showSnakBar(containerVied,"Unauthorized Username or Password!");
+            }else {
+                helper.showSnakBar(containerVied,"Server not Responding! Please check your internet connection.");
+            }
         }
     }
 
@@ -309,7 +322,11 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
             takeOrderList.setAdapter(adapterOrderTakeForm);
             //
         }else {
-            helper.showSnakBar(containerVied,"Server not responding! Please check your internet connection.");
+            if (code==401){
+                helper.showSnakBar(containerVied,"Unauthorized Username or Password!");
+            }else {
+                helper.showSnakBar(containerVied,"Server not Responding! Please check your internet connection.");
+            }
         }
     }
     @Override
@@ -344,7 +361,11 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
                 helper.showSnakBar(containerVied,"Please check your internet connection!");
             }
         }else {
-            helper.showSnakBar(containerVied,"Server not responding! Please check your internet connection.");
+            if (code==401){
+            helper.showSnakBar(containerVied,"Unauthorized Username or Password!");
+        }else {
+            helper.showSnakBar(containerVied,"Server not Responding! Please check your internet connection.");
+        }
         }
     }
 }

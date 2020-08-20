@@ -72,11 +72,14 @@ public class LoginAPICalling {
         loginResponseCall.enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, retrofit2.Response<LoginResponse> response) {
+               Log.i(TAG,"Response Code: "+response.code());
                 if (response.isSuccessful()){
                     loginResponse=response.body();
                     gson=new Gson();
                     String res= gson.toJson(loginResponse);
                     Log.i(TAG,"Login Response: "+res);
+                    listener.onResponse(loginResponse,response.code());
+                }else {
                     listener.onResponse(loginResponse,response.code());
                 }
                 dialog.cancel();

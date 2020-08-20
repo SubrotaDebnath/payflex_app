@@ -188,12 +188,19 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
             }
         });
         checkCameraPermission();
-        checkStorageWritePermission();
-        checkStorageReadPermission();
+//        checkStorageWritePermission();
+//        checkStorageReadPermission();
         addImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dispatchTakePictureIntent();
+                if (checkCameraPermission()){
+                    if (checkStorageReadPermission()){
+                        if (checkStorageWritePermission()){
+                            dispatchTakePictureIntent();
+                        }
+                    }
+
+                }
             }
         });
     }
@@ -240,6 +247,12 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
                 spinnerMethod.setSelection(0);
             }
 
+        }else {
+            if (code==401){
+                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
+            }else {
+                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
+            }
         }
     }
     @Override
@@ -270,7 +283,11 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
             startActivity(intent);
             finish();
         }else {
-            helper.showSnakBar(containerView,"Failed to submit!");
+            if (code==401){
+                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
+            }else {
+                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
+            }
         }
     }
     ///camera operation//////////////////////////////////////////////
@@ -311,7 +328,6 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
     ////////////////////////////////
     public static boolean createDirIfNotExists(String path) {
         boolean ret = true;
-
         File file = new File(Environment.getExternalStorageDirectory(), path);
         if (!file.exists()) {
             if (!file.mkdirs()) {
@@ -361,18 +377,7 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
         }
         return true;
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode == 11 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            checkStorageWritePermission();
-        }
-        if(requestCode == 12 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            checkStorageReadPermission();
-        }
-        if(requestCode == 13 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            checkCameraPermission();
-        }
-    }
+
     public boolean checkStorageWritePermission(){
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},12);
@@ -387,10 +392,24 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
         }
         return true;
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if(requestCode == 11 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            checkStorageWritePermission();
+        }
+        if(requestCode == 12 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            checkStorageReadPermission();
+        }
+        if(requestCode == 13 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            checkCameraPermission();
+        }
+    }
+    //////////////////////////////////////////////////////
 
     @Override
     public void onUpdateResponse(UpdatePaymenResponse response, int code) {
-        if (code==202){
+        if (response!=null&&code==202){
             helper.showSnakBar(containerView,response.getMessage());
             if (imageName!=null){
                 Log.i(TAG,"Update Image");
@@ -401,7 +420,11 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
             startActivity(intent);
             finish();
         }else {
-            helper.showSnakBar(containerView,"Failed to update!");
+            if (code==401){
+                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
+            }else {
+                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
+            }
         }
     }
 }

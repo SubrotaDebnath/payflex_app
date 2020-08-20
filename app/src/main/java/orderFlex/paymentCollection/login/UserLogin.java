@@ -16,7 +16,7 @@ import orderFlex.paymentCollection.Utility.SharedPrefManager;
 
 public class UserLogin extends AppCompatActivity implements LoginAPICalling.LoginListener{
     private EditText username, password;
-    private TextView status;
+//    private TextView status;
     private LoginAPICalling apiCalling;
     private Helper helper;
     private View containerView;
@@ -29,7 +29,7 @@ public class UserLogin extends AppCompatActivity implements LoginAPICalling.Logi
         setContentView(R.layout.activity_user_login);
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
-        status = findViewById(R.id.loginStatus);
+//        status = findViewById(R.id.loginStatus);
         containerView=findViewById(R.id.login_activity);
         helper=new Helper(this);
         apiCalling=new LoginAPICalling(this);
@@ -67,8 +67,7 @@ public class UserLogin extends AppCompatActivity implements LoginAPICalling.Logi
 
     @Override
     public void onResponse(LoginResponse response,int code) {
-        if (response!=null){
-            if (code==202){
+        if (response!=null && code==202){
                 helper.showSnakBar(containerView,"Successfully login!");
                 prefManager.setLoggedInFlag(true);
                 prefManager.setUserNane(u_name);
@@ -77,17 +76,30 @@ public class UserLogin extends AppCompatActivity implements LoginAPICalling.Logi
                 prefManager.setClientPairId(response.getClientPairID());
                 prefManager.setClientId(response.getClientId());
                 prefManager.setClientName(response.getName());
-                for (LoginResponse.Contact contact:response.getContacts()) {
-                    if (contact.getContactTypeId().equals("1")){
-                        prefManager.setClientContactNumber(contact.getContactValue());
+                if(response.getContacts().size()>0){
+                    for (LoginResponse.Contact contact:response.getContacts()) {
+                        if (contact.getContactTypeId().equals("1")){
+                            prefManager.setClientContactNumber(contact.getContactValue());
+                        }else{
+                            prefManager.setClientContactNumber("");
+                        }
+                        if (contact.getContactTypeId().equals("4")){
+                            prefManager.setClientAddress(contact.getContactValue());
+                        }else {
+                            prefManager.setClientAddress("");
+                        }
+                        if (contact.getContactTypeId().equals("")){
+                            prefManager.setClientEmail(contact.getContactValue());
+                        }else {
+                            prefManager.setClientEmail("");
+                        }
                     }
-                    if (contact.getContactTypeId().equals("4")){
-                        prefManager.setClientAddress(contact.getContactValue());
-                    }
-                    if (contact.getContactTypeId().equals("")){
-                        prefManager.setClientEmail(contact.getContactValue());
-                    }
+                }else {
+                    prefManager.setClientContactNumber("");
+                    prefManager.setClientAddress("");
+                    prefManager.setClientEmail("");
                 }
+
 //                prefManager.setClientEmail(response.get);
 //                prefManager.setClientContactNumber(response.getContact_number());
 //                prefManager.setClientAddress(response.getAddress());
@@ -98,11 +110,13 @@ public class UserLogin extends AppCompatActivity implements LoginAPICalling.Logi
                 Intent intent=new Intent(UserLogin.this, MainActivity.class);
                 startActivity(intent);
                 finish();
-            }else {
-                helper.showSnakBar(containerView,"Unauthorized login!");
-            }
+
         }else {
-            helper.showSnakBar(containerView,"Login error");
+            if (code==401){
+                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
+            }else {
+                helper.showSnakBar(containerView,"Login error");
+            }
         }
     }
 }

@@ -22,7 +22,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:requestLegacyExternalStorage="true"
+        android:networkSecurityConfig="@xml/network_config"
         android:theme="@style/AppTheme">
+
         <activity android:name=".PaymentActivity.PaymentActivity"></activity>
         <activity android:name=".MainActivity.MainActivity"></activity>
         <activity android:name=".login.UserLogin">
