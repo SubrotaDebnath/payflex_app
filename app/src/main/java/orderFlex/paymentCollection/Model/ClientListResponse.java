@@ -216,7 +216,7 @@ public class ClientListResponse {
 
         public void setParentId(String parentId) {
             this.parentId = parentId;
-        }
+        }//
 
     }
 }
