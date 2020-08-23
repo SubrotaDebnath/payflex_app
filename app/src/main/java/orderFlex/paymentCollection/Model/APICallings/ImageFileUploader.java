@@ -46,26 +46,30 @@ public class ImageFileUploader extends AsyncTask<Void, Void, String> {
     private String extension;
     private String order_code;
     private String payment_id;
+    private String sourcePath;
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
     }
-    public ImageFileUploader(Context context, String clientID, String fileName, String fileDetail, String fileType, String extension, String order_code,String payment_id) {
+    public ImageFileUploader(Context context, String clientID, String fileDetail, String fileType, String extension, String order_code,String payment_id,String sourcePath) {
         this.context = context;
-        this.filename=fileName;
+        helper=new Helper(context);
+
+        this.filename=helper.makeUniqueID();
         this.fileType=fileType;
         this.clientID=clientID;
         this.fileDetail=fileDetail;
         this.extension=extension;
         this.order_code=order_code;
         this.payment_id=payment_id;
+        this.sourcePath= sourcePath;
 
-        Log.i(TAG,"Con_Call Type: "+fileType);
-        File sampleDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);//directory will be changed
-        filePath= sampleDir.getAbsolutePath();
-        Log.i(TAG,"Path:"+filePath);
-        helper=new Helper(context);
+        Log.i(TAG,"File Type: "+fileType);
+//        File sampleDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);//directory will be changed
+//        filePath= sampleDir.getAbsolutePath();
+//        Log.i(TAG,"Path:"+filePath);
+
         prefManager=new SharedPrefManager(context);
         dialog = new ProgressDialog(context);
 //        dialog.setMessage("Uploading file....");
@@ -83,31 +87,34 @@ public class ImageFileUploader extends AsyncTask<Void, Void, String> {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected String doInBackground(Void... params){
-        String sourceFileUri = filePath+"/"+filename+".jpg";
-        String sourceFileDirectory = filePath+"/";
-
-        Log.i(TAG, "uri :"+sourceFileUri);
-        File sourceFile = new File(sourceFileUri);
+//        String sourceFileUri = filePath+"/"+filename+".jpg";
+//        String sourceFileDirectory = filePath+"/";
+//
+//        Log.i(TAG, "uri :"+sourceFileUri);
+//        File sourceFile = new File(sourceFileUri);
+        File sourceFile = new File(sourcePath);
         //Database db=new Database(context);
             //********get the file *********
-        try {
-            File sourceDirectory = new File(sourceFileDirectory);
-            for (File ff : sourceDirectory.listFiles()) {
-                if (ff.isFile())
-                    Log.i(TAG, "File Name:" + ff.getName());
-                if (ff.getName().toString().contains(filename)) {
-//                    sourceFileUri = "/mnt/sdcard/onuRecords/" + ff.getName();
-                    sourceFileUri = filePath+"/" + ff.getName();
-                    sourceFile = new File(sourceFileUri);
-                }
-            }
-        }catch (Exception e)
-        {
-            Log.i(TAG, "Exception :" + e);
-        }
+//        try {
+//            File sourceDirectory = new File(sourceFileDirectory);
+//            for (File ff : sourceDirectory.listFiles()) {
+//                if (ff.isFile())
+//                    Log.i(TAG, "File Name:" + ff.getName());
+//                if (ff.getName().toString().contains(filename)) {
+////                    sourceFileUri = "/mnt/sdcard/onuRecords/" + ff.getName();
+//                    sourceFileUri = filePath+"/" + ff.getName();
+//                    sourceFile = new File(sourceFileUri);
+//                }
+//            }
+//        }catch (Exception e)
+//        {
+//            Log.i(TAG, "Exception :" + e);
+//        }
             //******** file found ***********
 
-        Log.i(TAG, "Src URI :" + sourceFileUri);
+//        Log.i(TAG, "Src URI :" + sourceFileUri);
+        Log.i(TAG, "Activity src URI: "+sourcePath);
+
             if (sourceFile.isFile()) {
                 try {
                     //File f  = new File(data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH));
