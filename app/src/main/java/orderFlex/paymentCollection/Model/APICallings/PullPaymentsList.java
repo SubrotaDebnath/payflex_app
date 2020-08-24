@@ -44,7 +44,7 @@ public class PullPaymentsList {
         // interceptor for runtime data checking
         dialog = new ProgressDialog(context);
         dialog.setMessage("Updating...");
-        dialog.show();
+//        dialog.show();
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         final String authToken = Credentials.basic(username, password);
@@ -78,15 +78,15 @@ public class PullPaymentsList {
                     String res= gson.toJson(paymentListResponse);
                     Log.i(TAG,"Payment List Response: "+res);
                     listener.onPaymentListResponse(paymentListResponse,response.code());
-                    dialog.cancel();
+//                    dialog.cancel();
                 }
-                dialog.cancel();
+//                dialog.cancel();
             }
             @Override
             public void onFailure(Call<PaymentListResponse> call, Throwable t) {
                 Log.i(TAG,t.getMessage());
                 listener.onPaymentListResponse(paymentListResponse,404);
-                dialog.cancel();
+//                dialog.cancel();
             }
         });
         return;

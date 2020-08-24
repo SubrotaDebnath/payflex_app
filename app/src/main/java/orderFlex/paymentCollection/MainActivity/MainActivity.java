@@ -103,6 +103,18 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
 
         orderDate.setText(helper.getDate());
 
+        try {
+            Intent intent=getIntent();
+            String message=intent.getStringExtra("payment_massege");
+            if (message == null){
+                helper.showSnakBar(containerVied,"Refreshing the dashboard...!");
+            }else {
+                helper.showSnakBar(containerVied,message);
+            }
+        }catch (Exception e){
+            Log.i(TAG,"Intent Exception: "+ e.toString());
+        }
+
         if (helper.isInternetAvailable())
         {
             pullTotadyOrder.pullOrderCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
@@ -164,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
             case R.id.refresh:
                 TodayOrderRequest request=new TodayOrderRequest(prefManager.getClientId(),helper.getDate());
                 if (helper.isInternetAvailable()){
+                    helper.showSnakBar(containerVied,"Refreshing the dashboard...!");
                     pullTotadyOrder.pullOrderCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
                 }else {
                     helper.showSnakBar(containerVied,"Please check your internet connection!");
@@ -293,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
                 SaveOrderRequest order=new SaveOrderRequest(helper.makeUniqueID()+String.valueOf(count),
                         product.getId(),product.getPName(),product.getPType(),
                         "0",prefManager.getClientId(),prefManager.getHandlerId(),
-                        helper.getDate(),"",helper.getDate(),"2");
+                        helper.getDate(),"1",helper.getDate(),"2");
                 orderRequestList.add(order);
                 Log.i(TAG,"Name: "+product.getPName()+" Type: "+product.getPType());
                 count++;

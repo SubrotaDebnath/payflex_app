@@ -40,9 +40,9 @@ public class PullTotadyOrder {
     public void pullOrderCall(final String username, final String password, TodayOrderRequest orderRequest){
         // preparing interceptor for retrofit
         // interceptor for runtime data checking
-        dialog = new ProgressDialog(context);
-        dialog.setMessage("Updating...");
-        dialog.show();
+//        dialog = new ProgressDialog(context);
+//        dialog.setMessage("Updating...");
+//        dialog.show();
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         final String authToken = Credentials.basic(username, password);
@@ -76,14 +76,14 @@ public class PullTotadyOrder {
 //                    String res= gson.toJson(todayOrderResponse);
 //                    Log.i(TAG,"Login Response: "+res);
                     listener.onResponse(todayOrderResponse,response.code());
-                    dialog.cancel();
+//                    dialog.cancel();
                 }
             }
             @Override
             public void onFailure(Call<TodayOrderResponse> call, Throwable t) {
                 Log.i(TAG,t.getMessage());
                 listener.onResponse(todayOrderResponse,404);
-                dialog.cancel();
+//                dialog.cancel();
             }
         });
         return;

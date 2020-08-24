@@ -217,7 +217,6 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
                             builder.setCancelable(false);
                             alertDialog= builder.create();
                             alertDialog.show();
-
                             cameraTake.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -225,7 +224,6 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
                                     alertDialog.dismiss();
                                 }
                             });
-
                             galleryTake.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -316,6 +314,7 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
             paymentId=response.getInserted_code();
             new ImageFileUploader(this, prefManager.getClientId(),"", "2",".jpg",orderCode,paymentId,imageOrginalPath).execute();
             Intent intent=new Intent(PaymentActivity.this, MainActivity.class);
+            intent.putExtra("payment_massege","Payment Saved Successfully!");
             startActivity(intent);
             finish();
         }else {
@@ -326,6 +325,7 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
             }
         }
     }
+
     /////////////////////////#######################################333//////////////////
     ///camera operation//////////////////////////////////////////////
     private String currentPhotoPath;
@@ -483,6 +483,7 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
             }
 
             Intent intent=new Intent(PaymentActivity.this, MainActivity.class);
+            intent.putExtra("payment_massege","Payment Updated Successfully!");
             startActivity(intent);
             finish();
         }else {
