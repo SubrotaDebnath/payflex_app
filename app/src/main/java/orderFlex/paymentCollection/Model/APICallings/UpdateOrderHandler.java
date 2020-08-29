@@ -42,6 +42,10 @@ public class UpdateOrderHandler {
     public void pushUpdatedOrder(final String username, final String password, List<UpdateOrderRequestBody> body){
         // preparing interceptor for retrofit
         // interceptor for runtime data checking
+        gson=new Gson();
+        String requestBody= gson.toJson(body);
+        Log.i(TAG,"Update RequestBody: "+requestBody);
+
         dialog = new ProgressDialog(context);
         dialog.setMessage("Updating orders...");
         dialog.show();

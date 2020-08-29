@@ -137,7 +137,17 @@ public class Helper {
             locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
             return !TextUtils.isEmpty(locationProviders);
         }
-
-
+    }
+    public String dateParchYMD(String dateData){
+        Date date;
+        String stringDate="";
+        try {
+            date= new SimpleDateFormat("yyyy-MM-dd").parse(dateData);
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            stringDate = df.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return stringDate;
     }
 }

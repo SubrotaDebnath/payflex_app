@@ -71,6 +71,10 @@ public class AdapterOrderList extends RecyclerView.Adapter<AdapterOrderList.View
                     change=true;
                     billCalculation(list);
                     //notifyDataSetChanged();
+                    float orderedPrice=
+                            (Float.valueOf(list.get(index).getQuantityes()))*
+                                    (Float.valueOf(list.get(index).getPWholesalePrice()));
+                    holder.total.setText(String.valueOf(orderedPrice));
                     counter=0;
                 }
                 //billCalculation(list);
@@ -99,6 +103,7 @@ public class AdapterOrderList extends RecyclerView.Adapter<AdapterOrderList.View
     public interface UpdateTotalBill{
         public void billUpdate(List<TodayOrderDetailsByDataResponse.OrderDetail> list, float totalTaka, boolean change);
     }
+
     private void billCalculation(List<TodayOrderDetailsByDataResponse.OrderDetail> list){
         totalBills=0;
         for (TodayOrderDetailsByDataResponse.OrderDetail details:list) {

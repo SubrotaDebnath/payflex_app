@@ -37,9 +37,10 @@ public class AdapterListOfOrder extends RecyclerView.Adapter<AdapterListOfOrder.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        holder.booked_orderCode.setText(list.get(position).getOrderCode());
+        holder.booked_orderCode.setText("Code: "+list.get(position).getOrderCode());
         holder.booked_date.setText(list.get(position).getDeliveryDate());
         holder.booked_amount.setText(list.get(position).getTotal_costs());
+        holder.booked_index.setText(String.valueOf(position+1)+".");
         holder.bookedRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,7 +57,7 @@ public class AdapterListOfOrder extends RecyclerView.Adapter<AdapterListOfOrder.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView booked_orderCode,booked_date,booked_amount;
+        TextView booked_orderCode,booked_date,booked_amount,booked_index;
         CardView bookedRow;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -65,6 +66,7 @@ public class AdapterListOfOrder extends RecyclerView.Adapter<AdapterListOfOrder.
             booked_date=itemView.findViewById(R.id.booked_date);
             booked_amount=itemView.findViewById(R.id.booked_amount);
             bookedRow=itemView.findViewById(R.id.bookedRow);
+            booked_index=itemView.findViewById(R.id.booked_index);
         }
     }
 }

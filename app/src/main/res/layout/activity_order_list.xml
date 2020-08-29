@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,9 +10,12 @@
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     tools:context=".OrderDetailsActivity.OrderDetailsActivity">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -39,7 +42,7 @@
                     android:layout_marginLeft="3dp"
                     android:textColor="#000000"/>
             </RelativeLayout>
-            <!--            Save New order form-->
+            <!-- Save New order form-->
             <LinearLayout
                 android:visibility="gone"
                 android:layout_width="match_parent"
@@ -49,7 +52,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:padding="1dp"
                     android:orientation="horizontal">
 
@@ -112,7 +114,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/takeCustomerOrderList"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="wrap_content"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -145,40 +147,76 @@
                         android:layout_marginEnd="3dp"
                         android:textColor="#000000" />
                 </LinearLayout>
-                <androidx.cardview.widget.CardView
-                    android:visibility="visible"
-                    android:id="@+id/saveOrder"
-                    android:background="@color/barColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    app:cardCornerRadius="20dp"
-                    app:layout_constraintVertical_bias="1.0"
-                    android:layout_gravity="center"
-                    android:elevation="5dp"
+                <!--                Order Save Cancel button -->
+                <LinearLayout
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="right"
                     android:orientation="horizontal">
-                    <TextView
+                    <!--                        BTN Cancel-->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cancel_action"
+                        android:background="@color/barColor"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/save_new_order_button"
-                        android:textSize="15sp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:textColor="#000000"/>
-                </androidx.cardview.widget.CardView>
+                        android:layout_marginRight="2dp"
+                        app:cardCornerRadius="2dp"
+                        app:layout_constraintVertical_bias="1.0"
+                        android:layout_gravity="center"
+                        android:elevation="10dp"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Cancel"
+                            android:textAllCaps="true"
+                            android:textSize="15sp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:background="#A9F30014"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:textColor="#000000"/>
+                    </androidx.cardview.widget.CardView>
+                    <!--                        BTN Save-->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/save_action"
+                        android:background="@color/barColor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="2dp"
+                        android:layout_marginLeft="2dp"
+                        app:layout_constraintVertical_bias="1.0"
+                        android:layout_gravity="center"
+                        android:elevation="10dp"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/save_new_order_button"
+                            android:textSize="15sp"
+                            android:background="#7A1B7801"
+                            android:textAllCaps="true"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:textColor="#000000"/>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
             </LinearLayout>
 
-
+            <!--Order List-->
             <androidx.recyclerview.widget.RecyclerView
-                android:visibility="visible"
+                android:visibility="gone"
                 android:id="@+id/bookedOrderList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-
+            <!--Warning text-->
             <TextView
-                android:visibility="visible"
+                android:visibility="gone"
                 android:id="@+id/warningText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -186,7 +224,36 @@
                 android:gravity="center"
                 android:text="You don't have any Order for today. Please book a Order first!"
                 />
-
         </LinearLayout>
+    </ScrollView>
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/addNewOrder"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="5dp"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintVertical_bias="1.0">
+        <LinearLayout
+            android:padding="7dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Create New Order"
+                android:layout_marginRight="2dp"
+                android:textColor="#000000"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_add_circle_skay"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
-</ScrollView>
+</RelativeLayout>

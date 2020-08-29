@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +67,7 @@ public class OrderDetailsActivity
     private TextView noOrder,totalTakenBill,orderCode,orderDate;
     private PullPaymentsList pullPaymentsList;
     private AdapterPaymentList adapterPaymentList;
-    private List<UpdateOrderRequestBody> updateOrderRequestBodyList=new ArrayList<>();
+    private List<UpdateOrderRequestBody> updateOrderRequestBodyList;
     private UpdateOrderHandler updateOrderHandler=new UpdateOrderHandler(this);
     private AdapterOrderTakeForm adapterOrderTakeForm;
     private List<SaveOrderRequest> saveOrderRequestsBody;
@@ -141,25 +143,24 @@ public class OrderDetailsActivity
             @Override
             public void onClick(View v) {
                 if (updateOrderRequestBodyList.size()>0){
-//                    updateOrderHandler.pushUpdatedOrder("admin@total.com","abcdtotal",updateOrderRequestBodyList);
                     updateOrderHandler.pushUpdatedOrder(prefManager.getUsername(),prefManager.getUserPassword(),updateOrderRequestBodyList);
                 }
             }
         });
 
-//        saveOrder.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (helper.isInternetAvailable()){
-//                    Gson gson=new Gson();
-//                    String response=gson.toJson(saveOrderRequestsBody);
-//                    Log.i(TAG,"Response Body: "+response);
-//                    saveOrderHandler.pushSaveOrder(prefManager.getUsername(),prefManager.getUserPassword(),saveOrderRequestsBody);
-//                }else {
-//                    helper.showSnakBar(containerVied,"No internet! Please check your internet connection!");
-//                }
-//            }
-//        });
+        saveOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (helper.isInternetAvailable()){
+                    Gson gson=new Gson();
+                    String response=gson.toJson(saveOrderRequestsBody);
+                    Log.i(TAG,"Response Body: "+response);
+                    saveOrderHandler.pushSaveOrder(prefManager.getUsername(),prefManager.getUserPassword(),saveOrderRequestsBody);
+                }else {
+                    helper.showSnakBar(containerVied,"No internet! Please check your internet connection!");
+                }
+            }
+        });
     }
 
     @Override
@@ -250,6 +251,7 @@ public class OrderDetailsActivity
             Log.i(TAG,"Bill has no change");
         }
 
+        updateOrderRequestBodyList=new ArrayList<>();
         for (TodayOrderDetailsByDataResponse.OrderDetail updateData:list){
             UpdateOrderRequestBody data=new UpdateOrderRequestBody(updateData.getTxid(),updateData.getProductId(),updateData.getPName(),
                     updateData.getPType(),updateData.getQuantityes(),updateData.getOrderForClientId(),updateData.getTakerId(),updateData.getDeliveryDate(),

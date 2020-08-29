@@ -24,13 +24,18 @@
             <TextView
                 android:id="@+id/orderTitle"
                 android:layout_below="@id/userProfile"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="5dp"
-                android:text="ORDER DETAILS: "
+                android:text="ORDER DETAILS"
                 android:textSize="15sp"
                 android:textStyle="bold"
+                android:layout_marginRight="3dp"
+                android:layout_marginLeft="3dp"
+                android:background="#E8E8E8"
+                android:padding="5dp"
+                android:gravity="center"
                 android:textColor="#000000"/>
 
             <!--        Oder details section -->
@@ -284,16 +289,17 @@
         app:layout_constraintVertical_bias="1.0">
         <LinearLayout
             android:id="@+id/addNewPayment"
-            android:padding="5dp"
+            android:padding="7dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:layout_gravity="bottom"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Add new payment"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:layout_marginRight="2dp"
                 android:textColor="#000000"/>
             <ImageView
@@ -319,10 +325,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Update"
-
+            android:layout_gravity="center"
+            android:gravity="center"
             android:textSize="15sp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:textColor="#000000"/>
@@ -346,8 +353,10 @@
             android:text="Save new order"
             android:background="@color/barColor"
             android:textSize="15sp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
+            android:paddingTop="7dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingBottom="7dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:textColor="#000000"/>

@@ -23,8 +23,8 @@ public class AdapterOrderForm extends RecyclerView.Adapter<AdapterOrderForm.View
     private List<SaveOrderRequest> list;
     List<ProductListResponse.ProductList> productLists;
     private UpdateTotalBill updateTotalBill;
-    private float totalBills = 0;
-    private String TAG="AdapterOrderTakeForm";
+    private double totalBills = 0;
+    private String TAG="AdapterOrderForm";
     private int counter=0;
     private boolean change=false;
 
@@ -55,7 +55,7 @@ public class AdapterOrderForm extends RecyclerView.Adapter<AdapterOrderForm.View
         }
         holder.unitePrice.setText(productLists.get(position).getPWholesalePrice());
         holder.quantity.setText(list.get(position).getQuantities());
-        float orderedPrice=(Float.valueOf(productLists.get(position).getPWholesalePrice()))*(Float.valueOf(list.get(position).getQuantities()));
+        double orderedPrice=(Double.valueOf(productLists.get(position).getPWholesalePrice()))*(Double.valueOf(list.get(position).getQuantities()));
         totalBills=totalBills+orderedPrice;
         //Log.i(TAG,"Cum.Bill: "+totalBills);
         holder.total.setText(String.valueOf(orderedPrice));
@@ -70,7 +70,6 @@ public class AdapterOrderForm extends RecyclerView.Adapter<AdapterOrderForm.View
                 }else {
                     list.get(index).setQuantities("0");
                 }
-
                 if (counter==2){
                     Log.i(TAG,"Changed to: ");
                     Log.i(TAG,"Index: "+index);
@@ -78,6 +77,10 @@ public class AdapterOrderForm extends RecyclerView.Adapter<AdapterOrderForm.View
                     change=true;
                     billCalculation(list);
 //                    notifyDataSetChanged();
+                    double orderedPrice=
+                            (Double.valueOf(list.get(index).getQuantities()))*
+                                    (Double.valueOf(productLists.get(index).getPWholesalePrice()));
+                    holder.total.setText(String.valueOf(orderedPrice));
                     counter=0;
                 }
                 billCalculation(list);
@@ -104,13 +107,13 @@ public class AdapterOrderForm extends RecyclerView.Adapter<AdapterOrderForm.View
         }
     }
     public interface UpdateTotalBill{
-        public void saveBillUpdate(List<SaveOrderRequest> list, float totalTaka, boolean change);
+        public void saveBillUpdate(List<SaveOrderRequest> list, double totalTaka, boolean change);
     }
     private void billCalculation(List<SaveOrderRequest> list){
         totalBills=0;
         int count=0;
         for (SaveOrderRequest details:list) {
-            float orderedPrice=(Float.valueOf(productLists.get(count).getPWholesalePrice()))*(Float.valueOf(details.getQuantities()));
+            double orderedPrice=(Double.valueOf(productLists.get(count).getPWholesalePrice()))*(Double.valueOf(details.getQuantities()));
             totalBills=totalBills+orderedPrice;
             Log.i(TAG,"Order: "+details.getQuantities()+" Rate: "+productLists.get(count).getPWholesalePrice()+" Qum. Bill: "+totalBills);
             count++;

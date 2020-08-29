@@ -127,7 +127,7 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
                 if (imgUrl!=null){
                     Picasso.get()
                             .load(imgUrl)
-                            .placeholder(R.drawable.filter_loader)
+//                            .placeholder(R.drawable.ic_baseline_cloud_download)
                             .resize(100, 100)
                             .into(referenceImg);
                     Log.i(TAG,"Image URL: "+imgUrl);

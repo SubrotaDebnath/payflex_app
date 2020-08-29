@@ -7,6 +7,9 @@ public class UpdateOrderResponse {
     @SerializedName("message")
     @Expose
     private String message;
+    @SerializedName("total_amount")
+    @Expose
+    private String total_amount;
 
     public String getMessage() {
         return message;
@@ -14,5 +17,9 @@ public class UpdateOrderResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getTotal_amount() {
+        return total_amount;
     }
 }

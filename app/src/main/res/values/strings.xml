@@ -8,7 +8,7 @@
     <string name="amount">Amount</string>
     <string name="total_order_amount">Total Order Amount:</string>
     <string name="_0_0">0.0</string>
-    <string name="save_new_order_button">Save new order</string>
+    <string name="save_new_order_button">Save Order</string>
     <string-array name="bank_list">
         <item>SBL</item>
         <item>Brac Bank</item>
@@ -27,5 +27,6 @@
         <item><font fgcolor='#FFFFFF'>BOGRA</font></item>
         <item><font fgcolor='#FFFFFF'>MONGLA</font></item>
     </string-array>
+    <string name="payment_place_holder_text">Reference Image</string>
 
 </resources>
