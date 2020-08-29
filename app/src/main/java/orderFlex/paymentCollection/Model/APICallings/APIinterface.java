@@ -1,7 +1,5 @@
 package orderFlex.paymentCollection.Model.APICallings;
 
-import org.json.JSONObject;
-
 import java.util.List;
 
 import orderFlex.paymentCollection.Model.LoginData.LoginResponse;
@@ -13,6 +11,9 @@ import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentMothodsRespon
 import orderFlex.paymentCollection.Model.PaymentAndBillData.ProductListResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.SaveOrderRequest;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.UpdatePaymenResponse;
+import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListRequest;
+import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListResponse;
+import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderedProductByCodeRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderResponse;
 import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderRequestBody;
@@ -28,6 +29,12 @@ public interface APIinterface {
 
     @POST("GetClientTodaysOrder")
     Call<TodayOrderResponse>getTodayOrder(@Body TodayOrderRequest body);
+
+    @POST("GetOrderDetailByOrderCode")
+    Call<TodayOrderResponse>getOrderByCode(@Body TodayOrderedProductByCodeRequest body);
+
+    @POST("GetCustomerOrderList")
+    Call<CustomerOrderListResponse> getCustomerOrderList(@Body CustomerOrderListRequest body);
 
     @POST("SavePaymentData")
     Call<BillPaymentResponse>pushOrderBill(@Body BillPaymentRequestBody body);

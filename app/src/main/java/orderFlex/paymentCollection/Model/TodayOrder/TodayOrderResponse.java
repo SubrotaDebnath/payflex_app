@@ -8,7 +8,7 @@ public class TodayOrderResponse {
     @SerializedName("code")
     @Expose
     private Integer code;
-    @SerializedName("messege")
+    @SerializedName("message")
     @Expose
     private String message;
     @SerializedName("order_details")

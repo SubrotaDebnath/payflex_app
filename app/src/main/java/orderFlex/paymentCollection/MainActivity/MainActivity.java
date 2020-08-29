@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,8 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import orderFlex.paymentCollection.Model.APICallings.GetProductList;
+import orderFlex.paymentCollection.Model.APICallings.PullOrderDetailsByOrderCode;
 import orderFlex.paymentCollection.Model.APICallings.PullPaymentsList;
-import orderFlex.paymentCollection.Model.APICallings.PullTotadyOrder;
+import orderFlex.paymentCollection.Model.APICallings.PullTodayAllProductOrderDetails;
 import orderFlex.paymentCollection.Model.APICallings.SaveOrderHandler;
 import orderFlex.paymentCollection.Model.APICallings.UpdateOrderHandler;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListRequest;
@@ -32,6 +32,7 @@ import orderFlex.paymentCollection.Model.PaymentAndBillData.ProductListResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.SaveOrderRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderResponse;
+import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderedProductByCodeRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderRequestBody;
 import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderResponse;
 import orderFlex.paymentCollection.PaymentActivity.PaymentActivity;
@@ -40,16 +41,23 @@ import orderFlex.paymentCollection.Utility.Helper;
 import orderFlex.paymentCollection.Utility.SharedPrefManager;
 import orderFlex.paymentCollection.login.UserLogin;
 
-public class MainActivity extends AppCompatActivity implements PullTotadyOrder.TodayOrderListener,AdapterOrderList.UpdateTotalBill,
-        PullPaymentsList.PullPaymentsListListener,UpdateOrderHandler.UpdateOrderListener, GetProductList.GetProductListListener,
-        AdapterOrderTakeForm.UpdateTotalBill, SaveOrderHandler.SaveOrderListener {
+public class MainActivity
+        extends AppCompatActivity
+        implements
+        PullOrderDetailsByOrderCode.TodayOrderListener,
+        AdapterOrderList.UpdateTotalBill,
+        PullPaymentsList.PullPaymentsListListener,
+        UpdateOrderHandler.UpdateOrderListener,
+        GetProductList.GetProductListListener,
+        AdapterOrderTakeForm.UpdateTotalBill,
+        SaveOrderHandler.SaveOrderListener {
 
     LinearLayout addNewPayment;
     private RecyclerView orderList,paymentList,takeOrderList;
     private RecyclerView.LayoutManager layoutManager;
     private SharedPrefManager prefManager;
-    private String TAG="MainActivity";
-    private PullTotadyOrder pullTotadyOrder;
+    private String TAG="MainActivity",booked_code="";
+    private PullOrderDetailsByOrderCode pullTotadyOrder;
     private Helper helper;
     private AdapterOrderList adapter;
     private TextView totalBill,clientCode,name,presenterName,phoneNo,address,orderTitle;
@@ -71,10 +79,12 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        prefManager=new SharedPrefManager(this);
+        helper=new Helper(this);
+
         addNewPayment=findViewById(R.id.addNewPayment);
         orderList=findViewById(R.id.orderList);
         totalBill=findViewById(R.id.totalBill);
-        prefManager=new SharedPrefManager(this);
         orderDetailsBlock=findViewById(R.id.orderDetailsBlock);
         noOrder=findViewById(R.id.noOrder);
         containerVied=findViewById(R.id.mainActivity);
@@ -92,20 +102,12 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         saveOrderHandler=new SaveOrderHandler(this);
 
         updateProfile();
-        pullTotadyOrder=new PullTotadyOrder(this);
         pullPaymentsList=new PullPaymentsList(this);
-
-        helper=new Helper(this);
-        Log.i(TAG,"Client ID: "+prefManager.getClientId());
-        Log.i(TAG,"Username: "+prefManager.getUsername());
-        Log.i(TAG,"Password: "+prefManager.getUserPassword());
-        TodayOrderRequest request=new TodayOrderRequest(prefManager.getClientId(),helper.getDate());
-
-        orderDate.setText(helper.getDate());
 
         try {
             Intent intent=getIntent();
             String message=intent.getStringExtra("payment_massege");
+            booked_code=intent.getStringExtra("booked_code");
             if (message == null){
                 helper.showSnakBar(containerVied,"Refreshing the dashboard...!");
             }else {
@@ -115,14 +117,15 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
             Log.i(TAG,"Intent Exception: "+ e.toString());
         }
 
-        if (helper.isInternetAvailable())
-        {
-            pullTotadyOrder.pullOrderCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
+        orderDate.setText(helper.getDate());
+
+        if (helper.isInternetAvailable()) {
+            operationOrderDetail();
         }
-        else
-            {
+        else {
             helper.showSnakBar(containerVied,"No internet! Please check your internet connection!");
         }
+
         addNewPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -147,19 +150,19 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
             }
         });
 
-        saveOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (helper.isInternetAvailable()){
-                    Gson gson=new Gson();
-                    String response=gson.toJson(saveOrderRequestsBody);
-                    Log.i(TAG,"Response Body: "+response);
-                    saveOrderHandler.pushSaveOrder(prefManager.getUsername(),prefManager.getUserPassword(),saveOrderRequestsBody);
-                }else {
-                    helper.showSnakBar(containerVied,"No internet! Please check your internet connection!");
-                }
-            }
-        });
+//        saveOrder.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (helper.isInternetAvailable()){
+//                    Gson gson=new Gson();
+//                    String response=gson.toJson(saveOrderRequestsBody);
+//                    Log.i(TAG,"Response Body: "+response);
+//                    saveOrderHandler.pushSaveOrder(prefManager.getUsername(),prefManager.getUserPassword(),saveOrderRequestsBody);
+//                }else {
+//                    helper.showSnakBar(containerVied,"No internet! Please check your internet connection!");
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -174,10 +177,9 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.refresh:
-                TodayOrderRequest request=new TodayOrderRequest(prefManager.getClientId(),helper.getDate());
                 if (helper.isInternetAvailable()){
                     helper.showSnakBar(containerVied,"Refreshing the dashboard...!");
-                    pullTotadyOrder.pullOrderCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
+                    operationOrderDetail();
                 }else {
                     helper.showSnakBar(containerVied,"Please check your internet connection!");
                 }
@@ -223,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
                 orderTakeSegment.setVisibility(View.VISIBLE);
                 saveOrder.setVisibility(View.VISIBLE);
                 noOrder.setVisibility(View.GONE);
-                new GetProductList(this).pullProductListCall(prefManager.getUsername(),prefManager.getUserPassword());
+//                new GetProductList(this).pullProductListCall(prefManager.getUsername(),prefManager.getUserPassword());
             }
         }else {
             if (code==401){
@@ -281,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
             TodayOrderRequest request=new TodayOrderRequest(prefManager.getClientId(),helper.getDate());
             helper.showSnakBar(containerVied,response.getMessage());
             if (helper.isInternetAvailable()){
-                pullTotadyOrder.pullOrderCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
+                operationOrderDetail();
                 updateOrder.setVisibility(View.GONE);
             }else {
                 helper.showSnakBar(containerVied,"Please check your internet connection!");
@@ -312,17 +314,6 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
                 count++;
             }
             count=0;
-
-//            for (int i=0;i<orderRequestList.size();i++){
-//                if (i%2==0){
-//                    Log.i(TAG, "Check Index: "+i);
-//                    SaveOrderRequest temp=orderRequestList.get(i);
-//                    orderRequestList.set(0,orderRequestList.get(i+1));
-//                    orderRequestList.set(i+1,temp);
-//                    Log.i(TAG,"Index: "+i+" Name: "+orderRequestList.get(i).getProduct_name()+" Type: "+orderRequestList.get(i).getProduct_type());
-//                    Log.i(TAG,"Index: "+(i+1)+" Name: "+orderRequestList.get(i+1).getProduct_name()+" Type: "+orderRequestList.get(i+1).getProduct_type());
-//                }
-//            }
 
             for (SaveOrderRequest data:orderRequestList) {
                 Log.i(TAG,"Recheck: "+" Name: "+data.getProduct_name()+" Type: "+data.getProduct_type());
@@ -368,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
             TodayOrderRequest request=new TodayOrderRequest(prefManager.getClientId(),helper.getDate());
             helper.showSnakBar(containerVied,response.getMessage());
             if (helper.isInternetAvailable()){
-                pullTotadyOrder.pullOrderCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
+                operationOrderDetail();
                 saveOrder.setVisibility(View.GONE);
             }else {
                 helper.showSnakBar(containerVied,"Please check your internet connection!");
@@ -380,5 +371,11 @@ public class MainActivity extends AppCompatActivity implements PullTotadyOrder.T
             helper.showSnakBar(containerVied,"Server not Responding! Please check your internet connection.");
         }
         }
+    }
+
+    private void operationOrderDetail(){
+        TodayOrderedProductByCodeRequest request=new TodayOrderedProductByCodeRequest(prefManager.getClientId(),booked_code);
+        pullTotadyOrder=new PullOrderDetailsByOrderCode(this);
+        pullTotadyOrder.pullOrderCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
     }
 }

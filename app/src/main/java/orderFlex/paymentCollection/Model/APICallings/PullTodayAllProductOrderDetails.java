@@ -22,7 +22,7 @@ import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class PullTotadyOrder {
+public class PullTodayAllProductOrderDetails {
     private String TAG="PullTotadyOrder";
     private APIinterface apIinterface;
     private Gson gson;
@@ -32,7 +32,7 @@ public class PullTotadyOrder {
     private TodayOrderResponse todayOrderResponse=null;
 
 
-    public PullTotadyOrder(Context context) {
+    public PullTodayAllProductOrderDetails(Context context) {
         listener= (TodayOrderListener) context;
         this.context=context;
     }

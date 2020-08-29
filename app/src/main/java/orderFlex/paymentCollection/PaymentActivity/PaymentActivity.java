@@ -82,6 +82,7 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
     private boolean updateFlag=false;
     private String paymentId="";
     private String imageOrginalPath;
+    private boolean is_advance=false;
    // private ImageFileUploader imageFileUploader;
 
     @Override
@@ -203,38 +204,44 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
             @Override
             public void onClick(View v) {
 
-                if (checkCameraPermission()){
-                    if (checkStorageReadPermission()){
-                        if (checkStorageWritePermission()){
-                            final AlertDialog alertDialog;
-                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                            LayoutInflater inflater = LayoutInflater.from(context);
-                            ConstraintLayout customRoot = (ConstraintLayout) inflater.inflate(R.layout.image_pick_select_view,null);
+                if (!is_advance){
+                    if (checkCameraPermission()){
+                        if (checkStorageReadPermission()){
+                            if (checkStorageWritePermission()){
+                                final AlertDialog alertDialog;
+                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                LayoutInflater inflater = LayoutInflater.from(context);
+                                ConstraintLayout customRoot = (ConstraintLayout) inflater.inflate(R.layout.image_pick_select_view,null);
 
-                            CardView cameraTake=customRoot.findViewById(R.id.cameraTake);
-                            CardView galleryTake=customRoot.findViewById(R.id.galleryTake);
-                            builder.setView(customRoot);
-                            builder.setCancelable(false);
-                            alertDialog= builder.create();
-                            alertDialog.show();
-                            cameraTake.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    dispatchTakePictureIntent(1);
-                                    alertDialog.dismiss();
-                                }
-                            });
-                            galleryTake.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    dispatchTakePictureIntent(2);
-                                    alertDialog.dismiss();
-                                }
-                            });
+                                CardView cameraTake=customRoot.findViewById(R.id.cameraTake);
+                                CardView galleryTake=customRoot.findViewById(R.id.galleryTake);
+                                builder.setView(customRoot);
+                                builder.setCancelable(true);
+                                alertDialog= builder.create();
+                                alertDialog.show();
+                                cameraTake.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dispatchTakePictureIntent(1);
+                                        alertDialog.dismiss();
+                                    }
+                                });
+                                galleryTake.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dispatchTakePictureIntent(2);
+                                        alertDialog.dismiss();
+                                    }
+                                });
+                            }
                         }
-                    }
 
+                    }
+                }else {
+                    helper.showSnakBar(containerView,"Sorry! You can't submits attachment in ADVANCE payment");
                 }
+
+
             }
         });
     }
@@ -249,7 +256,12 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
         if (response!=null && code==202){
             int bankID=0, bankCount=0;
             for (PaymentMothodsResponse.BankList bank:response.getBankList()) {
-                bankList.add(bank.getBankName());
+                if(!bank.getBankName().isEmpty()){
+                    bankList.add(bank.getBankName());
+                }else {
+                    bankList.add("<Select Bank>");
+                }
+
                 if (bank.getBankName().equals(bankName)){
                     bankID=bankCount;
                 }
@@ -298,6 +310,13 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
         if (parent.getId()==R.id.paymentMethod){
             Log.i(TAG,"Method");
             requestBody.setPaymentModeId(methodListData.get(position).getId());
+            if (methodListData.get(position).getId().equals("13")){
+                Log.i(TAG, "Advance Selected");
+                is_advance=true;
+            }else {
+                Log.i(TAG, "Not advance Selected");
+                is_advance=false;
+            }
         }
         Log.i(TAG,bankListData.get(position).getBankName());
         Log.i(TAG,"Selected: "+position);
@@ -312,9 +331,14 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
         if (code==202){
             helper.showSnakBar(containerView,"Thank you for your payment!");
             paymentId=response.getInserted_code();
-            new ImageFileUploader(this, prefManager.getClientId(),"", "2",".jpg",orderCode,paymentId,imageOrginalPath).execute();
+            if (!is_advance){
+                new ImageFileUploader(this, prefManager.getClientId(),"", "2",".jpg",
+                        orderCode,paymentId,imageOrginalPath).execute();
+            }
+
             Intent intent=new Intent(PaymentActivity.this, MainActivity.class);
             intent.putExtra("payment_massege","Payment Saved Successfully!");
+            intent.putExtra("booked_code",orderCode);
             startActivity(intent);
             finish();
         }else {
@@ -479,7 +503,10 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
             helper.showSnakBar(containerView,response.getMessage());
             if (imageName!=null){
                 Log.i(TAG,"Update Image");
-                new ImageFileUploader(this, prefManager.getClientId(),"", "2",".jpg",orderCode,paymentId,imageOrginalPath).execute();
+                if (!is_advance){
+                    new ImageFileUploader(this, prefManager.getClientId(),"", "2",".jpg",
+                            orderCode,paymentId,imageOrginalPath).execute();
+                }
             }
 
             Intent intent=new Intent(PaymentActivity.this, MainActivity.class);

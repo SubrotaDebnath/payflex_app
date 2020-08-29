@@ -4,12 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import orderFlex.paymentCollection.MainActivity.MainActivity;
+
 import orderFlex.paymentCollection.Model.APICallings.LoginAPICalling;
 import orderFlex.paymentCollection.Model.LoginData.LoginResponse;
+import orderFlex.paymentCollection.CustomerOrderList.OrderListActivity;
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;
 import orderFlex.paymentCollection.Utility.SharedPrefManager;
@@ -35,7 +35,7 @@ public class UserLogin extends AppCompatActivity implements LoginAPICalling.Logi
         apiCalling=new LoginAPICalling(this);
         prefManager=new SharedPrefManager(this);
         if (prefManager.isLoggedIn()){
-            Intent intent=new Intent(UserLogin.this, MainActivity.class);
+            Intent intent=new Intent(UserLogin.this, OrderListActivity.class);
             startActivity(intent);
             finish();
         }
@@ -107,7 +107,7 @@ public class UserLogin extends AppCompatActivity implements LoginAPICalling.Logi
                 prefManager.setClientCode(response.getClientCode());
                 prefManager.setHandlerId(response.getHandlerId());
                 prefManager.setClientVirtualAccountNumber(response.getVirtualAccountNo());
-                Intent intent=new Intent(UserLogin.this, MainActivity.class);
+                Intent intent=new Intent(UserLogin.this, OrderListActivity.class);
                 startActivity(intent);
                 finish();
 
