@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Environment;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
@@ -21,7 +20,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import orderFlex.paymentCollection.MainActivity.MainActivity;
+import orderFlex.paymentCollection.OrderDetailsActivity.OrderDetailsActivity;
 import orderFlex.paymentCollection.Model.FileDataClass.FileUploadResponse;
 import orderFlex.paymentCollection.Utility.Constant;
 import orderFlex.paymentCollection.Utility.Helper;
@@ -161,7 +160,7 @@ public class ImageFileUploader extends AsyncTask<Void, Void, String> {
                                 Log.i(TAG,"Successfully Updated!!!");
                                 //db.updateCallQueueForAudioUp(filename,"1");
                                 sourceFile.delete();
-                                Intent intent = new Intent(context, MainActivity.class);
+                                Intent intent = new Intent(context, OrderDetailsActivity.class);
                                 context.startActivity(intent);
 //                                dialog.cancel();
                             }

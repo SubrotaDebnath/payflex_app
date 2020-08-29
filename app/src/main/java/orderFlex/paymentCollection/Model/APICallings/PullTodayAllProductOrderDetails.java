@@ -14,8 +14,8 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
-import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderRequest;
-import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderResponse;
+import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByDataRequest;
+import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByDataResponse;
 import orderFlex.paymentCollection.Utility.Constant;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,7 +29,7 @@ public class PullTodayAllProductOrderDetails {
     private TodayOrderListener listener;
     private Context context;
     private ProgressDialog dialog;
-    private TodayOrderResponse todayOrderResponse=null;
+    private TodayOrderDetailsByDataResponse todayOrderResponse=null;
 
 
     public PullTodayAllProductOrderDetails(Context context) {
@@ -37,7 +37,7 @@ public class PullTodayAllProductOrderDetails {
         this.context=context;
     }
 
-    public void pullOrderCall(final String username, final String password, TodayOrderRequest orderRequest){
+    public void pullOrderCall(final String username, final String password, TodayOrderDetailsByDataRequest orderRequest){
         // preparing interceptor for retrofit
         // interceptor for runtime data checking
 //        dialog = new ProgressDialog(context);
@@ -66,10 +66,10 @@ public class PullTodayAllProductOrderDetails {
                 .build();
 
         apIinterface=retrofit.create(APIinterface.class);
-        final Call<TodayOrderResponse> orderResponseCall = apIinterface.getTodayOrder(orderRequest);
-        orderResponseCall.enqueue(new Callback<TodayOrderResponse>() {
+        final Call<TodayOrderDetailsByDataResponse> orderResponseCall = apIinterface.getTodayOrder(orderRequest);
+        orderResponseCall.enqueue(new Callback<TodayOrderDetailsByDataResponse>() {
             @Override
-            public void onResponse(Call<TodayOrderResponse> call, retrofit2.Response<TodayOrderResponse> response) {
+            public void onResponse(Call<TodayOrderDetailsByDataResponse> call, retrofit2.Response<TodayOrderDetailsByDataResponse> response) {
                 if (response.isSuccessful()){
                     todayOrderResponse=response.body();
                     gson=new Gson();
@@ -80,7 +80,7 @@ public class PullTodayAllProductOrderDetails {
                 }
             }
             @Override
-            public void onFailure(Call<TodayOrderResponse> call, Throwable t) {
+            public void onFailure(Call<TodayOrderDetailsByDataResponse> call, Throwable t) {
                 Log.i(TAG,t.getMessage());
                 listener.onResponse(todayOrderResponse,404);
 //                dialog.cancel();
@@ -90,6 +90,6 @@ public class PullTodayAllProductOrderDetails {
     }
 
     public interface TodayOrderListener{
-        void onResponse(TodayOrderResponse response,int code);
+        void onResponse(TodayOrderDetailsByDataResponse response, int code);
     }
 }

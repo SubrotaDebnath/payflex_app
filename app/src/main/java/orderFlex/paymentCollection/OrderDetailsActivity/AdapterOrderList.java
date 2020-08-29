@@ -1,4 +1,4 @@
-package orderFlex.paymentCollection.MainActivity;
+package orderFlex.paymentCollection.OrderDetailsActivity;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,19 +12,19 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
-import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderResponse;
+import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByDataResponse;
 import orderFlex.paymentCollection.R;
 
 public class AdapterOrderList extends RecyclerView.Adapter<AdapterOrderList.ViewHolder>{
     private Context context;
-    private List<TodayOrderResponse.OrderDetail> list;
+    private List<TodayOrderDetailsByDataResponse.OrderDetail> list;
     private UpdateTotalBill updateTotalBill;
     private float totalBills = 0;
     private String TAG="AdapterOrderList";
     private int counter=0;
     private boolean change=false;
 
-    public AdapterOrderList(Context context, List<TodayOrderResponse.OrderDetail> list) {
+    public AdapterOrderList(Context context, List<TodayOrderDetailsByDataResponse.OrderDetail> list) {
         this.context = context;
         this.list = list;
         updateTotalBill= (UpdateTotalBill) context;
@@ -97,11 +97,11 @@ public class AdapterOrderList extends RecyclerView.Adapter<AdapterOrderList.View
         }
     }
     public interface UpdateTotalBill{
-        public void billUpdate(List<TodayOrderResponse.OrderDetail> list,float totalTaka, boolean change);
+        public void billUpdate(List<TodayOrderDetailsByDataResponse.OrderDetail> list, float totalTaka, boolean change);
     }
-    private void billCalculation(List<TodayOrderResponse.OrderDetail> list){
+    private void billCalculation(List<TodayOrderDetailsByDataResponse.OrderDetail> list){
         totalBills=0;
-        for (TodayOrderResponse.OrderDetail details:list) {
+        for (TodayOrderDetailsByDataResponse.OrderDetail details:list) {
             float orderedPrice=(Float.valueOf(details.getPWholesalePrice()))*(Float.valueOf(details.getQuantityes()));
             totalBills=totalBills+orderedPrice;
             Log.i(TAG,"Order: "+details.getQuantityes()+" Rate: "+details.getPWholesalePrice()+" Qum. Bill: "+totalBills);

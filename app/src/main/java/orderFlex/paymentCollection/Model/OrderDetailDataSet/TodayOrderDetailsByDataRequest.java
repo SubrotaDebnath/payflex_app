@@ -1,9 +1,9 @@
-package orderFlex.paymentCollection.Model.TodayOrder;
+package orderFlex.paymentCollection.Model.OrderDetailDataSet;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TodayOrderRequest {
+public class TodayOrderDetailsByDataRequest {
     @SerializedName("client_id")
     @Expose
     private String clientId;
@@ -11,7 +11,7 @@ public class TodayOrderRequest {
     @Expose
     private String deliveryDate;
 
-    public TodayOrderRequest(String clientId, String deliveryDate) {
+    public TodayOrderDetailsByDataRequest(String clientId, String deliveryDate) {
         this.clientId = clientId;
         this.deliveryDate = deliveryDate;
     }

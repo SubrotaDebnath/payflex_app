@@ -16,8 +16,6 @@ import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListRequest;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListResponse;
-import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderRequest;
-import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderResponse;
 import orderFlex.paymentCollection.Utility.Constant;
 import retrofit2.Call;
 import retrofit2.Callback;

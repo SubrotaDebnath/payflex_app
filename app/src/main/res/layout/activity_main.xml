@@ -9,7 +9,7 @@
     android:id="@+id/mainActivity"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    tools:context=".MainActivity.MainActivity">
+    tools:context=".OrderDetailsActivity.OrderDetailsActivity">
 
     <ScrollView
         android:layout_width="match_parent"

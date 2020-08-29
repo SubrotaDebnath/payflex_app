@@ -35,14 +35,10 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import orderFlex.paymentCollection.MainActivity.MainActivity;
-import orderFlex.paymentCollection.Model.APICallings.FileUploader;
+import orderFlex.paymentCollection.OrderDetailsActivity.OrderDetailsActivity;
 import orderFlex.paymentCollection.Model.APICallings.ImageFileUploader;
 import orderFlex.paymentCollection.Model.APICallings.PullPaymentMethods;
 import orderFlex.paymentCollection.Model.APICallings.PushBills;
@@ -54,9 +50,6 @@ import orderFlex.paymentCollection.Model.PaymentAndBillData.UpdatePaymenResponse
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;
 import orderFlex.paymentCollection.Utility.SharedPrefManager;
-import orderFlex.paymentCollection.login.UserLogin;
-
-import static androidx.core.content.FileProvider.getUriForFile;
 
 public class PaymentActivity extends AppCompatActivity implements PullPaymentMethods.PaymentMethodsListener,
         AdapterView.OnItemSelectedListener, PushBills.PushBillListener,UpdateBill.UpdateBillListener {
@@ -336,7 +329,7 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
                         orderCode,paymentId,imageOrginalPath).execute();
             }
 
-            Intent intent=new Intent(PaymentActivity.this, MainActivity.class);
+            Intent intent=new Intent(PaymentActivity.this, OrderDetailsActivity.class);
             intent.putExtra("payment_massege","Payment Saved Successfully!");
             intent.putExtra("booked_code",orderCode);
             startActivity(intent);
@@ -509,7 +502,7 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
                 }
             }
 
-            Intent intent=new Intent(PaymentActivity.this, MainActivity.class);
+            Intent intent=new Intent(PaymentActivity.this, OrderDetailsActivity.class);
             intent.putExtra("payment_massege","Payment Updated Successfully!");
             startActivity(intent);
             finish();

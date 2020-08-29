@@ -9,7 +9,7 @@
     android:id="@+id/orderListActivity"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    tools:context=".MainActivity.MainActivity">
+    tools:context=".OrderDetailsActivity.OrderDetailsActivity">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

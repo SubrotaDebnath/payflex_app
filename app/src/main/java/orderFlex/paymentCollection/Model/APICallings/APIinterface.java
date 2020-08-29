@@ -13,9 +13,9 @@ import orderFlex.paymentCollection.Model.PaymentAndBillData.SaveOrderRequest;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.UpdatePaymenResponse;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListResponse;
-import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderedProductByCodeRequest;
-import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderRequest;
-import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderResponse;
+import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByCodeRequest;
+import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByDataRequest;
+import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByDataResponse;
 import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderRequestBody;
 import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderResponse;
 import retrofit2.Call;
@@ -28,10 +28,10 @@ public interface APIinterface {
     Call<LoginResponse>login();
 
     @POST("GetClientTodaysOrder")
-    Call<TodayOrderResponse>getTodayOrder(@Body TodayOrderRequest body);
+    Call<TodayOrderDetailsByDataResponse>getTodayOrder(@Body TodayOrderDetailsByDataRequest body);
 
     @POST("GetOrderDetailByOrderCode")
-    Call<TodayOrderResponse>getOrderByCode(@Body TodayOrderedProductByCodeRequest body);
+    Call<TodayOrderDetailsByDataResponse>getOrderByCode(@Body TodayOrderDetailsByCodeRequest body);
 
     @POST("GetCustomerOrderList")
     Call<CustomerOrderListResponse> getCustomerOrderList(@Body CustomerOrderListRequest body);

@@ -1,4 +1,4 @@
-package orderFlex.paymentCollection.MainActivity;
+package orderFlex.paymentCollection.OrderDetailsActivity;
 
 import android.content.Context;
 import android.util.Log;
@@ -16,7 +16,6 @@ import java.util.List;
 
 import orderFlex.paymentCollection.Model.PaymentAndBillData.ProductListResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.SaveOrderRequest;
-import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderResponse;
 import orderFlex.paymentCollection.R;
 
 public class AdapterOrderTakeForm extends RecyclerView.Adapter<AdapterOrderTakeForm.ViewHolder>{

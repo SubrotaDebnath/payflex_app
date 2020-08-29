@@ -23,7 +23,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import orderFlex.paymentCollection.MainActivity.MainActivity;
+import orderFlex.paymentCollection.OrderDetailsActivity.OrderDetailsActivity;
 import orderFlex.paymentCollection.Model.FileDataClass.FileUploadResponse;
 import orderFlex.paymentCollection.Utility.Constant;
 import orderFlex.paymentCollection.Utility.Helper;
@@ -162,7 +162,7 @@ public class FileUploader extends AsyncTask<Void, Void, String> {
                                 Log.i(TAG,"Successfully Updated!!!");
                                 //db.updateCallQueueForAudioUp(filename,"1");
                                 //sourceFile.delete();
-                                Intent intent = new Intent(context, MainActivity.class);
+                                Intent intent = new Intent(context, OrderDetailsActivity.class);
 //                                intent.putExtra("order_type", Constants.FORECAST_ORDER);
 //                                intent.putExtra("OFFICER_CODDED_ID", prefManager.getCodedId());
 //                                intent.putExtra("CURRENT_DATE", new Helper(context).getYearMonthDate());

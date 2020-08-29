@@ -1,4 +1,4 @@
-package orderFlex.paymentCollection.MainActivity;
+package orderFlex.paymentCollection.OrderDetailsActivity;
 
 import android.content.Context;
 import android.content.Intent;

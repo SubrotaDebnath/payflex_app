@@ -1,9 +1,9 @@
-package orderFlex.paymentCollection.Model.TodayOrder;
+package orderFlex.paymentCollection.Model.OrderDetailDataSet;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TodayOrderedProductByCodeRequest {
+public class TodayOrderDetailsByCodeRequest {
     @SerializedName("client_id")
     @Expose
     private String clientId;
@@ -11,7 +11,7 @@ public class TodayOrderedProductByCodeRequest {
     @Expose
     private String order_code;
 
-    public TodayOrderedProductByCodeRequest(String clientId, String order_code) {
+    public TodayOrderDetailsByCodeRequest(String clientId, String order_code) {
         this.clientId = clientId;
         this.order_code = order_code;
     }

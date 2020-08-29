@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import orderFlex.paymentCollection.MainActivity.MainActivity;
+import orderFlex.paymentCollection.OrderDetailsActivity.OrderDetailsActivity;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListResponse;
 import orderFlex.paymentCollection.R;
 
@@ -43,7 +43,7 @@ public class AdapterListOfOrder extends RecyclerView.Adapter<AdapterListOfOrder.
         holder.bookedRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(context, MainActivity.class);
+                Intent intent=new Intent(context, OrderDetailsActivity.class);
                 intent.putExtra("booked_code",list.get(position).getOrderCode());
                 context.startActivity(intent);
             }

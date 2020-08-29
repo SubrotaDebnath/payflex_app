@@ -1,10 +1,10 @@
-package orderFlex.paymentCollection.Model.TodayOrder;
+package orderFlex.paymentCollection.Model.OrderDetailDataSet;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TodayOrderResponse {
+public class TodayOrderDetailsByDataResponse {
     @SerializedName("code")
     @Expose
     private Integer code;

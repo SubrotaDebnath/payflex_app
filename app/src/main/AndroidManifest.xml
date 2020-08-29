@@ -29,7 +29,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".CustomerOrderList.OrderListActivity"></activity>
         <activity android:name=".PaymentActivity.PaymentActivity" />
-        <activity android:name=".MainActivity.MainActivity" />
+        <activity android:name=".OrderDetailsActivity.OrderDetailsActivity" />
         <activity android:name=".login.UserLogin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

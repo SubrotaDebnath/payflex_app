@@ -24,7 +24,6 @@ import orderFlex.paymentCollection.login.UserLogin;
 
 public class OrderListActivity extends AppCompatActivity implements PullCustomerOrderList.OrderListListener{
 
-
     private SharedPrefManager prefManager;
     private Helper helper;
     private String TAG="OrderListActivity";
@@ -35,7 +34,6 @@ public class OrderListActivity extends AppCompatActivity implements PullCustomer
     private TextView orderDate;
     private RecyclerView bookedOrderList,takeCustomerOrderList;
     private TextView warningText;
-
     //adapter objects
     private RecyclerView.LayoutManager layoutManager;
     private AdapterListOfOrder adapterListOfOrder;
@@ -54,7 +52,6 @@ public class OrderListActivity extends AppCompatActivity implements PullCustomer
         orderTakeSegment=findViewById(R.id.orderTakeSegment);
         listTitle=findViewById(R.id.listTitle);
         takeCustomerOrderList=findViewById(R.id.takeCustomerOrderList);
-
 
         //default operations
         updateProfile();

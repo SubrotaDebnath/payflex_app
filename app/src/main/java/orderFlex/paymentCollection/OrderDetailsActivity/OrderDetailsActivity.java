@@ -1,4 +1,4 @@
-package orderFlex.paymentCollection.MainActivity;
+package orderFlex.paymentCollection.OrderDetailsActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -15,24 +15,21 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import orderFlex.paymentCollection.Model.APICallings.GetProductList;
 import orderFlex.paymentCollection.Model.APICallings.PullOrderDetailsByOrderCode;
 import orderFlex.paymentCollection.Model.APICallings.PullPaymentsList;
-import orderFlex.paymentCollection.Model.APICallings.PullTodayAllProductOrderDetails;
 import orderFlex.paymentCollection.Model.APICallings.SaveOrderHandler;
 import orderFlex.paymentCollection.Model.APICallings.UpdateOrderHandler;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListRequest;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.ProductListResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.SaveOrderRequest;
-import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderRequest;
-import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderResponse;
-import orderFlex.paymentCollection.Model.TodayOrder.TodayOrderedProductByCodeRequest;
+import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByDataRequest;
+import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByDataResponse;
+import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByCodeRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderRequestBody;
 import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderResponse;
 import orderFlex.paymentCollection.PaymentActivity.PaymentActivity;
@@ -41,7 +38,7 @@ import orderFlex.paymentCollection.Utility.Helper;
 import orderFlex.paymentCollection.Utility.SharedPrefManager;
 import orderFlex.paymentCollection.login.UserLogin;
 
-public class MainActivity
+public class OrderDetailsActivity
         extends AppCompatActivity
         implements
         PullOrderDetailsByOrderCode.TodayOrderListener,
@@ -62,7 +59,7 @@ public class MainActivity
     private AdapterOrderList adapter;
     private TextView totalBill,clientCode,name,presenterName,phoneNo,address,orderTitle;
     private View containerVied;
-    private TodayOrderResponse orderResponse=null;
+    private TodayOrderDetailsByDataResponse orderResponse=null;
     private LinearLayout orderDetailsBlock,orderTakeSegment;
     private CardView updateOrder,saveOrder;
     private TextView noOrder,totalTakenBill,orderCode,orderDate;
@@ -130,7 +127,7 @@ public class MainActivity
             @Override
             public void onClick(View view) {
                 if (orderResponse!=null){
-                    Intent intent =new Intent(MainActivity.this, PaymentActivity.class);
+                    Intent intent =new Intent(OrderDetailsActivity.this, PaymentActivity.class);
                     Log.i(TAG,"Order Code: "+orderResponse.getOrderDetails().get(0).getOrderCode());
                     intent.putExtra("order_code",orderResponse.getOrderDetails().get(0).getOrderCode());
                     startActivity(intent);
@@ -187,7 +184,7 @@ public class MainActivity
                 break;
             case R.id.logout:
                 prefManager.setLoggedInFlag(false);
-                Intent intent=new Intent(MainActivity.this, UserLogin.class);
+                Intent intent=new Intent(OrderDetailsActivity.this, UserLogin.class);
                 startActivity(intent);
                 finish();
                 break;
@@ -198,7 +195,7 @@ public class MainActivity
     }
 
     @Override
-    public void onResponse(TodayOrderResponse response, int code) {
+    public void onResponse(TodayOrderDetailsByDataResponse response, int code) {
         Log.i(TAG,"Response Code:"+code);
         if (response!=null && code==202){
             if (response.getOrderDetails().size()>0){
@@ -242,7 +239,7 @@ public class MainActivity
     }
 
     @Override
-    public void billUpdate(List<TodayOrderResponse.OrderDetail> list,float totalTaka, boolean change) {
+    public void billUpdate(List<TodayOrderDetailsByDataResponse.OrderDetail> list, float totalTaka, boolean change) {
         totalBill.setText(String.valueOf(totalTaka));
         Log.i(TAG,"Total bill: "+totalTaka);
         if (change){
@@ -253,7 +250,7 @@ public class MainActivity
             Log.i(TAG,"Bill has no change");
         }
 
-        for (TodayOrderResponse.OrderDetail updateData:list){
+        for (TodayOrderDetailsByDataResponse.OrderDetail updateData:list){
             UpdateOrderRequestBody data=new UpdateOrderRequestBody(updateData.getTxid(),updateData.getProductId(),updateData.getPName(),
                     updateData.getPType(),updateData.getQuantityes(),updateData.getOrderForClientId(),updateData.getTakerId(),updateData.getDeliveryDate(),
                     updateData.getPlant(),updateData.getTakingDate(),updateData.getOrderType());
@@ -280,7 +277,7 @@ public class MainActivity
     @Override
     public void onUpdateResponse(UpdateOrderResponse response, int code) {
         if (response!=null && code==202){
-            TodayOrderRequest request=new TodayOrderRequest(prefManager.getClientId(),helper.getDate());
+            TodayOrderDetailsByDataRequest request=new TodayOrderDetailsByDataRequest(prefManager.getClientId(),helper.getDate());
             helper.showSnakBar(containerVied,response.getMessage());
             if (helper.isInternetAvailable()){
                 operationOrderDetail();
@@ -356,7 +353,7 @@ public class MainActivity
     @Override
     public void onSaveResponse(UpdateOrderResponse response, int code) {
         if (response!=null && code==202){
-            TodayOrderRequest request=new TodayOrderRequest(prefManager.getClientId(),helper.getDate());
+            TodayOrderDetailsByDataRequest request=new TodayOrderDetailsByDataRequest(prefManager.getClientId(),helper.getDate());
             helper.showSnakBar(containerVied,response.getMessage());
             if (helper.isInternetAvailable()){
                 operationOrderDetail();
@@ -374,7 +371,7 @@ public class MainActivity
     }
 
     private void operationOrderDetail(){
-        TodayOrderedProductByCodeRequest request=new TodayOrderedProductByCodeRequest(prefManager.getClientId(),booked_code);
+        TodayOrderDetailsByCodeRequest request=new TodayOrderDetailsByCodeRequest(prefManager.getClientId(),booked_code);
         pullTotadyOrder=new PullOrderDetailsByOrderCode(this);
         pullTotadyOrder.pullOrderCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
     }
