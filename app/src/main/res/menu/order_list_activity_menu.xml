@@ -5,10 +5,10 @@
         android:title="refresh"
         app:showAsAction="ifRoom|collapseActionView"
         android:icon="@drawable/ic_refresh_white"/>
-<!--    <item android:id="@+id/addOrder"-->
-<!--        android:title="Add Order"-->
-<!--        app:showAsAction="ifRoom|collapseActionView"-->
-<!--        android:icon="@drawable/ic_add_circle_white"/>-->
+
+    <item android:id="@+id/change_language"
+        android:title="@string/language_change_menu" />
+
     <item android:id="@+id/logout"
         android:title="@string/logout" />
 </menu>

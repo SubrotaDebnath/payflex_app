@@ -26,6 +26,7 @@ public class SharedPrefManager {
     private static final String CLIENT_ADDRESS = "CLIENT_address";
     private static final String PRESENTER="presenter_name";
     private static final String HANDLER_ID="handler_id";
+    private static final String LANGUAGE="app_language";
 
 
 
@@ -147,5 +148,13 @@ public class SharedPrefManager {
     }
     public String getHandlerId(){
         return preferences.getString(HANDLER_ID,"");
+    }
+    ////////////////////////////
+    public void setLanguage(String id){
+        editor.putString(LANGUAGE,id);
+        editor.commit();
+    }
+    public String getLanguage(){
+        return preferences.getString(LANGUAGE,"bn");
     }
 }

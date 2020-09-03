@@ -5,10 +5,8 @@
         android:title="refresh"
         app:showAsAction="ifRoom|collapseActionView"
         android:icon="@drawable/ic_refresh_white"/>
-<!--    <item android:id="@+id/userProfile"-->
-<!--        android:title="Profile" />-->
-<!--    <item android:id="@+id/insert_client"-->
-<!--    android:title="Add new client" />-->
+    <item android:id="@+id/change_language"
+        android:title="@string/language_change_menu" />
     <item android:id="@+id/logout"
         android:title="@string/logout" />
 </menu>

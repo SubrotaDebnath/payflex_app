@@ -12,6 +12,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import orderFlex.paymentCollection.OrderDetailsActivity.OrderDetailsActivity;
 import orderFlex.paymentCollection.Model.APICallings.ImageFileUploader;
@@ -48,9 +50,13 @@ import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentMothodsRespon
 import orderFlex.paymentCollection.Model.PaymentAndBillData.UpdatePaymenResponse;
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;
+import orderFlex.paymentCollection.Utility.LanguagePackage.BaseActivity;
+import orderFlex.paymentCollection.Utility.LanguagePackage.LocaleManager;
 import orderFlex.paymentCollection.Utility.SharedPrefManager;
 
-public class PaymentActivity extends AppCompatActivity implements PullPaymentMethods.PaymentMethodsListener,
+public class PaymentActivity
+        extends BaseActivity
+        implements PullPaymentMethods.PaymentMethodsListener,
         AdapterView.OnItemSelectedListener, PushBills.PushBillListener,UpdateBill.UpdateBillListener {
     private TextView paySubmit;
     private Spinner spinnerMethod, spinnerBank;
@@ -519,5 +525,20 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
                 helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
             }
         }
+    }
+
+    //For multi-language operation
+    private void setNewLocale(AppCompatActivity mContext, @LocaleManager.LocaleDef String language) {
+        LocaleManager.setNewLocale(mContext, language);
+        Intent intent = mContext.getIntent();
+        startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    @Override
+    public void applyOverrideConfiguration(Configuration overrideConfiguration) {
+        Locale locale = new Locale(LocaleManager.getLanguagePref(this));
+        Locale.setDefault(locale);
+        overrideConfiguration.setLocale(locale);
+        super.applyOverrideConfiguration(overrideConfiguration);
     }
 }

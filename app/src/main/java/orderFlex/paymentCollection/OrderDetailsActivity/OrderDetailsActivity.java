@@ -2,12 +2,17 @@ package orderFlex.paymentCollection.OrderDetailsActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,6 +24,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import orderFlex.paymentCollection.Model.APICallings.GetProductList;
 import orderFlex.paymentCollection.Model.APICallings.PullOrderDetailsByOrderCode;
@@ -37,11 +43,13 @@ import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderResponse;
 import orderFlex.paymentCollection.PaymentActivity.PaymentActivity;
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;
+import orderFlex.paymentCollection.Utility.LanguagePackage.BaseActivity;
+import orderFlex.paymentCollection.Utility.LanguagePackage.LocaleManager;
 import orderFlex.paymentCollection.Utility.SharedPrefManager;
 import orderFlex.paymentCollection.login.UserLogin;
 
 public class OrderDetailsActivity
-        extends AppCompatActivity
+        extends BaseActivity
         implements
         PullOrderDetailsByOrderCode.TodayOrderListener,
         AdapterOrderList.UpdateTotalBill,
@@ -189,7 +197,8 @@ public class OrderDetailsActivity
                 startActivity(intent);
                 finish();
                 break;
-            case R.id.userProfile:
+            case R.id.change_language:
+                selectLanguage(this);
                 break;
         }
         return true;
@@ -376,5 +385,48 @@ public class OrderDetailsActivity
         TodayOrderDetailsByCodeRequest request=new TodayOrderDetailsByCodeRequest(prefManager.getClientId(),booked_code);
         pullTotadyOrder=new PullOrderDetailsByOrderCode(this);
         pullTotadyOrder.pullOrderCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
+    }
+
+    //For multi-language operation
+    private void setNewLocale(AppCompatActivity mContext, @LocaleManager.LocaleDef String language) {
+        LocaleManager.setNewLocale(mContext, language);
+        Intent intent = mContext.getIntent();
+        startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    @Override
+    public void applyOverrideConfiguration(Configuration overrideConfiguration) {
+        Locale locale = new Locale(LocaleManager.getLanguagePref(this));
+        Locale.setDefault(locale);
+        overrideConfiguration.setLocale(locale);
+        super.applyOverrideConfiguration(overrideConfiguration);
+    }
+    private void selectLanguage(final Context context){
+        final AlertDialog alertDialog;
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        ConstraintLayout customRoot = (ConstraintLayout) inflater.inflate(R.layout.language_selection_layout,null);
+
+        CardView bangle_key=customRoot.findViewById(R.id.bangle_key);
+        CardView english_key=customRoot.findViewById(R.id.english_key);
+        builder.setView(customRoot);
+        builder.setTitle(R.string.language_change_menu);
+        builder.setCancelable(true);
+        alertDialog= builder.create();
+        alertDialog.show();
+        bangle_key.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setNewLocale((AppCompatActivity) context,LocaleManager.BANGLA);
+                alertDialog.dismiss();
+            }
+        });
+        english_key.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setNewLocale((AppCompatActivity) context,LocaleManager.ENGLISH);;
+                alertDialog.dismiss();
+            }
+        });
     }
 }

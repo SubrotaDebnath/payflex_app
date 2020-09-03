@@ -1,20 +1,29 @@
 package orderFlex.paymentCollection.login;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+
+import java.util.Locale;
 
 import orderFlex.paymentCollection.Model.APICallings.LoginAPICalling;
 import orderFlex.paymentCollection.Model.LoginData.LoginResponse;
 import orderFlex.paymentCollection.CustomerOrderList.OrderListActivity;
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;
+import orderFlex.paymentCollection.Utility.LanguagePackage.BaseActivity;
+import orderFlex.paymentCollection.Utility.LanguagePackage.LocaleManager;
 import orderFlex.paymentCollection.Utility.SharedPrefManager;
 
-public class UserLogin extends AppCompatActivity implements LoginAPICalling.LoginListener{
+public class UserLogin extends BaseActivity
+        implements LoginAPICalling.LoginListener{
     private EditText username, password;
 //    private TextView status;
     private LoginAPICalling apiCalling;
@@ -22,6 +31,10 @@ public class UserLogin extends AppCompatActivity implements LoginAPICalling.Logi
     private View containerView;
     private SharedPrefManager prefManager;
     private String u_name, u_pass;
+    private Button login;
+    private AppCompatActivity mContext;
+    private CardView bangle_key,english_key;
+    private AppCompatActivity context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +47,34 @@ public class UserLogin extends AppCompatActivity implements LoginAPICalling.Logi
         helper=new Helper(this);
         apiCalling=new LoginAPICalling(this);
         prefManager=new SharedPrefManager(this);
+        login=findViewById(R.id.login_btn);
+        context=this;
+
+        login.setText(R.string.login);
+
+//        setNewLocale(this, LocaleManager.BANGLA);
+
         if (prefManager.isLoggedIn()){
             Intent intent=new Intent(UserLogin.this, OrderListActivity.class);
             startActivity(intent);
             finish();
         }
+        bangle_key=findViewById(R.id.bangle_key);
+        english_key=findViewById(R.id.english_key);
+        bangle_key.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setNewLocale(context,LocaleManager.BANGLA);
+            }
+        });
+        english_key.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setNewLocale(context,LocaleManager.ENGLISH);
+            }
+        });
     }
+
 
     public void Login(View view) {
         u_name=username.getText().toString();
@@ -61,8 +96,8 @@ public class UserLogin extends AppCompatActivity implements LoginAPICalling.Logi
                 {
                 helper.showSnakBar(containerView,"Please check your internet connection!");
             }
-
         }
+
     }
 
     @Override
@@ -99,10 +134,6 @@ public class UserLogin extends AppCompatActivity implements LoginAPICalling.Logi
                     prefManager.setClientAddress("");
                     prefManager.setClientEmail("");
                 }
-
-//                prefManager.setClientEmail(response.get);
-//                prefManager.setClientContactNumber(response.getContact_number());
-//                prefManager.setClientAddress(response.getAddress());
                 prefManager.setPresenterName(response.getRepresentativeName());
                 prefManager.setClientCode(response.getClientCode());
                 prefManager.setHandlerId(response.getHandlerId());
@@ -118,5 +149,22 @@ public class UserLogin extends AppCompatActivity implements LoginAPICalling.Logi
                 helper.showSnakBar(containerView,"Login error");
             }
         }
+
+    }
+
+
+    //For multi-language operation
+    private void setNewLocale(AppCompatActivity mContext, @LocaleManager.LocaleDef String language) {
+        LocaleManager.setNewLocale(mContext, language);
+        Intent intent = mContext.getIntent();
+        startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    @Override
+    public void applyOverrideConfiguration(Configuration overrideConfiguration) {
+        Locale locale = new Locale(LocaleManager.getLanguagePref(this));
+        Locale.setDefault(locale);
+        overrideConfiguration.setLocale(locale);
+        super.applyOverrideConfiguration(overrideConfiguration);
     }
 }

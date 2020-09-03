@@ -17,6 +17,7 @@
         android:required="true" />
 
     <application
+        android:name=".Utility.LanguagePackage.PayFlexApp"
         android:allowBackup="true"
         android:fullBackupContent="false"
         android:fullBackupOnly="false"
