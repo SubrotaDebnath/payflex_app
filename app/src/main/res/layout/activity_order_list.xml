@@ -44,7 +44,7 @@
             </RelativeLayout>
             <!-- Save New order form-->
             <LinearLayout
-                android:visibility="gone"
+                android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/orderTakeSegment"
@@ -153,6 +153,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="right"
+                    android:paddingBottom="3dp"
                     android:orientation="horizontal">
                     <!--                        BTN Cancel-->
                     <androidx.cardview.widget.CardView
@@ -161,9 +162,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="2dp"
+                        android:layout_marginBottom="5dp"
                         app:cardCornerRadius="2dp"
                         app:layout_constraintVertical_bias="1.0"
-                        android:layout_gravity="center"
                         android:elevation="10dp"
                         android:orientation="horizontal">
                         <TextView
@@ -174,7 +175,7 @@
                             android:textSize="15sp"
                             android:paddingTop="5dp"
                             android:paddingBottom="5dp"
-                            android:background="#A9F30014"
+                            android:background="#ffffff"
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
                             android:textColor="#000000"/>
@@ -187,8 +188,8 @@
                         android:layout_height="wrap_content"
                         app:cardCornerRadius="2dp"
                         android:layout_marginLeft="2dp"
+                        android:layout_marginBottom="5dp"
                         app:layout_constraintVertical_bias="1.0"
-                        android:layout_gravity="center"
                         android:elevation="10dp"
                         android:orientation="horizontal">
                         <TextView
@@ -196,7 +197,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/save_new_order_button"
                             android:textSize="15sp"
-                            android:background="#7A1B7801"
+                            android:background="@color/backgroundColor"
                             android:textAllCaps="true"
                             android:paddingTop="5dp"
                             android:paddingBottom="5dp"

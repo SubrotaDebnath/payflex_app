@@ -24,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -53,7 +52,7 @@ import orderFlex.paymentCollection.Utility.SharedPrefManager;
 
 public class PaymentActivity extends AppCompatActivity implements PullPaymentMethods.PaymentMethodsListener,
         AdapterView.OnItemSelectedListener, PushBills.PushBillListener,UpdateBill.UpdateBillListener {
-    private Button paySubmit;
+    private TextView paySubmit;
     private Spinner spinnerMethod, spinnerBank;
     private SharedPrefManager prefManager;
     private Helper helper;
@@ -75,14 +74,14 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
     private boolean updateFlag=false;
     private String paymentId="";
     private String imageOrginalPath;
-    private boolean is_advance=false;
+    private boolean is_attachment_active =false;
    // private ImageFileUploader imageFileUploader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.payment_method_form);
-        setContentView(R.layout.payment_form_test);
+        setContentView(R.layout.payment_form);
 
         prefManager=new SharedPrefManager(this);
         helper=new Helper(this);
@@ -127,8 +126,9 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
                 if (imgUrl!=null){
                     Picasso.get()
                             .load(imgUrl)
-//                            .placeholder(R.drawable.ic_baseline_cloud_download)
-                            .resize(100, 100)
+                            .placeholder(R.drawable.loading_wh)
+//                            .resize(100, 100)
+                            .priority(Picasso.Priority.HIGH)
                             .into(referenceImg);
                     Log.i(TAG,"Image URL: "+imgUrl);
                 }else {
@@ -197,7 +197,7 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
             @Override
             public void onClick(View v) {
 
-                if (!is_advance){
+                if (!is_attachment_active){
                     if (checkCameraPermission()){
                         if (checkStorageReadPermission()){
                             if (checkStorageWritePermission()){
@@ -231,7 +231,7 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
 
                     }
                 }else {
-                    helper.showSnakBar(containerView,"Sorry! You can't submits attachment in ADVANCE payment");
+                    helper.showSnakBar(containerView,"Sorry! You can't submits attachment in ADVANCE PAYMENT or ACCOUNT BALANCE");
                 }
 
 
@@ -303,12 +303,17 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
         if (parent.getId()==R.id.paymentMethod){
             Log.i(TAG,"Method");
             requestBody.setPaymentModeId(methodListData.get(position).getId());
-            if (methodListData.get(position).getId().equals("13")){
+            if (methodListData.get(position).getId().equals("13")||methodListData.get(position).getId().equals("12")){
                 Log.i(TAG, "Advance Selected");
-                is_advance=true;
+                is_attachment_active =true;
+                if (methodListData.get(position).getId().equals("12"))
+                    referenceNo.setText(helper.makeUniqueID());
             }else {
                 Log.i(TAG, "Not advance Selected");
-                is_advance=false;
+//                if (is_attachment_active){
+//                    referenceNo.setText("");
+//                }
+                is_attachment_active =false;
             }
         }
         Log.i(TAG,bankListData.get(position).getBankName());
@@ -319,12 +324,13 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
     public void onNothingSelected(AdapterView<?> parent) {
 //
     }
+
     @Override
     public void onResponse(BillPaymentResponse response, int code) {
         if (code==202){
             helper.showSnakBar(containerView,"Thank you for your payment!");
             paymentId=response.getInserted_code();
-            if (!is_advance){
+            if (!is_attachment_active){
                 new ImageFileUploader(this, prefManager.getClientId(),"", "2",".jpg",
                         orderCode,paymentId,imageOrginalPath).execute();
             }
@@ -496,7 +502,7 @@ public class PaymentActivity extends AppCompatActivity implements PullPaymentMet
             helper.showSnakBar(containerView,response.getMessage());
             if (imageName!=null){
                 Log.i(TAG,"Update Image");
-                if (!is_advance){
+                if (!is_attachment_active){
                     new ImageFileUploader(this, prefManager.getClientId(),"", "2",".jpg",
                             orderCode,paymentId,imageOrginalPath).execute();
                 }

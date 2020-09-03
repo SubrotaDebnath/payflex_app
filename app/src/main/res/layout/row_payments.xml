@@ -14,21 +14,22 @@
         android:layout_height="180dp">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
             <TextView
                 android:id="@+id/index"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:text="01"
                 android:background="#E6A9ECE6"
                 android:textColor="#000000"
                 android:textSize="16dp"
+                android:padding="2dp"
                 android:layout_marginRight="2dp"
                 android:gravity="center"/>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="#7EA9ECE6"
                 android:orientation="horizontal">
                 <LinearLayout
@@ -137,10 +138,13 @@
                     </LinearLayout>
                 </LinearLayout>
                 <RelativeLayout
+                    android:visibility="visible"
+                    android:id="@+id/pay_image_container"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1.5">
                     <ImageView
+
                         android:id="@+id/refImgView"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"

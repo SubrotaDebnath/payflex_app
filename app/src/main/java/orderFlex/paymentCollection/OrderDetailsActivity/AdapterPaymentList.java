@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -55,18 +56,25 @@ public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.
         holder.referenceNo.setText(list.get(position).getReferenceNo());
         holder.bankName.setText(list.get(position).getBankName());
         holder.methodName.setText(list.get(position).getMethodeName());
-        if (list.get(position).getImage_url()!=null){
-            Picasso.get()
-                    .load(list.get(position).getImage_url())
-//                    .placeholder(R.drawable.filter_loader)
-//                    .placeholder(R.drawable.ic_baseline_cloud_download)
-                    .resize(75, 75)
-                    .centerCrop()
-                    .into(holder.refImgView);
-            Log.i(TAG,"Image URL: "+list.get(position).getImage_url());
+        if (list.get(position).getPaymentModeId().equals("12") || list.get(position).getPaymentModeId().equals("12")){
+            holder.refImgView.setVisibility(View.GONE);
         }else {
-            Log.i(TAG,"No Image found!");
+            holder.refImgView.setVisibility(View.VISIBLE);
+            if (list.get(position).getImage_url()!=null){
+                Picasso.get()
+                        .load(list.get(position).getImage_url())
+//                    .placeholder(R.drawable.filter_loader)
+                        .placeholder(R.drawable.loading_wh)
+//                        .resize(75, 75)
+                        .priority(Picasso.Priority.HIGH)
+//                        .centerCrop()
+                        .into(holder.refImgView);
+                Log.i(TAG,"Image URL: "+list.get(position).getImage_url());
+            }else {
+                Log.i(TAG,"No Image found!");
+            }
         }
+
         holder.paymentViewCrad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,6 +112,7 @@ public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.
         TextView methodName,bankName,referenceNo,paymentDate,payedAmount,index;
         ImageView refImgView;
         CardView paymentViewCrad;
+        RelativeLayout pay_image_container;
         public Holder(@NonNull View itemView) {
             super(itemView);
             methodName=itemView.findViewById(R.id.methodName);
@@ -114,6 +123,7 @@ public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.
             index=itemView.findViewById(R.id.index);
             refImgView=itemView.findViewById(R.id.refImgView);
             paymentViewCrad=itemView.findViewById(R.id.paymentViewCrad);
+            pay_image_container=itemView.findViewById(R.id.pay_image_container);
         }
     }
 }

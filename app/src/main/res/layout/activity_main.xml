@@ -17,7 +17,7 @@
         android:layout_above="@id/addNewPaymentCard">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
             <include
                 android:id="@+id/userProfile"
                 layout="@layout/profile_card"/>
@@ -74,7 +74,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:layout_weight="1"
-                        android:text="Sl."
+                        android:text="@string/sl"
                         android:textStyle="bold"
                         android:layout_marginRight="1dp"
                         android:background="@color/colorPrimary"
@@ -85,7 +85,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="5"
                         android:gravity="center"
-                        android:text="Item Description"
+                        android:text="@string/item_description"
                         android:background="@color/colorPrimary"
                         android:layout_marginRight="1dp"
                         android:textColor="#FFFFFF"
@@ -96,7 +96,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:layout_weight="2.2"
-                        android:text="Rate"
+                        android:text="@string/rate"
                         android:textStyle="bold"
                         android:layout_marginRight="1dp"
                         android:background="@color/colorPrimary"
@@ -107,7 +107,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:layout_weight="2.3"
-                        android:text="Quantity"
+                        android:text="@string/quantity"
                         android:textStyle="bold"
                         android:layout_marginRight="1dp"
                         android:background="@color/colorPrimary"
@@ -118,7 +118,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:layout_weight="3"
-                        android:text="Amount"
+                        android:text="@string/amount"
                         android:textStyle="bold"
                         android:background="@color/colorPrimary"
                         android:textColor="#FFFFFF"/>
@@ -147,7 +147,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textStyle="bold"
-                        android:text="Total Order Amount:"
+                        android:text="@string/total_order_amount"
                         android:textColor="#000000"/>
                     <TextView
                         android:id="@+id/totalBill"
@@ -155,7 +155,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textStyle="bold"
-                        android:text="0.0"
+                        android:text=""
                         android:gravity="right"
                         android:layout_marginRight="3dp"
                         android:textColor="#000000" />
@@ -271,7 +271,7 @@
                         android:textStyle="bold"
                         android:text="0.0"
                         android:gravity="right"
-                        android:layout_marginRight="3dp"
+                        android:layout_marginEnd="3dp"
                         android:textColor="#000000" />
                 </LinearLayout>
             </LinearLayout>
@@ -297,15 +297,16 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add new payment"
+                android:text="@string/add_new_payment"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:layout_marginRight="2dp"
+                android:layout_marginEnd="2dp"
                 android:textColor="#000000"/>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_add_circle_skay"/>
+                android:src="@drawable/ic_add_circle_skay"
+                android:contentDescription="@string/todo" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -324,7 +325,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Update"
+            android:text="@string/update_btn"
             android:layout_gravity="center"
             android:gravity="center"
             android:textSize="15sp"
@@ -350,7 +351,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save new order"
+            android:text="@string/save_new_order_btn"
             android:background="@color/barColor"
             android:textSize="15sp"
             android:paddingTop="7dp"

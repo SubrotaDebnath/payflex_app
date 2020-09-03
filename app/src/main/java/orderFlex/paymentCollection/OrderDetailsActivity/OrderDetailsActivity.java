@@ -200,7 +200,7 @@ public class OrderDetailsActivity
         Log.i(TAG,"Response Code:"+code);
         if (response!=null && code==202){
             if (response.getOrderDetails().size()>0){
-                orderTitle.setText("ORDER DETAILS: ");
+                orderTitle.setText("ORDER DETAILS");
                 orderResponse=response;
                 adapter=new AdapterOrderList(this,response.getOrderDetails());
                 layoutManager = new LinearLayoutManager(this);
@@ -299,7 +299,7 @@ public class OrderDetailsActivity
     @Override
     public void onProductListResponse(ProductListResponse response, int code) {
         if (response!=null&&code==202){
-            orderTitle.setText("NEW ORDER DETAILS: ");
+            orderTitle.setText("NEW ORDER DETAILS");
             final List<SaveOrderRequest> orderRequestList=new ArrayList<>();
 
             int count=0;

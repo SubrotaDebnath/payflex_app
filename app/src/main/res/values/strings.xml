@@ -1,14 +1,6 @@
 <resources>
     <string name="app_name">PayFlex</string>
-    <string name="order_list_title">order list</string>
-    <string name="item_description">Item Description</string>
-    <string name="sl">Sl.</string>
-    <string name="rate">Rate</string>
-    <string name="quantity">Quantity</string>
-    <string name="amount">Amount</string>
-    <string name="total_order_amount">Total Order Amount:</string>
-    <string name="_0_0">0.0</string>
-    <string name="save_new_order_button">Save Order</string>
+
     <string-array name="bank_list">
         <item>SBL</item>
         <item>Brac Bank</item>
@@ -27,6 +19,36 @@
         <item><font fgcolor='#FFFFFF'>BOGRA</font></item>
         <item><font fgcolor='#FFFFFF'>MONGLA</font></item>
     </string-array>
+
+<!--    Login Page-->
     <string name="payment_place_holder_text">Reference Image</string>
+    <string name="user_name">User Name</string>
+    <string name="password">Password</string>
+    <string name="login">LogIn</string>
+    <string name="todo">TODO</string>
+
+<!--Order list and details page-->
+    <string name="order_list_title">order list</string>
+    <string name="item_description">Item Description</string>
+    <string name="sl">Sl.</string>
+    <string name="rate">Rate</string>
+    <string name="quantity">Quantity</string>
+    <string name="amount">Amount</string>
+    <string name="total_order_amount">Total Order Amount:</string>
+    <string name="_0_0">0.0</string>
+    <string name="save_new_order_button">Save Order</string>
+    <string name="add_new_payment">Add new payment</string>
+    <string name="update_btn">Update</string>
+    <string name="save_new_order_btn">Save new order</string>
+<!--    Menu page -->
+    <string name="logout">Logout</string>
+    <!--    Payment page-->
+    <string name="submit_btn">Submit</string>
+    <string name="payment_mode">Payment Mode:</string>
+    <string name="bank_name">Bank Name:</string>
+    <string name="reference_no">Reference No:</string>
+    <string name="date">Date:</string>
+    <string name="document_date_hint">document date</string>
+    <string name="virtual_account">Virtual Account:</string>
 
 </resources>
