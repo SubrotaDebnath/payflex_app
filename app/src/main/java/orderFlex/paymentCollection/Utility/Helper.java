@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.icu.util.ULocale;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.provider.Settings;
@@ -19,13 +20,18 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class Helper {
 
     private Context context;
+    private Locale english=null;
 
     public Helper(Context context) {
         this.context = context;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            english = Locale.forLanguageTag("en");
+        }
     }
 
     public  boolean isInternetAvailable() {
@@ -37,13 +43,19 @@ public class Helper {
         Snackbar.make(view,text , Snackbar.LENGTH_LONG).show();
     }
 
-    public String getDate(){
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    public String getDateInLocal(){
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd",english);
         String date = df.format(Calendar.getInstance().getTime());
         return date;
     }
-    public String getDateTime(){
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    public String getDateInEnglish(){
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd",english);
+        String date = df.format(Calendar.getInstance().getTime());
+        return date;
+    }
+    public String getDateTimeInEnglish(){
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",english);
         String date = df.format(Calendar.getInstance().getTime());
         return date;
     }
@@ -56,7 +68,7 @@ public class Helper {
         return date;
     }
 
-    public String getCalenderDate(final TextView setPosition){
+    public String getCalenderDateInEnglish(final TextView setPosition){
         final Calendar calendar;
         int month, year, day;
         final String[] date = {""};
@@ -70,7 +82,7 @@ public class Helper {
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd",english);
 
                         calendar.set(i,i1,i2);
                         date[0] = sdf.format(calendar.getTime());
@@ -138,12 +150,12 @@ public class Helper {
             return !TextUtils.isEmpty(locationProviders);
         }
     }
-    public String dateParchYMD(String dateData){
+    public String dateParchYMDInEnglish(String dateData){
         Date date;
         String stringDate="";
         try {
             date= new SimpleDateFormat("yyyy-MM-dd").parse(dateData);
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd",english);
             stringDate = df.format(date);
         } catch (ParseException e) {
             e.printStackTrace();

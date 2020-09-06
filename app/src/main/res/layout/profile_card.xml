@@ -43,7 +43,7 @@
                         android:layout_gravity="center"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Profile Information"
+                        android:text="@string/name_of_the_client"
                         android:textColor="#000"
                         android:textSize="18dp"
                         android:textStyle="bold"/>
@@ -60,7 +60,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_gravity="center"
-                        android:text="Code :"
+                        android:text="@string/client_code"
                         android:textColor="#000000"/>
                     <TextView
                         android:id="@+id/clientCode"
@@ -99,7 +99,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_gravity="center"
-                        android:text="CONTACT PERSON:"
+                        android:text="@string/contact_person"
                         android:textColor="#000000"/>
                     <TextView
                         android:id="@+id/presenterName"
@@ -119,7 +119,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_gravity="center"
-                        android:text="Mobile No:"
+                        android:text="@string/mobile_no"
                         android:textColor="#000000"/>
                     <TextView
                         android:id="@+id/phoneNo"
@@ -141,7 +141,7 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="Delivery  Location:"
+                        android:text="@string/delivery_location"
                         android:textColor="#000000" />
                     <TextView
                         android:id="@+id/address"
@@ -163,7 +163,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_gravity="center"
-                        android:text="Order Code:"
+                        android:text="@string/order_code"
                         android:textColor="#000000"/>
                     <TextView
                         android:id="@+id/orderCode"
@@ -184,7 +184,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_gravity="center"
-                        android:text="Date:"
+                        android:text="@string/order_date"
                         android:textColor="#000000"/>
                     <TextView
                         android:id="@+id/orderDate"

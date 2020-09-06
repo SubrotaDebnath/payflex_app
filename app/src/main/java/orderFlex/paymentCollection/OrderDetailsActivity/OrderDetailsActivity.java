@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import orderFlex.paymentCollection.CustomerOrderList.OrderListActivity;
 import orderFlex.paymentCollection.Model.APICallings.GetProductList;
 import orderFlex.paymentCollection.Model.APICallings.PullOrderDetailsByOrderCode;
 import orderFlex.paymentCollection.Model.APICallings.PullPaymentsList;
@@ -124,7 +125,7 @@ public class OrderDetailsActivity
             Log.i(TAG,"Intent Exception: "+ e.toString());
         }
 
-        orderDate.setText(helper.getDate());
+        orderDate.setText(helper.getDateInEnglish());
 
         if (helper.isInternetAvailable()) {
             operationOrderDetail();
@@ -199,6 +200,12 @@ public class OrderDetailsActivity
                 break;
             case R.id.change_language:
                 selectLanguage(this);
+                break;
+            case R.id.add_new_order:
+                Intent intent1=new Intent(OrderDetailsActivity.this, OrderListActivity.class);
+                intent1.putExtra("add_order","take_order");
+                startActivity(intent1);
+                finish();
                 break;
         }
         return true;
@@ -288,7 +295,7 @@ public class OrderDetailsActivity
     @Override
     public void onUpdateResponse(UpdateOrderResponse response, int code) {
         if (response!=null && code==202){
-            TodayOrderDetailsByDataRequest request=new TodayOrderDetailsByDataRequest(prefManager.getClientId(),helper.getDate());
+            TodayOrderDetailsByDataRequest request=new TodayOrderDetailsByDataRequest(prefManager.getClientId(),helper.getDateInEnglish());
             helper.showSnakBar(containerVied,response.getMessage());
             if (helper.isInternetAvailable()){
                 operationOrderDetail();
@@ -316,7 +323,7 @@ public class OrderDetailsActivity
                 SaveOrderRequest order=new SaveOrderRequest(helper.makeUniqueID()+String.valueOf(count),
                         product.getId(),product.getPName(),product.getPType(),
                         "0",prefManager.getClientId(),prefManager.getHandlerId(),
-                        helper.getDate(),"1",helper.getDate(),"2");
+                        helper.getDateInEnglish(),"1",helper.getDateInEnglish(),"2");
                 orderRequestList.add(order);
                 Log.i(TAG,"Name: "+product.getPName()+" Type: "+product.getPType());
                 count++;
@@ -364,7 +371,7 @@ public class OrderDetailsActivity
     @Override
     public void onSaveResponse(UpdateOrderResponse response, int code) {
         if (response!=null && code==202){
-            TodayOrderDetailsByDataRequest request=new TodayOrderDetailsByDataRequest(prefManager.getClientId(),helper.getDate());
+            TodayOrderDetailsByDataRequest request=new TodayOrderDetailsByDataRequest(prefManager.getClientId(),helper.getDateInEnglish());
             helper.showSnakBar(containerVied,response.getMessage());
             if (helper.isInternetAvailable()){
                 operationOrderDetail();

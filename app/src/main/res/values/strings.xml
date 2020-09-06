@@ -46,6 +46,7 @@
     <string name="save_new_order_btn">Save new order</string>
 <!--    Menu page -->
     <string name="logout">Logout</string>
+
     <!--    Payment page-->
     <string name="submit_btn">Submit</string>
     <string name="payment_mode">Payment Mode:</string>
@@ -54,5 +55,16 @@
     <string name="date">Date:</string>
     <string name="document_date_hint">document date</string>
     <string name="virtual_account">Virtual Account:</string>
+    <string name="payment_amount">Amount:</string>
+    <string name="create_order">Create New Order</string>
+
+<!--    প্রোফাইল-->
+    <string name="mobile_no">Mobile No:</string>
+    <string name="contact_person">CONTACT PERSON:</string>
+    <string name="client_code">Code :</string>
+    <string name="delivery_location">Delivery Location:</string>
+    <string name="name_of_the_client">Profile Information</string>
+    <string name="order_code">Order Code:</string>
+    <string name="order_date">Delivery Date:</string>
 
 </resources>

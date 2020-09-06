@@ -35,7 +35,6 @@ import orderFlex.paymentCollection.Model.PaymentAndBillData.SaveOrderRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListResponse;
 import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderResponse;
-import orderFlex.paymentCollection.OrderDetailsActivity.AdapterOrderTakeForm;
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;
 import orderFlex.paymentCollection.Utility.LanguagePackage.BaseActivity;
@@ -89,10 +88,22 @@ public class OrderListActivity extends BaseActivity
 
         //default operations
         updateProfile();
-        operationOrderPull();
 
         //open order form
         addNewOrder=findViewById(R.id.addNewOrder);
+        try {
+            Intent intent=getIntent();
+            String add_order = intent.getStringExtra("add_order");
+            Log.i(TAG,"Intent: "+add_order);
+
+            if (add_order.equals("take_order")){
+                addNewOrderFormCall();
+            }else {
+                operationOrderPull();
+            }
+        }catch (Exception e){
+
+        }
         addNewOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,7 +156,7 @@ public class OrderListActivity extends BaseActivity
         phoneNo.setText(prefManager.getClientContactNumber());
         address.setText(prefManager.getClientAddress());
         orderCodeView.setVisibility(View.GONE);
-        orderDate.setText(helper.getDate());
+        orderDate.setText(helper.getDateInEnglish());
         listTitle.setText("Order List");
     }
     private void operationOrderPull(){
@@ -154,7 +165,7 @@ public class OrderListActivity extends BaseActivity
         orderTakeSegment.setVisibility(View.GONE);
         listTitle.setText("Order List");
 
-        CustomerOrderListRequest request=new CustomerOrderListRequest(prefManager.getClientId(),helper.getDate(),helper.getDate());
+        CustomerOrderListRequest request=new CustomerOrderListRequest(prefManager.getClientId(),helper.getDateInEnglish(),helper.getDateInEnglish());
         if (helper.isInternetAvailable()){
             helper.showSnakBar(containerView,"Refreshing the dashboard...!");
             new PullCustomerOrderList(this).pullCustomerOrderListCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
@@ -240,7 +251,7 @@ public class OrderListActivity extends BaseActivity
                 SaveOrderRequest order=new SaveOrderRequest(helper.makeUniqueID()+String.valueOf(count),
                         product.getId(),product.getPName(),product.getPType(),
                         "0",prefManager.getClientId(),prefManager.getHandlerId(),
-                        helper.getDate(),"1",helper.getDate(),"2");
+                        helper.getDateInEnglish(),"1",helper.getDateInEnglish(),"2");
                 orderRequestList.add(order);
                 Log.i(TAG,"Name: "+product.getPName()+" Type: "+product.getPType());
                 count++;
@@ -275,7 +286,7 @@ public class OrderListActivity extends BaseActivity
     @Override
     public void onSaveResponse(UpdateOrderResponse response, int code) {
         if (response!=null && code==202){
-            TodayOrderDetailsByDataRequest request=new TodayOrderDetailsByDataRequest(prefManager.getClientId(),helper.getDate());
+            TodayOrderDetailsByDataRequest request=new TodayOrderDetailsByDataRequest(prefManager.getClientId(),helper.getDateInEnglish());
             helper.showSnakBar(containerView,response.getMessage());
             if (helper.isInternetAvailable()){
                 operationOrderPull();

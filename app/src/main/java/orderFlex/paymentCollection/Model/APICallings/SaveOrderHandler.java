@@ -3,7 +3,6 @@ package orderFlex.paymentCollection.Model.APICallings;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
-
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -16,7 +15,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.SaveOrderRequest;
-import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderRequestBody;
 import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderResponse;
 import orderFlex.paymentCollection.Utility.Constant;
 import retrofit2.Call;
@@ -42,6 +40,8 @@ public class SaveOrderHandler {
     public void pushSaveOrder(final String username, final String password, List<SaveOrderRequest> body){
         // preparing interceptor for retrofit
         // interceptor for runtime data checking
+        Log.i(TAG,"Save Order Request-body: "+new Gson().toJson(body));
+
         dialog = new ProgressDialog(context);
         dialog.setMessage("Saving orders...");
         dialog.show();

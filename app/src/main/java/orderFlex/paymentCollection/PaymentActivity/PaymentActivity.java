@@ -95,7 +95,7 @@ public class PaymentActivity
         referenceNo=findViewById(R.id.referenceNo);
         payDate=findViewById(R.id.payDate);
         payAmount=findViewById(R.id.payAmount);
-        payDate.setText(helper.getDate());
+        payDate.setText(helper.getDateInEnglish());
         requestBody=new BillPaymentRequestBody();
         addImg=findViewById(R.id.addImg);
         referenceImg=findViewById(R.id.referenceImg);
@@ -158,7 +158,7 @@ public class PaymentActivity
         payDatePick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                helper.getCalenderDate(payDate);
+                helper.getCalenderDateInEnglish(payDate);
             }
         });
 
@@ -175,7 +175,7 @@ public class PaymentActivity
                     requestBody.setTrxid(helper.makeUniqueID());
                 }
                 requestBody.setAmount(payed);
-                requestBody.setSubmittedDateTime(helper.getDateTime());
+                requestBody.setSubmittedDateTime(helper.getDateTimeInEnglish());
                 if (refNo.isEmpty()||payed.isEmpty()||paymentDate.isEmpty()){
                     helper.showSnakBar(containerView,"Some fields are empty!");
                 }else {
@@ -313,7 +313,7 @@ public class PaymentActivity
                 Log.i(TAG, "Advance Selected");
                 is_attachment_active =true;
                 if (methodListData.get(position).getId().equals("12"))
-                    referenceNo.setText(helper.makeUniqueID());
+                    referenceNo.setText("111");
             }else {
                 Log.i(TAG, "Not advance Selected");
 //                if (is_attachment_active){

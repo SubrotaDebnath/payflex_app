@@ -52,7 +52,7 @@ public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.
     public void onBindViewHolder(@NonNull Holder holder, final int position) {
         holder.index.setText(String.valueOf(position+1)+".");
         holder.payedAmount.setText(list.get(position).getAmount());
-        holder.paymentDate.setText(helper.dateParchYMD(list.get(position).getPaymentDateTime()));
+        holder.paymentDate.setText(helper.dateParchYMDInEnglish(list.get(position).getPaymentDateTime()));
         holder.referenceNo.setText(list.get(position).getReferenceNo());
         holder.bankName.setText(list.get(position).getBankName());
         holder.methodName.setText(list.get(position).getMethodeName());

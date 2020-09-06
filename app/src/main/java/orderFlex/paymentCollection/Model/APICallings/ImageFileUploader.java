@@ -140,7 +140,7 @@ public class ImageFileUploader extends AsyncTask<Void, Void, String> {
                             .addFormDataPart("trxid", filename)
                             .addFormDataPart("user_id", clientID)
                             .addFormDataPart("file_detail", fileDetail)
-                            .addFormDataPart("request_time", helper.getDateTime())
+                            .addFormDataPart("request_time", helper.getDateTimeInEnglish())
                             .addFormDataPart("extension", extension)
                             .addFormDataPart("order_code",order_code)
                             .addFormDataPart("payment_id",payment_id)

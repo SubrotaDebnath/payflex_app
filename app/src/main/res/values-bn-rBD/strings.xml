@@ -4,7 +4,7 @@
 
     <string name="bangla_key">বাংলা</string>
     <string name="english_key">English</string>
-    <string name="language_change_menu">Change Language</string>
+    <string name="language_change_menu">ভাষা পরিবর্তন</string>
 
     <string-array name="bank_list">
         <item>SBL</item>
@@ -35,25 +35,36 @@
     <!--Order list and details page-->
     <string name="order_list_title">ক্রয় তালিকা</string>
     <string name="item_description">পণ্যের বিবারন</string>
-    <string name="sl">Sl.</string>
+    <string name="sl">নং</string>
     <string name="rate">দাম</string>
     <string name="quantity">পরিমান</string>
-    <string name="amount">মোট দাম</string>
-    <string name="total_order_amount">Total Order Amount:</string>
+    <string name="amount">গুণিতক দাম</string>
+    <string name="total_order_amount">মোট দাম:</string>
     <string name="_0_0">0.0</string>
-    <string name="save_new_order_button">Save Order</string>
-    <string name="add_new_payment">Add new payment</string>
-    <string name="update_btn">Update</string>
-    <string name="save_new_order_btn">Save new order</string>
+    <string name="save_new_order_button">সেভ করুন</string>
+    <string name="add_new_payment">নতুন বিল সংযোজন</string>
+    <string name="update_btn">পরিবর্তন করুন</string>
+    <string name="save_new_order_btn">নতুন ক্রয় সংযোজন</string>
     <!--    Menu page -->
     <string name="logout">বেরিয়ে জান</string>
     <!--    Payment page-->
-    <string name="submit_btn">Submit</string>
-    <string name="payment_mode">Payment Mode:</string>
-    <string name="bank_name">Bank Name:</string>
-    <string name="reference_no">Reference No:</string>
-    <string name="date">Date:</string>
-    <string name="document_date_hint">document date</string>
-    <string name="virtual_account">Virtual Account:</string>
+    <string name="submit_btn">সংযোজন</string>
+    <string name="payment_mode">পরিষদের ধরন:</string>
+    <string name="bank_name">ব্যাংক:</string>
+    <string name="reference_no">পরিষদ পত্রের নাম্বার:</string>
+    <string name="date">পরিষদ পত্রের তারিখ:</string>
+    <string name="document_date_hint">পরিষদ পত্রের তারিখ</string>
+    <string name="virtual_account">ভার্চুয়াল নাম্বার:</string>
+    <string name="payment_amount">টাকার পরিমাণ:</string>
 
+    <string name="create_order">নতুন ক্রয় সংযোজন</string>
+
+    <!--    প্রোফাইল-->
+    <string name="mobile_no">মোবাইল নং:</string>
+    <string name="contact_person">মালিকের নাম:</string>
+    <string name="client_code">ক্রেতার কোড:</string>
+    <string name="delivery_location">ঠিকানা:</string>
+    <string name="name_of_the_client"></string>
+    <string name="order_code">ক্রয় কোড:</string>
+    <string name="order_date">হস্তান্তরের তারিখ:</string>
 </resources>
