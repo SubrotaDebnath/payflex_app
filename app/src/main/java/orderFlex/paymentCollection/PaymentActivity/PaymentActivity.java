@@ -176,22 +176,35 @@ public class PaymentActivity
                 }
                 requestBody.setAmount(payed);
                 requestBody.setSubmittedDateTime(helper.getDateTimeInEnglish());
-                if (refNo.isEmpty()||payed.isEmpty()||paymentDate.isEmpty()){
+                if (payed.isEmpty()||paymentDate.isEmpty()){
                     helper.showSnakBar(containerView,"Some fields are empty!");
+                    return;
+                }
+
+                if (!requestBody.getPaymentModeId().equals("13")
+                        && !requestBody.getPaymentModeId().equals("3")
+                        && !requestBody.getPaymentModeId().equals("2")){
+                    Log.i(TAG,"Mode ID at save point: "+requestBody.getPaymentModeId());
+                    if (refNo.isEmpty()||payed.isEmpty()||paymentDate.isEmpty()){
+                        helper.showSnakBar(containerView,"Some fields are empty!");
+                        return;
+                    }
                 }else {
-                    if (helper.isInternetAvailable())
+                    Log.i(TAG,"Mode ID at else in save point: "+requestBody.getPaymentModeId());
+                }
+
+                if (helper.isInternetAvailable())
                     {
                         if (updateFlag){
                             updateBill.updateBillCall(prefManager.getUsername(),prefManager.getUserPassword(),requestBody);
                         }else {
-                            pushBills.pushBillCall(prefManager.getUsername(),prefManager.getUserPassword(),requestBody);
+//                            pushBills.pushBillCall(prefManager.getUsername(),prefManager.getUserPassword(),requestBody);
                         }
 
                     }
                     else {
                         helper.showSnakBar(containerView,"Please check your internet connection!");
                     }
-                }
                 //requestBody.set
             }
         });
@@ -309,12 +322,21 @@ public class PaymentActivity
         if (parent.getId()==R.id.paymentMethod){
             Log.i(TAG,"Method");
             requestBody.setPaymentModeId(methodListData.get(position).getId());
-            if (methodListData.get(position).getId().equals("13")||methodListData.get(position).getId().equals("12")){
+            if (methodListData.get(position).getId().equals("13")
+                    ||methodListData.get(position).getId().equals("12")
+                    ||methodListData.get(position).getId().equals("3")
+                    ||methodListData.get(position).getId().equals("2")){
                 Log.i(TAG, "Advance Selected");
                 is_attachment_active =true;
-                if (methodListData.get(position).getId().equals("12"))
+                //add referenceNo
+                referenceNo.setEnabled(false);
+                if (methodListData.get(position).getId().equals("12")){
                     referenceNo.setText("111");
+                }else {
+                    referenceNo.setText("");
+                }
             }else {
+                referenceNo.setEnabled(true);
                 Log.i(TAG, "Not advance Selected");
 //                if (is_attachment_active){
 //                    referenceNo.setText("");

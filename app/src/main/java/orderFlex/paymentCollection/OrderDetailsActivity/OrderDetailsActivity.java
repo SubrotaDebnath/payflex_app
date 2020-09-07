@@ -108,10 +108,8 @@ public class OrderDetailsActivity
         totalTakenBill=findViewById(R.id.totalTakenBill);
         saveOrder=findViewById(R.id.saveOrder);
         saveOrderHandler=new SaveOrderHandler(this);
-
         updateProfile();
         pullPaymentsList=new PullPaymentsList(this);
-
         try {
             Intent intent=getIntent();
             String message=intent.getStringExtra("payment_massege");
@@ -230,7 +228,6 @@ public class OrderDetailsActivity
                 orderCode.setText(orderResponse.getOrderDetails().get(0).getOrderCode());
                 orderDate.setText(orderResponse.getOrderDetails().get(0).getDeliveryDate());
                 orderCode.setText(response.getOrderDetails().get(0).getOrderCode());
-
                 PaymentListRequest listRequest=new PaymentListRequest(prefManager.getClientId(),response.getOrderDetails().get(0).getOrderCode());
                 pullPaymentsList.pullPaymentListCall(prefManager.getUsername(),prefManager.getUserPassword(),listRequest);
             }else {
@@ -247,7 +244,6 @@ public class OrderDetailsActivity
             }else {
                 helper.showSnakBar(containerVied,"Server not Responding! Please check your internet connection.");
             }
-
             noOrder.setVisibility(View.VISIBLE);
             orderDetailsBlock.setVisibility(View.GONE);
             noOrder.setVisibility(View.GONE);
@@ -348,6 +344,7 @@ public class OrderDetailsActivity
             }
         }
     }
+
     @Override
     public void saveBillUpdate(List<SaveOrderRequest> list, float totalTaka, boolean change) {
         saveOrderRequestsBody=list;
