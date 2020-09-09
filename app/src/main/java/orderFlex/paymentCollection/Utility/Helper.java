@@ -9,9 +9,11 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -26,6 +28,7 @@ public class Helper {
 
     private Context context;
     private Locale english=null;
+    private String TAG="Helper";
 
     public Helper(Context context) {
         this.context = context;
@@ -161,5 +164,27 @@ public class Helper {
             e.printStackTrace();
         }
         return stringDate;
+    }
+
+    public boolean isEditableOrderOrPayment(String today,String orderDate){
+        String from=today;
+        String to=orderDate;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date1=new Date();
+        Date date2=new Date();
+        try {
+            date1= sdf.parse(from);
+            date2 = sdf.parse(to);
+        } catch (ParseException e) {
+            Log.i(TAG,"Exception to date conversion: "+e.toString());
+        }
+
+        if (date1.after(date2)){
+           return false;
+        }else if (date1.before(date2)){
+            return true;
+        }else {
+            return true;
+        }
     }
 }

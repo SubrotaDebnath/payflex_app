@@ -31,11 +31,13 @@ public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.
     private BillPaymentRequestBody paymentData;
     private Helper helper;
     private View alartView;
+    private boolean editFlag;
 
-    public AdapterPaymentList(Context context, List<PaymentListResponse.PaymentList> list, View alartView) {
+    public AdapterPaymentList(Context context, List<PaymentListResponse.PaymentList> list,boolean editFlag, View alartView) {
         this.context = context;
         this.list = list;
         this.alartView=alartView;
+        this.editFlag=editFlag;
         helper=new Helper(context);
         paymentData=new BillPaymentRequestBody();
     }
@@ -78,7 +80,7 @@ public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.
         holder.paymentViewCrad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (list.get(position).getAction_flag().equals("0")){
+                if (list.get(position).getAction_flag().equals("0") && editFlag){
                     paymentData.setSubmittedDateTime(list.get(position).getPaymentDateTime());
                     paymentData.setAmount(list.get(position).getAmount());
                     paymentData.setFinancial_institution_id(list.get(position).getFinancialInstitutionId());

@@ -14,6 +14,7 @@ import java.util.List;
 
 import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByDataResponse;
 import orderFlex.paymentCollection.R;
+import orderFlex.paymentCollection.Utility.Helper;
 
 public class AdapterOrderList extends RecyclerView.Adapter<AdapterOrderList.ViewHolder>{
     private Context context;
@@ -23,11 +24,13 @@ public class AdapterOrderList extends RecyclerView.Adapter<AdapterOrderList.View
     private String TAG="AdapterOrderList";
     private int counter=0;
     private boolean change=false;
+    private Helper helper;
 
     public AdapterOrderList(Context context, List<TodayOrderDetailsByDataResponse.OrderDetail> list) {
         this.context = context;
         this.list = list;
         updateTotalBill= (UpdateTotalBill) context;
+        helper=new Helper(context);
         billCalculation(list);
     }
 
@@ -48,7 +51,15 @@ public class AdapterOrderList extends RecyclerView.Adapter<AdapterOrderList.View
             holder.productName.setText(list.get(position).getPName() + " Refill Cylinder");
         }
         holder.unitePrice.setText(list.get(position).getPWholesalePrice());
+        //check is order can be updated
+        if (helper.isEditableOrderOrPayment(helper.getDateInEnglish(),list.get(position).getDeliveryDate())){
+            holder.quantity.setEnabled(true);
+        }else {
+            holder.quantity.setEnabled(false);
+        }
         holder.quantity.setText(list.get(position).getQuantityes());
+
+        //price calculation
         float orderedPrice=(Float.valueOf(list.get(position).getPWholesalePrice()))*(Float.valueOf(list.get(position).getQuantityes()));
         totalBills=totalBills+orderedPrice;
         //Log.i(TAG,"Cum.Bill: "+totalBills);

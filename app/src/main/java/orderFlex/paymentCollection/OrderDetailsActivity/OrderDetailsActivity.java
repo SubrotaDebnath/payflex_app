@@ -69,7 +69,7 @@ public class OrderDetailsActivity
     private Helper helper;
     private AdapterOrderList adapter;
     private TextView totalBill,clientCode,name,presenterName,phoneNo,address,orderTitle;
-    private View containerVied;
+    private View containerView;
     private TodayOrderDetailsByDataResponse orderResponse=null;
     private LinearLayout orderDetailsBlock,orderTakeSegment;
     private CardView updateOrder,saveOrder;
@@ -95,7 +95,7 @@ public class OrderDetailsActivity
         totalBill=findViewById(R.id.totalBill);
         orderDetailsBlock=findViewById(R.id.orderDetailsBlock);
         noOrder=findViewById(R.id.noOrder);
-        containerVied=findViewById(R.id.mainActivity);
+        containerView =findViewById(R.id.mainActivity);
         updateOrder=findViewById(R.id.updateOrder);
         updateOrder.setVisibility(View.GONE);
         paymentList=findViewById(R.id.paymentList);
@@ -115,9 +115,9 @@ public class OrderDetailsActivity
             String message=intent.getStringExtra("payment_massege");
             booked_code=intent.getStringExtra("booked_code");
             if (message == null){
-                helper.showSnakBar(containerVied,"Refreshing the dashboard...!");
+                helper.showSnakBar(containerView,"Refreshing the dashboard...!");
             }else {
-                helper.showSnakBar(containerVied,message);
+                helper.showSnakBar(containerView,message);
             }
         }catch (Exception e){
             Log.i(TAG,"Intent Exception: "+ e.toString());
@@ -129,7 +129,7 @@ public class OrderDetailsActivity
             operationOrderDetail();
         }
         else {
-            helper.showSnakBar(containerVied,"No internet! Please check your internet connection!");
+            helper.showSnakBar(containerView,"No internet! Please check your internet connection!");
         }
 
         addNewPayment.setOnClickListener(new View.OnClickListener() {
@@ -141,7 +141,7 @@ public class OrderDetailsActivity
                     intent.putExtra("order_code",orderResponse.getOrderDetails().get(0).getOrderCode());
                     startActivity(intent);
                 }else {
-                    helper.showSnakBar(containerVied,"You don't have previous order! Please save an order first");
+                    helper.showSnakBar(containerView,"You don't have previous order! Please save an order first");
                 }
             }
         });
@@ -164,7 +164,7 @@ public class OrderDetailsActivity
                     Log.i(TAG,"Response Body: "+response);
                     saveOrderHandler.pushSaveOrder(prefManager.getUsername(),prefManager.getUserPassword(),saveOrderRequestsBody);
                 }else {
-                    helper.showSnakBar(containerVied,"No internet! Please check your internet connection!");
+                    helper.showSnakBar(containerView,"No internet! Please check your internet connection!");
                 }
             }
         });
@@ -183,10 +183,10 @@ public class OrderDetailsActivity
         switch (item.getItemId()) {
             case R.id.refresh:
                 if (helper.isInternetAvailable()){
-                    helper.showSnakBar(containerVied,"Refreshing the dashboard...!");
+                    helper.showSnakBar(containerView,"Refreshing the dashboard...!");
                     operationOrderDetail();
                 }else {
-                    helper.showSnakBar(containerVied,"Please check your internet connection!");
+                    helper.showSnakBar(containerView,"Please check your internet connection!");
                 }
                 //updateOrder.setVisibility(View.GONE);
                 break;
@@ -240,9 +240,9 @@ public class OrderDetailsActivity
             }
         }else {
             if (code==401){
-                helper.showSnakBar(containerVied,"Unauthorized Username or Password!");
+                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
             }else {
-                helper.showSnakBar(containerVied,"Server not Responding! Please check your internet connection.");
+                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
             }
             noOrder.setVisibility(View.VISIBLE);
             orderDetailsBlock.setVisibility(View.GONE);
@@ -275,15 +275,16 @@ public class OrderDetailsActivity
     @Override
     public void onPaymentListResponse(PaymentListResponse response, int code) {
         if (response!=null && code==202){
-            adapterPaymentList=new AdapterPaymentList(this,response.getPaymentList(),containerVied);
+            boolean flag=helper.isEditableOrderOrPayment(helper.getDateInEnglish(),orderDate.getText().toString());
+            adapterPaymentList=new AdapterPaymentList(this,response.getPaymentList(),flag, containerView);
             layoutManager = new LinearLayoutManager(this);
             paymentList.setLayoutManager(layoutManager);
             paymentList.setAdapter(adapterPaymentList);
         }else {
             if (code==401){
-                helper.showSnakBar(containerVied,"Unauthorized Username or Password!");
+                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
             }else {
-                helper.showSnakBar(containerVied,"Server not Responding! Please check your internet connection.");
+                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
             }
         }
     }
@@ -292,18 +293,18 @@ public class OrderDetailsActivity
     public void onUpdateResponse(UpdateOrderResponse response, int code) {
         if (response!=null && code==202){
             TodayOrderDetailsByDataRequest request=new TodayOrderDetailsByDataRequest(prefManager.getClientId(),helper.getDateInEnglish());
-            helper.showSnakBar(containerVied,response.getMessage());
+            helper.showSnakBar(containerView,response.getMessage());
             if (helper.isInternetAvailable()){
                 operationOrderDetail();
                 updateOrder.setVisibility(View.GONE);
             }else {
-                helper.showSnakBar(containerVied,"Please check your internet connection!");
+                helper.showSnakBar(containerView,"Please check your internet connection!");
             }
         }else {
             if (code==401){
-                helper.showSnakBar(containerVied,"Unauthorized Username or Password!");
+                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
             }else {
-                helper.showSnakBar(containerVied,"Server not Responding! Please check your internet connection.");
+                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
             }
         }
     }
@@ -338,9 +339,9 @@ public class OrderDetailsActivity
             //
         }else {
             if (code==401){
-                helper.showSnakBar(containerVied,"Unauthorized Username or Password!");
+                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
             }else {
-                helper.showSnakBar(containerVied,"Server not Responding! Please check your internet connection.");
+                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
             }
         }
     }
@@ -369,18 +370,18 @@ public class OrderDetailsActivity
     public void onSaveResponse(UpdateOrderResponse response, int code) {
         if (response!=null && code==202){
             TodayOrderDetailsByDataRequest request=new TodayOrderDetailsByDataRequest(prefManager.getClientId(),helper.getDateInEnglish());
-            helper.showSnakBar(containerVied,response.getMessage());
+            helper.showSnakBar(containerView,response.getMessage());
             if (helper.isInternetAvailable()){
                 operationOrderDetail();
                 saveOrder.setVisibility(View.GONE);
             }else {
-                helper.showSnakBar(containerVied,"Please check your internet connection!");
+                helper.showSnakBar(containerView,"Please check your internet connection!");
             }
         }else {
             if (code==401){
-            helper.showSnakBar(containerVied,"Unauthorized Username or Password!");
+            helper.showSnakBar(containerView,"Unauthorized Username or Password!");
         }else {
-            helper.showSnakBar(containerVied,"Server not Responding! Please check your internet connection.");
+            helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
         }
         }
     }

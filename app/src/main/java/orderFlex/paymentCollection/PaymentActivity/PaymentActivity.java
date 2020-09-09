@@ -198,9 +198,8 @@ public class PaymentActivity
                         if (updateFlag){
                             updateBill.updateBillCall(prefManager.getUsername(),prefManager.getUserPassword(),requestBody);
                         }else {
-//                            pushBills.pushBillCall(prefManager.getUsername(),prefManager.getUserPassword(),requestBody);
+                            pushBills.pushBillCall(prefManager.getUsername(),prefManager.getUserPassword(),requestBody);
                         }
-
                     }
                     else {
                         helper.showSnakBar(containerView,"Please check your internet connection!");

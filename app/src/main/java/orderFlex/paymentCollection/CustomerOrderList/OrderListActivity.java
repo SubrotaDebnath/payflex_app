@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -17,12 +18,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -69,6 +73,7 @@ public class OrderListActivity extends BaseActivity
     //Order Save/Cancel
     private CardView cancelOrder,saveOrder,addNewOrder;
     private SaveOrderHandler saveOrderHandler;
+    Locale english=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +104,7 @@ public class OrderListActivity extends BaseActivity
             if (add_order.equals("take_order")){
                 addNewOrderFormCall();
             }else {
-                operationOrderPull();
+                operationOrderPull(helper.getDateInEnglish(),helper.getDateInEnglish());
             }
         }catch (Exception e){
 
@@ -136,7 +141,7 @@ public class OrderListActivity extends BaseActivity
         cancelOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                operationOrderPull();
+                operationOrderPull(helper.getDateInEnglish(),helper.getDateInEnglish());
             }
         });
     }
@@ -159,13 +164,14 @@ public class OrderListActivity extends BaseActivity
         orderDate.setText(helper.getDateInEnglish());
         listTitle.setText("Order List");
     }
-    private void operationOrderPull(){
+    private void operationOrderPull(String startDate,String endDate){
         warningText.setVisibility(View.GONE);
         bookedOrderList.setVisibility(View.GONE);
         orderTakeSegment.setVisibility(View.GONE);
+        orderDate.setText(startDate);
         listTitle.setText("Order List");
 
-        CustomerOrderListRequest request=new CustomerOrderListRequest(prefManager.getClientId(),helper.getDateInEnglish(),helper.getDateInEnglish());
+        CustomerOrderListRequest request=new CustomerOrderListRequest(prefManager.getClientId(),startDate,endDate);
         if (helper.isInternetAvailable()){
             helper.showSnakBar(containerView,"Refreshing the dashboard...!");
             new PullCustomerOrderList(this).pullCustomerOrderListCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
@@ -186,7 +192,7 @@ public class OrderListActivity extends BaseActivity
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.refresh:
-                operationOrderPull();
+                operationOrderPull(helper.getDateInEnglish(),helper.getDateInEnglish());
                 //updateOrder.setVisibility(View.GONE);
                 break;
             case R.id.logout:
@@ -198,8 +204,41 @@ public class OrderListActivity extends BaseActivity
             case R.id.change_language:
                 selectLanguage(this);
                 break;
+            case R.id.calendarData:
+                getOrderAccordingToDate(orderDate);
+                break;
         }
         return true;
+    }
+    public String getOrderAccordingToDate(final TextView setPosition){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            english = Locale.forLanguageTag("en");
+        }
+        final Calendar calendar;
+        int month, year, day;
+        final String[] date = {""};
+        //calender
+        calendar= Calendar.getInstance();
+        year=calendar.get(Calendar.YEAR);
+        month=calendar.get(Calendar.MONTH);
+        day=calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(context,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd",english);
+
+                        calendar.set(i,i1,i2);
+                        date[0] = sdf.format(calendar.getTime());
+                        //Log.i(TAG,"At pick date: "+ date[0]);
+                        setPosition.setText(date[0]);
+                        operationOrderPull(date[0],date[0]);
+                    }
+                }, year, month, day);
+
+        datePickerDialog.show();
+        return date[0];
     }
 
     private void addNewOrderFormCall(){
@@ -289,7 +328,7 @@ public class OrderListActivity extends BaseActivity
             TodayOrderDetailsByDataRequest request=new TodayOrderDetailsByDataRequest(prefManager.getClientId(),helper.getDateInEnglish());
             helper.showSnakBar(containerView,response.getMessage());
             if (helper.isInternetAvailable()){
-                operationOrderPull();
+                operationOrderPull(helper.getDateInEnglish(),helper.getDateInEnglish());
             }else {
                 helper.showSnakBar(containerView,"Please check your internet connection!");
             }
@@ -305,13 +344,13 @@ public class OrderListActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-        operationOrderPull();
+        operationOrderPull(helper.getDateInEnglish(),helper.getDateInEnglish());
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        operationOrderPull();
+        operationOrderPull(helper.getDateInEnglish(),helper.getDateInEnglish());
     }
 
 //For multi-language operation
