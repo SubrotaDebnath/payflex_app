@@ -252,8 +252,8 @@ public class OrderListActivity extends BaseActivity
 //pre booked order list
     @Override
     public void onCustomerOrderListResponse(CustomerOrderListResponse response, int code) {
-        Log.i(TAG,"Order List Response Code: "+code+" Array size: "+response.getOrderDetails().size());
-        if (response.getOrderDetails().size()>0){
+      //  Log.i(TAG,"Order List Response Code: "+code+" Array size: "+response.getOrderDetails().size());
+        if (response!=null && response.getOrderDetails().size()>0){
             warningText.setVisibility(View.GONE);
             bookedOrderList.setVisibility(View.VISIBLE);
             orderTakeSegment.setVisibility(View.GONE);
@@ -271,6 +271,14 @@ public class OrderListActivity extends BaseActivity
             addNewOrder.setVisibility(View.VISIBLE);
             orderTakeSegment.setVisibility(View.GONE);
             bookedOrderList.setVisibility(View.GONE);
+            if (code==401){
+                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
+            }else {
+                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
+            }
+//            if (response==null){
+//                helper.showSnakBar(containerView,"Server not responding! Please check you internet connection.");
+//            }
         }
     }
 //new order taking form
