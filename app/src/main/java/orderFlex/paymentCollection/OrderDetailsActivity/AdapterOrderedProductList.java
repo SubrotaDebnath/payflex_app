@@ -16,7 +16,7 @@ import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByD
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;
 
-public class AdapterOrderList extends RecyclerView.Adapter<AdapterOrderList.ViewHolder>{
+public class AdapterOrderedProductList extends RecyclerView.Adapter<AdapterOrderedProductList.ViewHolder>{
     private Context context;
     private List<TodayOrderDetailsByDataResponse.OrderDetail> list;
     private UpdateTotalBill updateTotalBill;
@@ -26,7 +26,7 @@ public class AdapterOrderList extends RecyclerView.Adapter<AdapterOrderList.View
     private boolean change=false;
     private Helper helper;
 
-    public AdapterOrderList(Context context, List<TodayOrderDetailsByDataResponse.OrderDetail> list) {
+    public AdapterOrderedProductList(Context context, List<TodayOrderDetailsByDataResponse.OrderDetail> list) {
         this.context = context;
         this.list = list;
         updateTotalBill= (UpdateTotalBill) context;

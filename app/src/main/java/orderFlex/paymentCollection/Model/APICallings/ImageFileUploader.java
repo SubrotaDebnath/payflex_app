@@ -20,6 +20,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import orderFlex.paymentCollection.Model.DataBase.DatabaseOperation;
+import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentQueueRequestData;
 import orderFlex.paymentCollection.OrderDetailsActivity.OrderDetailsActivity;
 import orderFlex.paymentCollection.Model.FileDataClass.FileUploadResponse;
 import orderFlex.paymentCollection.Utility.Constant;
@@ -31,7 +33,7 @@ import orderFlex.paymentCollection.Utility.SharedPrefManager;
  */
 public class ImageFileUploader extends AsyncTask<Void, Void, String> {
     int TIMEOUT_MILLISEC = 30000;
-    Context context;
+    private Context context;
     ProgressDialog dialog;
     private String filename;
     private String fileType;
@@ -46,33 +48,32 @@ public class ImageFileUploader extends AsyncTask<Void, Void, String> {
     private String order_code;
     private String payment_id;
     private String sourcePath;
+    private DatabaseOperation db;
+    private boolean isGalleryImg=false;
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
     }
-    public ImageFileUploader(Context context, String clientID, String fileDetail, String fileType, String extension, String order_code,String payment_id,String sourcePath) {
+    public ImageFileUploader(Context context, PaymentQueueRequestData requestData,boolean isGalleryImg) {
         this.context = context;
         helper=new Helper(context);
+        db=new DatabaseOperation(context);
 
-        this.filename=helper.makeUniqueID();
-        this.fileType=fileType;
-        this.clientID=clientID;
-        this.fileDetail=fileDetail;
-        this.extension=extension;
-        this.order_code=order_code;
-        this.payment_id=payment_id;
-        this.sourcePath= sourcePath;
+        this.filename=requestData.getFilename();
+        this.fileType=requestData.getFileType();
+        this.clientID=requestData.getClientID();
+        this.fileDetail=requestData.getFileDetail();
+        this.extension=requestData.getExtension();
+        this.order_code=requestData.getOrder_code();
+        this.payment_id=requestData.getPayment_id();
+        this.sourcePath= requestData.getSourcePath();
+        this.isGalleryImg=isGalleryImg;
 
         Log.i(TAG,"File Type: "+fileType);
-//        File sampleDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);//directory will be changed
-//        filePath= sampleDir.getAbsolutePath();
-//        Log.i(TAG,"Path:"+filePath);
 
         prefManager=new SharedPrefManager(context);
         dialog = new ProgressDialog(context);
-//        dialog.setMessage("Uploading file....");
-//        dialog.show();
     }
     @Override
     protected void onPostExecute(String result) {
@@ -86,32 +87,7 @@ public class ImageFileUploader extends AsyncTask<Void, Void, String> {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected String doInBackground(Void... params){
-//        String sourceFileUri = filePath+"/"+filename+".jpg";
-//        String sourceFileDirectory = filePath+"/";
-//
-//        Log.i(TAG, "uri :"+sourceFileUri);
-//        File sourceFile = new File(sourceFileUri);
         File sourceFile = new File(sourcePath);
-        //Database db=new Database(context);
-            //********get the file *********
-//        try {
-//            File sourceDirectory = new File(sourceFileDirectory);
-//            for (File ff : sourceDirectory.listFiles()) {
-//                if (ff.isFile())
-//                    Log.i(TAG, "File Name:" + ff.getName());
-//                if (ff.getName().toString().contains(filename)) {
-////                    sourceFileUri = "/mnt/sdcard/onuRecords/" + ff.getName();
-//                    sourceFileUri = filePath+"/" + ff.getName();
-//                    sourceFile = new File(sourceFileUri);
-//                }
-//            }
-//        }catch (Exception e)
-//        {
-//            Log.i(TAG, "Exception :" + e);
-//        }
-            //******** file found ***********
-
-//        Log.i(TAG, "Src URI :" + sourceFileUri);
         Log.i(TAG, "Activity src URI: "+sourcePath);
 
             if (sourceFile.isFile()) {
@@ -149,34 +125,23 @@ public class ImageFileUploader extends AsyncTask<Void, Void, String> {
                             .addFormDataPart("uploaded_file", file_path.substring(file_path.lastIndexOf("/") + 1), file_body)
                             .build();
                     try{
-                        String response = post(Constant.BASE_URL_PAYFLEX+"ImgFileSave?img="+filename, request_body);
+                        String response = post(Constant.BASE_URL_PAYFLEX+"ImgFileSave?img="+filename, request_body,sourceFile);
                         //String response = post(info.getUrl()+"/callRecordDemo?audio="+filename, request_body);
                         if (response!=null){
-                            Log.i(TAG, "Successful: "+response);
-                            Gson gson=new Gson();
-                            FileUploadResponse uploadResponse=gson.fromJson(response, FileUploadResponse.class);
-                            Log.i(TAG,"Uploaded File Size: "+uploadResponse.getFileSize());
-                            if (uploadResponse.getFileSize()>0 && uploadResponse.getStatus()==4000 && uploadResponse.getFileExists()){
-                                Log.i(TAG,"Successfully Updated!!!");
-                                //db.updateCallQueueForAudioUp(filename,"1");
-                                sourceFile.delete();
-                                Intent intent = new Intent(context, OrderDetailsActivity.class);
-                                context.startActivity(intent);
-//                                dialog.cancel();
-                            }
-//                            dialog.cancel();
+                            dbUpdateOnResponse(response,sourceFile);
                         }else {
 //                            dialog.cancel();
+                            db.updateImgQueue(filename,"0");
                             Log.i(TAG,"Not successful!!!");
-                            sourceFile.delete();
                         }
                     }catch (Exception e){
                         Log.i(TAG,"Exception1: " +e.toString());
+//                        db.updateImgQueue(filename,"0");
 //                        dialog.cancel();
-
                     }
                 } catch (Exception ex) {
                     Log.i(TAG,"Exception2: " +ex.toString());
+                    db.updateImgQueue(filename,"0");
                     ex.printStackTrace();
 //                    dialog.cancel();
                 }
@@ -184,14 +149,13 @@ public class ImageFileUploader extends AsyncTask<Void, Void, String> {
             } else
             {
                 Log.i(TAG, "no file found");
-                //db.updateCallQueueForAudioUp(filename,"2");
-                //db.deleteCall(filename);
+                db.deleteIMGQueueByPaymentID(filename);
 //                dialog.cancel();
             }
         return null;
     }
 
-    public String post(String url, RequestBody body) throws IOException {
+    public String post(String url, RequestBody body,File sourceFile) throws IOException {
         OkHttpClient client = new OkHttpClient();
         //RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
@@ -202,14 +166,32 @@ public class ImageFileUploader extends AsyncTask<Void, Void, String> {
 
         if (response.isSuccessful()){
             Log.i(TAG, "Response: "+response.body().string());
+//            dbUpdateOnResponse(response.body().string(),sourceFile);
             return response.body().string();
 
         }else {
-            Log.i(TAG,response.message());
-            Log.i(TAG, "Response: "+response.body().string());
+            Log.i(TAG, "Failed Response: "+response.body().string());
 //            dialog.cancel();
             return null;
         }
 
+    }
+    private void dbUpdateOnResponse(String response,File sourceFile){
+        Log.i(TAG, "Successful: "+response);
+        Gson gson=new Gson();
+        FileUploadResponse uploadResponse=gson.fromJson(response, FileUploadResponse.class);
+        Log.i(TAG,"Uploaded File Size: "+uploadResponse.getFileSize());
+        if (uploadResponse.getFileSize()>0 && uploadResponse.getStatus()==4000 && uploadResponse.getFileExists()){
+            Log.i(TAG,"Successfully Updated!!!");
+            db.updateImgQueue(filename,"1");
+            if (!isGalleryImg){
+                sourceFile.delete();
+            }
+
+//      dialog.cancel();
+        }else {
+            db.updateImgQueue(filename,"0");
+        }
+//  dialog.cancel();
     }
 }

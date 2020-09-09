@@ -2,6 +2,7 @@ package orderFlex.paymentCollection.OrderDetailsActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,7 @@ import orderFlex.paymentCollection.PaymentActivity.PaymentActivity;
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;
 
-public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.Holder>{
+public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.Holder> implements Picasso.Listener{
     private Context context;
     private List<PaymentListResponse.PaymentList> list;
     private String TAG="AdapterPaymentList";
@@ -62,7 +63,7 @@ public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.
             holder.refImgView.setVisibility(View.GONE);
         }else {
             holder.refImgView.setVisibility(View.VISIBLE);
-            if (list.get(position).getImage_url()!=null){
+            if (list.get(position).getImage_url()!=null && !list.get(position).getImage_url().equals("")){
                 Picasso.get()
                         .load(list.get(position).getImage_url())
 //                    .placeholder(R.drawable.filter_loader)
@@ -77,7 +78,7 @@ public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.
             }
         }
 
-        holder.paymentViewCrad.setOnClickListener(new View.OnClickListener() {
+        holder.paymentViewCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (list.get(position).getAction_flag().equals("0") && editFlag){
@@ -95,6 +96,7 @@ public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.
                     intent.putExtra("bank_name",list.get(position).getBankName());
                     intent.putExtra("method_name",list.get(position).getMethodeName());
                     intent.putExtra("payment_id",list.get(position).getId());
+                    intent.putExtra("order_code",list.get(position).getOrderCode());
                     context.startActivity(intent);
                 }else {
                     helper.showSnakBar(alartView,"This payment is locked!");
@@ -110,10 +112,15 @@ public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.
         return list.size();
     }
 
+    @Override
+    public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
+        Log.i(TAG,"Image Loading Failed!");
+    }
+
     public class Holder extends RecyclerView.ViewHolder{
         TextView methodName,bankName,referenceNo,paymentDate,payedAmount,index;
         ImageView refImgView;
-        CardView paymentViewCrad;
+        CardView paymentViewCard;
         RelativeLayout pay_image_container;
         public Holder(@NonNull View itemView) {
             super(itemView);
@@ -124,7 +131,7 @@ public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.
             payedAmount=itemView.findViewById(R.id.payedAmount);
             index=itemView.findViewById(R.id.index);
             refImgView=itemView.findViewById(R.id.refImgView);
-            paymentViewCrad=itemView.findViewById(R.id.paymentViewCrad);
+            paymentViewCard =itemView.findViewById(R.id.paymentViewCrad);
             pay_image_container=itemView.findViewById(R.id.pay_image_container);
         }
     }

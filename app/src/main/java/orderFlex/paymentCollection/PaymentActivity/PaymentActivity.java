@@ -39,6 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import orderFlex.paymentCollection.Model.DataBase.DatabaseOperation;
+import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentQueueRequestData;
 import orderFlex.paymentCollection.OrderDetailsActivity.OrderDetailsActivity;
 import orderFlex.paymentCollection.Model.APICallings.ImageFileUploader;
 import orderFlex.paymentCollection.Model.APICallings.PullPaymentMethods;
@@ -81,6 +83,8 @@ public class PaymentActivity
     private String paymentId="";
     private String imageOrginalPath;
     private boolean is_attachment_active =false;
+    private DatabaseOperation dbOperation;
+    private boolean isGalleryImg=false;
    // private ImageFileUploader imageFileUploader;
 
     @Override
@@ -91,6 +95,8 @@ public class PaymentActivity
 
         prefManager=new SharedPrefManager(this);
         helper=new Helper(this);
+        dbOperation=new DatabaseOperation(this);
+
         containerView=findViewById(R.id.paymentMethodeActivity);
         referenceNo=findViewById(R.id.referenceNo);
         payDate=findViewById(R.id.payDate);
@@ -235,12 +241,14 @@ public class PaymentActivity
                                     public void onClick(View v) {
                                         dispatchTakePictureIntent(1);
                                         alertDialog.dismiss();
+                                        isGalleryImg=false;
                                     }
                                 });
                                 galleryTake.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         dispatchTakePictureIntent(2);
+                                        isGalleryImg=true;
                                         alertDialog.dismiss();
                                     }
                                 });
@@ -354,12 +362,14 @@ public class PaymentActivity
 
     @Override
     public void onResponse(BillPaymentResponse response, int code) {
-        if (code==202){
+        if (code==202 && response!=null){
             helper.showSnakBar(containerView,"Thank you for your payment!");
             paymentId=response.getInserted_code();
             if (!is_attachment_active){
-                new ImageFileUploader(this, prefManager.getClientId(),"", "2",".jpg",
-                        orderCode,paymentId,imageOrginalPath).execute();
+                PaymentQueueRequestData requestData=new PaymentQueueRequestData(helper.makeUniqueID(),"2"
+                        ,prefManager.getClientId(), "",".jpg",orderCode,paymentId,imageOrginalPath,"0");
+                dbOperation.insertIMGQueue(requestData);
+                new ImageFileUploader(this,requestData,isGalleryImg).execute();
             }
 
             Intent intent=new Intent(PaymentActivity.this, OrderDetailsActivity.class);
@@ -530,13 +540,15 @@ public class PaymentActivity
             if (imageName!=null){
                 Log.i(TAG,"Update Image");
                 if (!is_attachment_active){
-                    new ImageFileUploader(this, prefManager.getClientId(),"", "2",".jpg",
-                            orderCode,paymentId,imageOrginalPath).execute();
+                    PaymentQueueRequestData requestData=new PaymentQueueRequestData(helper.makeUniqueID(),"2"
+                            ,prefManager.getClientId(), "",".jpg",orderCode,paymentId,imageOrginalPath,"0");
+                    dbOperation.insertIMGQueue(requestData);
+                    new ImageFileUploader(this, requestData,isGalleryImg).execute();
                 }
             }
-
             Intent intent=new Intent(PaymentActivity.this, OrderDetailsActivity.class);
             intent.putExtra("payment_massege","Payment Updated Successfully!");
+            intent.putExtra("booked_code",orderCode);
             startActivity(intent);
             finish();
         }else {

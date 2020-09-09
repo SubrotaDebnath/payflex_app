@@ -53,7 +53,7 @@ public class OrderDetailsActivity
         extends BaseActivity
         implements
         PullOrderDetailsByOrderCode.TodayOrderListener,
-        AdapterOrderList.UpdateTotalBill,
+        AdapterOrderedProductList.UpdateTotalBill,
         PullPaymentsList.PullPaymentsListListener,
         UpdateOrderHandler.UpdateOrderListener,
         GetProductList.GetProductListListener,
@@ -67,7 +67,7 @@ public class OrderDetailsActivity
     private String TAG="MainActivity",booked_code="";
     private PullOrderDetailsByOrderCode pullTotadyOrder;
     private Helper helper;
-    private AdapterOrderList adapter;
+    private AdapterOrderedProductList adapter;
     private TextView totalBill,clientCode,name,presenterName,phoneNo,address,orderTitle;
     private View containerView;
     private TodayOrderDetailsByDataResponse orderResponse=null;
@@ -216,7 +216,7 @@ public class OrderDetailsActivity
             if (response.getOrderDetails().size()>0){
                 orderTitle.setText("ORDER DETAILS");
                 orderResponse=response;
-                adapter=new AdapterOrderList(this,response.getOrderDetails());
+                adapter=new AdapterOrderedProductList(this,response.getOrderDetails());
                 layoutManager = new LinearLayoutManager(this);
                 orderList.setLayoutManager(layoutManager);
                 orderList.setAdapter(adapter);
