@@ -67,4 +67,11 @@
     <string name="order_code">Order Code:</string>
     <string name="order_date">Delivery Date:</string>
 
+<!--    password change-->
+    <string name="menu_pass">Update Password</string>
+    <string name="current_pass">Current password</string>
+    <string name="new_pass">New password</string>
+    <string name="re_new_pass">Renter the password</string>
+    <string name="cancel_btn">Cancel</string>
+
 </resources>

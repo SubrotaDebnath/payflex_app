@@ -15,6 +15,9 @@
     <item android:id="@+id/change_language"
         android:title="@string/language_change_menu" />
 
+    <item android:id="@+id/change_password"
+        android:title="@string/menu_pass" />
+
     <item android:id="@+id/logout"
         android:title="@string/logout" />
 </menu>

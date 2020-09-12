@@ -18,6 +18,8 @@ import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByD
 import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByDataResponse;
 import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderRequestBody;
 import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderResponse;
+import orderFlex.paymentCollection.Model.UserData.PassChangeReqBody;
+import orderFlex.paymentCollection.Model.UserData.PassChangeResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -56,4 +58,7 @@ public interface APIinterface {
 
     @GET("GetProductDetails")
     Call<ProductListResponse> getProducts();
+
+    @POST("UpdateUserPassword")
+    Call<PassChangeResponseBody> passChange(@Body PassChangeReqBody body);
 }

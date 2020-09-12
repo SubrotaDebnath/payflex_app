@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,12 +34,15 @@ import java.util.Locale;
 import orderFlex.paymentCollection.Model.APICallings.GetProductList;
 import orderFlex.paymentCollection.Model.APICallings.PullCustomerOrderList;
 import orderFlex.paymentCollection.Model.APICallings.SaveOrderHandler;
+import orderFlex.paymentCollection.Model.APICallings.UpdatePassword;
 import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByDataRequest;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.ProductListResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.SaveOrderRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListResponse;
 import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderResponse;
+import orderFlex.paymentCollection.Model.UserData.PassChangeReqBody;
+import orderFlex.paymentCollection.Model.UserData.PassChangeResponseBody;
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;
 import orderFlex.paymentCollection.Utility.LanguagePackage.BaseActivity;
@@ -51,7 +55,8 @@ public class OrderListActivity extends BaseActivity
         PullCustomerOrderList.OrderListListener,
         GetProductList.GetProductListListener,
         AdapterOrderForm.UpdateTotalBill,
-        SaveOrderHandler.SaveOrderListener
+        SaveOrderHandler.SaveOrderListener,
+        UpdatePassword.PassChangeListener
 {
 
     private SharedPrefManager prefManager;
@@ -206,6 +211,9 @@ public class OrderListActivity extends BaseActivity
                 break;
             case R.id.calendarData:
                 getOrderAccordingToDate(orderDate);
+                break;
+            case R.id.change_password:
+                changePassword(this);
                 break;
         }
         return true;
@@ -402,5 +410,69 @@ public class OrderListActivity extends BaseActivity
                 alertDialog.dismiss();
             }
         });
+    }
+
+    private void changePassword(final Context context){
+        final AlertDialog alertDialog2;
+        AlertDialog.Builder builder2 = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        ConstraintLayout customRoot = (ConstraintLayout) inflater.inflate(R.layout.update_password_view,null);
+
+        CardView cancel_key=customRoot.findViewById(R.id.cancel_key);
+        CardView update_key=customRoot.findViewById(R.id.update_key);
+        final EditText currentPass= customRoot.findViewById(R.id.current_pass);
+        final EditText newPass=customRoot.findViewById(R.id.new_pass);
+        final EditText reNewPass=customRoot.findViewById(R.id.re_new_pass);
+
+        builder2.setView(customRoot);
+        builder2.setTitle(R.string.menu_pass);
+        builder2.setCancelable(false);
+        alertDialog2= builder2.create();
+        alertDialog2.show();
+
+        cancel_key.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog2.dismiss();
+            }
+        });
+        update_key.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String c_pass="",n_pass="",rn_pass="";
+                c_pass=currentPass.getText().toString();
+                n_pass=newPass.getText().toString();
+                rn_pass=reNewPass.getText().toString();
+                if (c_pass.isEmpty()||n_pass.isEmpty()||rn_pass.isEmpty()){
+                    helper.showSnakBar(containerView,"Some fields are empty!");
+                }else {
+                    if (n_pass.equals(rn_pass)){
+                        if (helper.isInternetAvailable()){
+                            PassChangeReqBody reqBody=new PassChangeReqBody(prefManager.getUsername(),c_pass,n_pass,rn_pass);
+                            new UpdatePassword(context).updatePassCall(prefManager.getUsername(),prefManager.getUserPassword(),reqBody);
+                            alertDialog2.dismiss();
+                        }else {
+                            helper.showSnakBar(containerView,"No internet! Please check your internet connection!");
+                        }
+                    }else {
+                        helper.showSnakBar(containerView,"New password does not match!");
+                    }
+                }
+
+            }
+        });
+    }
+
+    @Override
+    public void onPasswordUpdateResponse(PassChangeResponseBody response, int code) {
+        if (response!=null && code==202){
+            helper.showSnakBar(containerView,response.getMessage());
+        }else {
+            if (code==401){
+                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
+            }else {
+                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
+            }
+        }
     }
 }

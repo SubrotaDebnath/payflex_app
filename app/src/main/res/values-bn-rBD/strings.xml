@@ -67,4 +67,12 @@
     <string name="name_of_the_client"></string>
     <string name="order_code">ক্রয় কোড:</string>
     <string name="order_date">হস্তান্তরের তারিখ:</string>
+
+    <!--    password change-->
+    <string name="menu_pass">Update Password</string>
+    <string name="current_pass">Current password</string>
+    <string name="new_pass">New password</string>
+    <string name="re_new_pass">Renter the password</string>
+    <string name="cancel_btn">Cancel</string>
+
 </resources>
