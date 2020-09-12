@@ -28,7 +28,7 @@
     <!--    Login Page-->
     <string name="payment_place_holder_text">Reference Image</string>
     <string name="user_name">ইমেইল/সংক্ষিপ্ত নাম</string>
-    <string name="password">গোপন নাম্বার</string>
+    <string name="password">সর্বশেষ পাসওয়ার্ডটি লিখুন</string>
     <string name="login">প্রবেশ করুন</string>
     <string name="todo">TODO</string>
 
@@ -69,10 +69,10 @@
     <string name="order_date">হস্তান্তরের তারিখ:</string>
 
     <!--    password change-->
-    <string name="menu_pass">Update Password</string>
-    <string name="current_pass">Current password</string>
-    <string name="new_pass">New password</string>
-    <string name="re_new_pass">Renter the password</string>
-    <string name="cancel_btn">Cancel</string>
+    <string name="menu_pass">পাসওয়ার্ড পরিবর্তন</string>
+    <string name="current_pass">বর্তমান পাসওয়ার্ডটি লিখুন</string>
+    <string name="new_pass">নতুন পাসওয়ার্ডটি লিখুন</string>
+    <string name="re_new_pass">পুনরায় নতুন পাসওয়ার্ডটি লিখুন</string>
+    <string name="cancel_btn">বাতিল</string>
 
 </resources>
