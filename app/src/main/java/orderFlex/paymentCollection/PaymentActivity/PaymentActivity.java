@@ -82,7 +82,7 @@ public class PaymentActivity
     private boolean updateFlag=false;
     private String paymentId="";
     private String imageOrginalPath;
-    private boolean is_attachment_active =false;
+    private boolean is_attachment_active =true;
     private DatabaseOperation dbOperation;
     private boolean isGalleryImg=false;
    // private ImageFileUploader imageFileUploader;
@@ -221,7 +221,7 @@ public class PaymentActivity
             @Override
             public void onClick(View v) {
 
-                if (!is_attachment_active){
+                if (is_attachment_active){
                     if (checkCameraPermission()){
                         if (checkStorageReadPermission()){
                             if (checkStorageWritePermission()){
@@ -254,13 +254,10 @@ public class PaymentActivity
                                 });
                             }
                         }
-
                     }
                 }else {
-                    helper.showSnakBar(containerView,"Sorry! You can't submits attachment in ADVANCE PAYMENT or ACCOUNT BALANCE");
+                    helper.showSnakBar(containerView,"Sorry! You can't submits attachment in ACCOUNT BALANCE");
                 }
-
-
             }
         });
     }
@@ -333,8 +330,12 @@ public class PaymentActivity
                     ||methodListData.get(position).getId().equals("12")
                     ||methodListData.get(position).getId().equals("3")
                     ||methodListData.get(position).getId().equals("2")){
-                Log.i(TAG, "Advance Selected");
-                is_attachment_active =true;
+                Log.i(TAG, "Selected");
+                if (methodListData.get(position).getId().equals("12")){
+                    is_attachment_active =false;
+                }else {
+                    is_attachment_active =true;
+                }
                 //add referenceNo
                 referenceNo.setEnabled(false);
                 if (methodListData.get(position).getId().equals("12")){
@@ -348,7 +349,7 @@ public class PaymentActivity
 //                if (is_attachment_active){
 //                    referenceNo.setText("");
 //                }
-                is_attachment_active =false;
+                is_attachment_active =true;
             }
         }
         Log.i(TAG,bankListData.get(position).getBankName());
@@ -365,7 +366,7 @@ public class PaymentActivity
         if (code==202 && response!=null){
             helper.showSnakBar(containerView,"Thank you for your payment!");
             paymentId=response.getInserted_code();
-            if (!is_attachment_active){
+            if (is_attachment_active){
                 PaymentQueueRequestData requestData=new PaymentQueueRequestData(helper.makeUniqueID(),"2"
                         ,prefManager.getClientId(), "",".jpg",orderCode,paymentId,imageOrginalPath,"0");
                 dbOperation.insertIMGQueue(requestData);
@@ -539,7 +540,7 @@ public class PaymentActivity
             helper.showSnakBar(containerView,response.getMessage());
             if (imageName!=null){
                 Log.i(TAG,"Update Image");
-                if (!is_attachment_active){
+                if (is_attachment_active){
                     PaymentQueueRequestData requestData=new PaymentQueueRequestData(helper.makeUniqueID(),"2"
                             ,prefManager.getClientId(), "",".jpg",orderCode,paymentId,imageOrginalPath,"0");
                     dbOperation.insertIMGQueue(requestData);
