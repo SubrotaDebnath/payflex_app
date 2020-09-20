@@ -1,8 +1,8 @@
-package orderFlex.paymentCollection.Model.PaymentAndBillData;
+package orderFlex.paymentCollection.Model.SaveOrderData;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SaveOrderRequest {
+public class SaveOrderDetails {
 
     @SerializedName("txid")
     private String txID;
@@ -20,7 +20,7 @@ public class SaveOrderRequest {
     private String ordered_date;
     private String order_type;
 
-    public SaveOrderRequest(String txID, String product_id, String product_name, String product_type, String quantities, String client_id, String taker_id, String delevery_date, String plant, String ordered_date, String order_type) {
+    public SaveOrderDetails(String txID, String product_id, String product_name, String product_type, String quantities, String client_id, String taker_id, String delevery_date, String plant, String ordered_date, String order_type) {
         this.txID = txID;
         this.product_id = product_id;
         this.product_name = product_name;

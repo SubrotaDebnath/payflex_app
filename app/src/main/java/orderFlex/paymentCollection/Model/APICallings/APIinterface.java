@@ -9,8 +9,9 @@ import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListRequest;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentMothodsResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.ProductListResponse;
-import orderFlex.paymentCollection.Model.PaymentAndBillData.SaveOrderRequest;
+import orderFlex.paymentCollection.Model.SaveOrderData.SaveOrderDetails;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.UpdatePaymenResponse;
+import orderFlex.paymentCollection.Model.SaveOrderData.SaveOrderRequestBody;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListResponse;
 import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByCodeRequest;
@@ -51,7 +52,7 @@ public interface APIinterface {
     Call<UpdateOrderResponse> updateOrder(@Body List<UpdateOrderRequestBody> updateOrderList);
 
     @POST("Save_order")
-    Call<UpdateOrderResponse> saveNewOrder(@Body List<SaveOrderRequest> body);
+    Call<UpdateOrderResponse> saveNewOrder(@Body SaveOrderRequestBody body);
 
     @POST("GetOrderPaymentList")
     Call<PaymentListResponse> getPayments(@Body PaymentListRequest body);

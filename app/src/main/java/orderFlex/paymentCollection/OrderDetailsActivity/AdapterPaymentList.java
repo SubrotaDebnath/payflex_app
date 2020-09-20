@@ -96,7 +96,6 @@ public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.
                     intent.putExtra("bank_name",list.get(position).getBankName());
                     intent.putExtra("method_name",list.get(position).getMethodeName());
                     intent.putExtra("payment_id",list.get(position).getId());
-                    intent.putExtra("order_code",list.get(position).getOrderCode());
                     context.startActivity(intent);
                 }else {
                     helper.showSnakBar(alartView,"This payment is locked!");

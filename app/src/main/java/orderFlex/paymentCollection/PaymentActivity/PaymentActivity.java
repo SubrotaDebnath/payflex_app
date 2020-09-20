@@ -335,13 +335,12 @@ public class PaymentActivity
                     is_attachment_active =false;
                 }else {
                     is_attachment_active =true;
+                    referenceNo.setText("");
                 }
                 //add referenceNo
-                referenceNo.setEnabled(false);
                 if (methodListData.get(position).getId().equals("12")){
                     referenceNo.setText("111");
-                }else {
-                    referenceNo.setText("");
+                    referenceNo.setEnabled(false);
                 }
             }else {
                 referenceNo.setEnabled(true);
@@ -366,15 +365,14 @@ public class PaymentActivity
         if (code==202 && response!=null){
             helper.showSnakBar(containerView,"Thank you for your payment!");
             paymentId=response.getInserted_code();
-            if (is_attachment_active){
+            if (is_attachment_active && response.isSuccessfull()){
                 PaymentQueueRequestData requestData=new PaymentQueueRequestData(helper.makeUniqueID(),"2"
                         ,prefManager.getClientId(), "",".jpg",orderCode,paymentId,imageOrginalPath,"0");
                 dbOperation.insertIMGQueue(requestData);
                 new ImageFileUploader(this,requestData,isGalleryImg).execute();
             }
-
             Intent intent=new Intent(PaymentActivity.this, OrderDetailsActivity.class);
-            intent.putExtra("payment_massege","Payment Saved Successfully!");
+            intent.putExtra("payment_massege",response.getMessage());
             intent.putExtra("booked_code",orderCode);
             startActivity(intent);
             finish();
@@ -538,7 +536,7 @@ public class PaymentActivity
     public void onUpdateResponse(UpdatePaymenResponse response, int code) {
         if (response!=null&&code==202){
             helper.showSnakBar(containerView,response.getMessage());
-            if (imageName!=null){
+            if (imageOrginalPath!=null){
                 Log.i(TAG,"Update Image");
                 if (is_attachment_active){
                     PaymentQueueRequestData requestData=new PaymentQueueRequestData(helper.makeUniqueID(),"2"

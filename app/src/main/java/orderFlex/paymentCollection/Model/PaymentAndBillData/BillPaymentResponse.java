@@ -10,6 +10,29 @@ public class BillPaymentResponse {
     @SerializedName("inserted_code")
     @Expose
     private String inserted_code;
+    @SerializedName("message")
+    @Expose
+    private String message;
+
+    public boolean isSuccessfull() {
+        return isSuccessfull;
+    }
+
+    public void setSuccessfull(boolean successfull) {
+        isSuccessfull = successfull;
+    }
+
+    @SerializedName("isSuccessfull")
+    @Expose
+    private boolean isSuccessfull;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     public String getTrxid() {
         return trxid;

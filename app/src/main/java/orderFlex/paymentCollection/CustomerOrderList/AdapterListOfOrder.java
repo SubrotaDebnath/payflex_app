@@ -2,6 +2,7 @@ package orderFlex.paymentCollection.CustomerOrderList;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import orderFlex.paymentCollection.R;
 public class AdapterListOfOrder extends RecyclerView.Adapter<AdapterListOfOrder.ViewHolder>{
     private Context context;
     private List<CustomerOrderListResponse.Order_list> list=new ArrayList<>();
+    private String TAG="AdapterListOfOrder";
 
     public AdapterListOfOrder(Context context, List<CustomerOrderListResponse.Order_list> list) {
         this.context = context;
@@ -46,9 +48,20 @@ public class AdapterListOfOrder extends RecyclerView.Adapter<AdapterListOfOrder.
             public void onClick(View v) {
                 Intent intent=new Intent(context, OrderDetailsActivity.class);
                 intent.putExtra("booked_code",list.get(position).getOrderCode());
+                if (list.get(position).isIndent_flag()==1){
+                    intent.putExtra("is_indent",true);
+                }else {
+                    intent.putExtra("is_indent",false);
+                }
+
                 context.startActivity(intent);
             }
         });
+        if (list.get(position).isIndent_flag()==1){
+            Log.i(TAG,"indented");
+        }else {
+            Log.i(TAG,"Not Indented");
+        }
     }
 
     @Override

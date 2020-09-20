@@ -15,12 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import orderFlex.paymentCollection.Model.PaymentAndBillData.ProductListResponse;
-import orderFlex.paymentCollection.Model.PaymentAndBillData.SaveOrderRequest;
+import orderFlex.paymentCollection.Model.SaveOrderData.SaveOrderDetails;
 import orderFlex.paymentCollection.R;
 
 public class AdapterOrderForm extends RecyclerView.Adapter<AdapterOrderForm.ViewHolder>{
     private Context context;
-    private List<SaveOrderRequest> list;
+    private List<SaveOrderDetails> list;
     List<ProductListResponse.ProductList> productLists;
     private UpdateTotalBill updateTotalBill;
     private double totalBills = 0;
@@ -28,7 +28,7 @@ public class AdapterOrderForm extends RecyclerView.Adapter<AdapterOrderForm.View
     private int counter=0;
     private boolean change=false;
 
-    public AdapterOrderForm(Context context, List<SaveOrderRequest> list, List<ProductListResponse.ProductList> productLists) {
+    public AdapterOrderForm(Context context, List<SaveOrderDetails> list, List<ProductListResponse.ProductList> productLists) {
         this.context = context;
         this.list = list;
         this.productLists=productLists;
@@ -107,12 +107,12 @@ public class AdapterOrderForm extends RecyclerView.Adapter<AdapterOrderForm.View
         }
     }
     public interface UpdateTotalBill{
-        public void saveBillUpdate(List<SaveOrderRequest> list, double totalTaka, boolean change);
+        public void saveBillUpdate(List<SaveOrderDetails> list, double totalTaka, boolean change);
     }
-    private void billCalculation(List<SaveOrderRequest> list){
+    private void billCalculation(List<SaveOrderDetails> list){
         totalBills=0;
         int count=0;
-        for (SaveOrderRequest details:list) {
+        for (SaveOrderDetails details:list) {
             double orderedPrice=(Double.valueOf(productLists.get(count).getPWholesalePrice()))*(Double.valueOf(details.getQuantities()));
             totalBills=totalBills+orderedPrice;
             Log.i(TAG,"Order: "+details.getQuantities()+" Rate: "+productLists.get(count).getPWholesalePrice()+" Qum. Bill: "+totalBills);

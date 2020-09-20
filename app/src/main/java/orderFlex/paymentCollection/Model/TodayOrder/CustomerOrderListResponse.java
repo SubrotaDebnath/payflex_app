@@ -57,8 +57,11 @@ public class CustomerOrderListResponse {
         @SerializedName("total_costs")
         @Expose
         private String total_costs;
+        @SerializedName("indent_flag")
+        @Expose
+        private int indent_flag;
 
-        public Order_list(String id, String takingDate, String deliveryDate, String insertDateTime, String orderCode, String takerId, String order_for_client_id, String payment_status, String total_costs) {
+        public Order_list(String id, String takingDate, String deliveryDate, String insertDateTime, String orderCode, String takerId, String order_for_client_id, String payment_status, String total_costs, int indent_flag) {
             this.id = id;
             this.takingDate = takingDate;
             this.deliveryDate = deliveryDate;
@@ -68,6 +71,11 @@ public class CustomerOrderListResponse {
             this.order_for_client_id = order_for_client_id;
             this.payment_status = payment_status;
             this.total_costs = total_costs;
+            this.indent_flag = indent_flag;
+        }
+
+        public int isIndent_flag() {
+            return indent_flag;
         }
 
         public String getId() {

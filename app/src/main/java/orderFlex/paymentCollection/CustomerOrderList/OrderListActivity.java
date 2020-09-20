@@ -37,7 +37,8 @@ import orderFlex.paymentCollection.Model.APICallings.SaveOrderHandler;
 import orderFlex.paymentCollection.Model.APICallings.UpdatePassword;
 import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByDataRequest;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.ProductListResponse;
-import orderFlex.paymentCollection.Model.PaymentAndBillData.SaveOrderRequest;
+import orderFlex.paymentCollection.Model.SaveOrderData.SaveOrderDetails;
+import orderFlex.paymentCollection.Model.SaveOrderData.SaveOrderRequestBody;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListResponse;
 import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderResponse;
@@ -74,10 +75,11 @@ public class OrderListActivity extends BaseActivity
     private RecyclerView.LayoutManager layoutManager;
     private AdapterListOfOrder adapterListOfOrder;
     private AdapterOrderForm adapterOrderForm;
-    private List<SaveOrderRequest> saveOrderRequestsBody;
+    private List<SaveOrderDetails> saveOrderDetails;
     //Order Save/Cancel
     private CardView cancelOrder,saveOrder,addNewOrder;
     private SaveOrderHandler saveOrderHandler;
+    private int orderCount=1;
     Locale english=null;
 
     @Override
@@ -128,11 +130,22 @@ public class OrderListActivity extends BaseActivity
                 double totalBill=Double.parseDouble(totalTakenBill.getText().toString());
                 if (helper.isInternetAvailable()){
                     if (totalBill>0.0){
+                        SaveOrderRequestBody requestBody=new SaveOrderRequestBody(
+                                helper.getDateInEnglish(),
+                                saveOrderDetails.get(0).getDelevery_date(),
+                                prefManager.getClientCode()+"-"+helper.getShortDateInEnglish()+"-"+String.valueOf(orderCount+1),
+                                helper.makeUniqueID(),
+                                saveOrderDetails.get(0).getTaker_id(),
+                                saveOrderDetails.get(0).getClient_id(),
+                                saveOrderDetails
+                        );
+
                         Gson gson=new Gson();
-                        String response=gson.toJson(saveOrderRequestsBody);
+                        String response=gson.toJson(saveOrderDetails);
                         Log.i(TAG,"Response Body: "+response);
                         saveOrderHandler=new SaveOrderHandler(context);
-                        saveOrderHandler.pushSaveOrder(prefManager.getUsername(),prefManager.getUserPassword(),saveOrderRequestsBody);
+                        //need to change in API call for new order code
+                        saveOrderHandler.pushSaveOrder(prefManager.getUsername(),prefManager.getUserPassword(), requestBody);
                     }else {
                         helper.showSnakBar(containerView,"You did not give any quantity of any product!");
                     }
@@ -267,6 +280,7 @@ public class OrderListActivity extends BaseActivity
             orderTakeSegment.setVisibility(View.GONE);
             addNewOrder.setVisibility(View.VISIBLE);
             listTitle.setText("Order List");
+            orderCount=response.getOrderDetails().size();
 
             adapterListOfOrder=new AdapterListOfOrder(this,response.getOrderDetails());
             layoutManager = new LinearLayoutManager(this);
@@ -299,11 +313,11 @@ public class OrderListActivity extends BaseActivity
             addNewOrder.setVisibility(View.GONE);
             bookedOrderList.setVisibility(View.GONE);
 
-            final List<SaveOrderRequest> orderRequestList=new ArrayList<>();
+            final List<SaveOrderDetails> orderRequestList=new ArrayList<>();
 
             int count=0;
             for (final ProductListResponse.ProductList product:response.getProductList()) {
-                SaveOrderRequest order=new SaveOrderRequest(helper.makeUniqueID()+String.valueOf(count),
+                SaveOrderDetails order=new SaveOrderDetails(helper.makeUniqueID()+String.valueOf(count),
                         product.getId(),product.getPName(),product.getPType(),
                         "0",prefManager.getClientId(),prefManager.getHandlerId(),
                         helper.getDateInEnglish(),"1",helper.getDateInEnglish(),"2");
@@ -313,7 +327,7 @@ public class OrderListActivity extends BaseActivity
             }
             count=0;
 
-            for (SaveOrderRequest data:orderRequestList) {
+            for (SaveOrderDetails data:orderRequestList) {
                 Log.i(TAG,"Recheck: "+" Name: "+data.getProduct_name()+" Type: "+data.getProduct_type());
             }
             //adapter operation 01726574448 hadibur zaman
@@ -333,8 +347,8 @@ public class OrderListActivity extends BaseActivity
     }
 
     @Override
-    public void saveBillUpdate(List<SaveOrderRequest> list, double totalTaka, boolean change) {
-        saveOrderRequestsBody=list;
+    public void saveBillUpdate(List<SaveOrderDetails> list, double totalTaka, boolean change) {
+        saveOrderDetails =list;
         totalTakenBill.setText(String.valueOf(totalTaka));
     }
 

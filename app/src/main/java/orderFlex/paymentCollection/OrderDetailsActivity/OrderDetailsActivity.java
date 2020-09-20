@@ -35,7 +35,7 @@ import orderFlex.paymentCollection.Model.APICallings.UpdateOrderHandler;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListRequest;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.ProductListResponse;
-import orderFlex.paymentCollection.Model.PaymentAndBillData.SaveOrderRequest;
+import orderFlex.paymentCollection.Model.SaveOrderData.SaveOrderDetails;
 import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByDataRequest;
 import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByDataResponse;
 import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByCodeRequest;
@@ -79,8 +79,9 @@ public class OrderDetailsActivity
     private List<UpdateOrderRequestBody> updateOrderRequestBodyList;
     private UpdateOrderHandler updateOrderHandler=new UpdateOrderHandler(this);
     private AdapterOrderTakeForm adapterOrderTakeForm;
-    private List<SaveOrderRequest> saveOrderRequestsBody;
+    private List<SaveOrderDetails> saveOrderRequestsBody;
     private SaveOrderHandler saveOrderHandler;
+    private boolean isIndented=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +115,7 @@ public class OrderDetailsActivity
             Intent intent=getIntent();
             String message=intent.getStringExtra("payment_massege");
             booked_code=intent.getStringExtra("booked_code");
+            isIndented=intent.getBooleanExtra("is_indent",false);
             if (message == null){
                 helper.showSnakBar(containerView,"Refreshing the dashboard...!");
             }else {
@@ -155,19 +157,19 @@ public class OrderDetailsActivity
             }
         });
 
-        saveOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (helper.isInternetAvailable()){
-                    Gson gson=new Gson();
-                    String response=gson.toJson(saveOrderRequestsBody);
-                    Log.i(TAG,"Response Body: "+response);
-                    saveOrderHandler.pushSaveOrder(prefManager.getUsername(),prefManager.getUserPassword(),saveOrderRequestsBody);
-                }else {
-                    helper.showSnakBar(containerView,"No internet! Please check your internet connection!");
-                }
-            }
-        });
+//        saveOrder.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (helper.isInternetAvailable()){
+//                    Gson gson=new Gson();
+//                    String response=gson.toJson(saveOrderRequestsBody);
+//                    Log.i(TAG,"Response Body: "+response);
+//                    saveOrderHandler.pushSaveOrder(prefManager.getUsername(),prefManager.getUserPassword(),saveOrderRequestsBody);
+//                }else {
+//                    helper.showSnakBar(containerView,"No internet! Please check your internet connection!");
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -217,7 +219,7 @@ public class OrderDetailsActivity
             if (response.getOrderDetails().size()>0){
                 orderTitle.setText("ORDER DETAILS");
                 orderResponse=response;
-                adapter=new AdapterOrderedProductList(this,response.getOrderDetails());
+                adapter=new AdapterOrderedProductList(this,response.getOrderDetails(),isIndented);
                 layoutManager = new LinearLayoutManager(this);
                 orderList.setLayoutManager(layoutManager);
                 orderList.setAdapter(adapter);
@@ -314,11 +316,11 @@ public class OrderDetailsActivity
     public void onProductListResponse(ProductListResponse response, int code) {
         if (response!=null&&code==202){
             orderTitle.setText("NEW ORDER DETAILS");
-            final List<SaveOrderRequest> orderRequestList=new ArrayList<>();
+            final List<SaveOrderDetails> orderRequestList=new ArrayList<>();
 
             int count=0;
             for (final ProductListResponse.ProductList product:response.getProductList()) {
-                SaveOrderRequest order=new SaveOrderRequest(helper.makeUniqueID()+String.valueOf(count),
+                SaveOrderDetails order=new SaveOrderDetails(helper.makeUniqueID()+String.valueOf(count),
                         product.getId(),product.getPName(),product.getPType(),
                         "0",prefManager.getClientId(),prefManager.getHandlerId(),
                         helper.getDateInEnglish(),"1",helper.getDateInEnglish(),"2");
@@ -328,7 +330,7 @@ public class OrderDetailsActivity
             }
             count=0;
 
-            for (SaveOrderRequest data:orderRequestList) {
+            for (SaveOrderDetails data:orderRequestList) {
                 Log.i(TAG,"Recheck: "+" Name: "+data.getProduct_name()+" Type: "+data.getProduct_type());
             }
             //adapter operation 01726574448 hadibur zaman
@@ -348,7 +350,7 @@ public class OrderDetailsActivity
     }
 
     @Override
-    public void saveBillUpdate(List<SaveOrderRequest> list, float totalTaka, boolean change) {
+    public void saveBillUpdate(List<SaveOrderDetails> list, float totalTaka, boolean change) {
         saveOrderRequestsBody=list;
         totalTakenBill.setText(String.valueOf(totalTaka));
     }

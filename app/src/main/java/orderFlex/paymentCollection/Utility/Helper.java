@@ -57,6 +57,11 @@ public class Helper {
         String date = df.format(Calendar.getInstance().getTime());
         return date;
     }
+    public String getShortDateInEnglish(){
+        SimpleDateFormat df = new SimpleDateFormat("ddMMyy",english);
+        String date = df.format(Calendar.getInstance().getTime());
+        return date;
+    }
     public String getDateTimeInEnglish(){
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",english);
         String date = df.format(Calendar.getInstance().getTime());
