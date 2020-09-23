@@ -1,4 +1,4 @@
-package orderFlex.paymentCollection.OrderDetailsActivity;
+package orderFlex.paymentCollection.Activityes.OrderDetailsActivity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -21,7 +21,7 @@ import java.util.List;
 
 import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentRequestBody;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListResponse;
-import orderFlex.paymentCollection.PaymentActivity.PaymentActivity;
+import orderFlex.paymentCollection.Activityes.PaymentActivity.PaymentActivity;
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;
 
@@ -81,7 +81,7 @@ public class AdapterPaymentList extends RecyclerView.Adapter<AdapterPaymentList.
         holder.paymentViewCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (list.get(position).getAction_flag().equals("0") && editFlag){
+                if (list.get(position).getAction_flag().equals("0") && editFlag ){
                     paymentData.setSubmittedDateTime(list.get(position).getPaymentDateTime());
                     paymentData.setAmount(list.get(position).getAmount());
                     paymentData.setFinancial_institution_id(list.get(position).getFinancialInstitutionId());

@@ -12,6 +12,9 @@
         app:showAsAction="ifRoom|collapseActionView"
         android:icon="@drawable/ic_refresh_white"/>
 
+    <item android:id="@+id/userProfile"
+        android:title="@string/key_profile" />
+
     <item android:id="@+id/change_language"
         android:title="@string/language_change_menu" />
 

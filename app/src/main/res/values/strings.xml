@@ -24,14 +24,14 @@
         <item><font fgcolor='#FFFFFF'>MONGLA</font></item>
     </string-array>
 
-<!--    Login Page-->
+    <!--    Login Page-->
     <string name="payment_place_holder_text">Reference Image</string>
     <string name="user_name">User Name</string>
     <string name="password">Password</string>
     <string name="login">LogIn</string>
     <string name="todo">TODO</string>
 
-<!--Order list and details page-->
+    <!--Order list and details page-->
     <string name="order_list_title">order list</string>
     <string name="item_description">Item Description</string>
     <string name="sl">Sl.</string>
@@ -44,7 +44,7 @@
     <string name="add_new_payment">Add new payment</string>
     <string name="update_btn">Update</string>
     <string name="save_new_order_btn">Save new order</string>
-<!--    Menu page -->
+    <!--    Menu page -->
     <string name="logout">Logout</string>
 
     <!--    Payment page-->
@@ -58,20 +58,25 @@
     <string name="payment_amount">Amount:</string>
     <string name="create_order">Create New Order</string>
 
-<!--    প্রোফাইল-->
+    <!--    প্রোফাইল-->
+    <string name="key_profile">Profile</string>
     <string name="mobile_no">Mobile No:</string>
     <string name="contact_person">CONTACT PERSON:</string>
     <string name="client_code">Code :</string>
     <string name="delivery_location">Delivery Location:</string>
+    <string name="Address">Address:</string>
     <string name="name_of_the_client">Profile Information</string>
     <string name="order_code">Order Code:</string>
     <string name="order_date">Delivery Date:</string>
 
-<!--    password change-->
+    <!--    password change-->
     <string name="menu_pass">Update Password</string>
     <string name="current_pass">Current password</string>
     <string name="new_pass">New password</string>
     <string name="re_new_pass">Renter the password</string>
     <string name="cancel_btn">Cancel</string>
+    <!--    Plant Selection-->
+    <string name="plant_title">Select Delivery Plant</string>
+    <string name="next">NEXT STEP</string>
 
 </resources>

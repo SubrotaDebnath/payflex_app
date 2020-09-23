@@ -23,7 +23,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import orderFlex.paymentCollection.OrderDetailsActivity.OrderDetailsActivity;
+import orderFlex.paymentCollection.Activityes.OrderDetailsActivity.OrderDetailsActivity;
 import orderFlex.paymentCollection.Model.FileDataClass.FileUploadResponse;
 import orderFlex.paymentCollection.Utility.Constant;
 import orderFlex.paymentCollection.Utility.Helper;

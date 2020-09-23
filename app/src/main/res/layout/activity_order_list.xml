@@ -9,7 +9,7 @@
     android:id="@+id/orderListActivity"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    tools:context=".OrderDetailsActivity.OrderDetailsActivity">
+    tools:context=".Activityes.OrderDetailsActivity.OrderDetailsActivity">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -195,7 +195,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/save_new_order_button"
+                            android:text="@string/next"
                             android:textSize="15sp"
                             android:background="@color/backgroundColor"
                             android:textAllCaps="true"

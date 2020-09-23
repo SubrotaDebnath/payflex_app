@@ -74,6 +74,9 @@ public class TodayOrderDetailsByDataResponse {
         @SerializedName("plant")
         @Expose
         private String plant;
+        @SerializedName("plantName")
+        @Expose
+        private String plantName;
         @SerializedName("quantityes")
         @Expose
         private String quantityes;
@@ -99,21 +102,9 @@ public class TodayOrderDetailsByDataResponse {
         @Expose
         private Object pDiscription;
 
-//        public String getpName() {
-//            return pName;
-//        }
-//
-//        public void setpName(String pName) {
-//            this.pName = pName;
-//        }
-
-//        public String getpType() {
-//            return pType;
-//        }
-//
-//        public void setpType(String pType) {
-//            this.pType = pType;
-//        }
+        public String getPlantName() {
+            return plantName;
+        }
 
         public String getpRetailPrice() {
             return pRetailPrice;

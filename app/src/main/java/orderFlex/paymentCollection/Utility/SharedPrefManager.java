@@ -27,6 +27,7 @@ public class SharedPrefManager {
     private static final String PRESENTER="presenter_name";
     private static final String HANDLER_ID="handler_id";
     private static final String LANGUAGE="app_language";
+    private static final String PRO_IMG_URL="profile_url";
 
 
 
@@ -156,5 +157,13 @@ public class SharedPrefManager {
     }
     public String getLanguage(){
         return preferences.getString(LANGUAGE,"bn");
+    }
+    ////////////////////////////
+    public void setProImgUrl(String id){
+        editor.putString(PRO_IMG_URL,id);
+        editor.commit();
+    }
+    public String getProImgUrl(){
+        return preferences.getString(PRO_IMG_URL,null);
     }
 }

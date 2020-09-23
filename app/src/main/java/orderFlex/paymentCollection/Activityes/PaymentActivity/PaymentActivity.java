@@ -1,4 +1,4 @@
-package orderFlex.paymentCollection.PaymentActivity;
+package orderFlex.paymentCollection.Activityes.PaymentActivity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,8 +41,8 @@ import java.util.Locale;
 
 import orderFlex.paymentCollection.Model.DataBase.DatabaseOperation;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentQueueRequestData;
-import orderFlex.paymentCollection.OrderDetailsActivity.OrderDetailsActivity;
-import orderFlex.paymentCollection.Model.APICallings.ImageFileUploader;
+import orderFlex.paymentCollection.Activityes.OrderDetailsActivity.OrderDetailsActivity;
+import orderFlex.paymentCollection.Model.APICallings.PaymentImageFileUploader;
 import orderFlex.paymentCollection.Model.APICallings.PullPaymentMethods;
 import orderFlex.paymentCollection.Model.APICallings.PushBills;
 import orderFlex.paymentCollection.Model.APICallings.UpdateBill;
@@ -59,7 +59,9 @@ import orderFlex.paymentCollection.Utility.SharedPrefManager;
 public class PaymentActivity
         extends BaseActivity
         implements PullPaymentMethods.PaymentMethodsListener,
-        AdapterView.OnItemSelectedListener, PushBills.PushBillListener,UpdateBill.UpdateBillListener {
+        AdapterView.OnItemSelectedListener,
+        PushBills.PushBillListener,
+        UpdateBill.UpdateBillListener {
     private TextView paySubmit;
     private Spinner spinnerMethod, spinnerBank;
     private SharedPrefManager prefManager;
@@ -369,7 +371,7 @@ public class PaymentActivity
                 PaymentQueueRequestData requestData=new PaymentQueueRequestData(helper.makeUniqueID(),"2"
                         ,prefManager.getClientId(), "",".jpg",orderCode,paymentId,imageOrginalPath,"0");
                 dbOperation.insertIMGQueue(requestData);
-                new ImageFileUploader(this,requestData,isGalleryImg).execute();
+                new PaymentImageFileUploader(this,requestData,isGalleryImg).execute();
             }
             Intent intent=new Intent(PaymentActivity.this, OrderDetailsActivity.class);
             intent.putExtra("payment_massege",response.getMessage());
@@ -542,7 +544,7 @@ public class PaymentActivity
                     PaymentQueueRequestData requestData=new PaymentQueueRequestData(helper.makeUniqueID(),"2"
                             ,prefManager.getClientId(), "",".jpg",orderCode,paymentId,imageOrginalPath,"0");
                     dbOperation.insertIMGQueue(requestData);
-                    new ImageFileUploader(this, requestData,isGalleryImg).execute();
+                    new PaymentImageFileUploader(this, requestData,isGalleryImg).execute();
                 }
             }
             Intent intent=new Intent(PaymentActivity.this, OrderDetailsActivity.class);

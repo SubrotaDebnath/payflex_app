@@ -70,9 +70,16 @@ public class LoginResponse {
     @SerializedName("is_active")
     @Expose
     private Object isActive;
+    @SerializedName("image_url")
+    @Expose
+    private String image_url;
     @SerializedName("contacts")
     @Expose
     private List<Contact> contacts = null;
+
+    public String getImage_url() {
+        return image_url;
+    }
 
     public String getId() {
         return id;

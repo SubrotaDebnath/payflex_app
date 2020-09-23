@@ -192,4 +192,56 @@ public class Helper {
             return true;
         }
     }
+
+    public boolean isDate1LessDate2(String inDate1,String inDate2){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date1=new Date();
+        Date date2=new Date();
+        try {
+            date1= sdf.parse(inDate1);
+            date2 = sdf.parse(inDate2);
+        } catch (ParseException e) {
+            Log.i(TAG,"Exception to date conversion: "+e.toString());
+        }
+
+        if (date1.before(date2)){
+            return true;
+        }else {
+            return false;
+        }
+    }
+    public boolean isDate1GreaterDate2(String inDate1,String inDate2){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date1=new Date();
+        Date date2=new Date();
+        try {
+            date1= sdf.parse(inDate1);
+            date2 = sdf.parse(inDate2);
+        } catch (ParseException e) {
+            Log.i(TAG,"Exception to date conversion: "+e.toString());
+        }
+
+        if (date1.after(date2)){
+            return true;
+        }else {
+            return false;
+        }
+    }
+    public boolean isDate1EqualDate2(String inDate1,String inDate2){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date1=new Date();
+        Date date2=new Date();
+        try {
+            date1= sdf.parse(inDate1);
+            date2 = sdf.parse(inDate2);
+        } catch (ParseException e) {
+            Log.i(TAG,"Exception to date conversion: "+e.toString());
+        }
+
+        if (date1.equals(date2)){
+            return true;
+        }else {
+            return false;
+        }
+    }
 }

@@ -1,4 +1,4 @@
-package orderFlex.paymentCollection.CustomerOrderList;
+package orderFlex.paymentCollection.Activityes.CustomerOrderList;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import orderFlex.paymentCollection.OrderDetailsActivity.OrderDetailsActivity;
+import orderFlex.paymentCollection.Activityes.OrderDetailsActivity.OrderDetailsActivity;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListResponse;
 import orderFlex.paymentCollection.R;
 

@@ -1,4 +1,4 @@
-package orderFlex.paymentCollection.CustomerOrderList;
+package orderFlex.paymentCollection.Activityes.CustomerOrderList;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -18,12 +18,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,12 +36,15 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import orderFlex.paymentCollection.Activityes.Profile.ProfileActivity;
 import orderFlex.paymentCollection.Model.APICallings.GetProductList;
 import orderFlex.paymentCollection.Model.APICallings.PullCustomerOrderList;
+import orderFlex.paymentCollection.Model.APICallings.PullPlantList;
 import orderFlex.paymentCollection.Model.APICallings.SaveOrderHandler;
 import orderFlex.paymentCollection.Model.APICallings.UpdatePassword;
 import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByDataRequest;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.ProductListResponse;
+import orderFlex.paymentCollection.Model.SaveOrderData.PlantListResponse;
 import orderFlex.paymentCollection.Model.SaveOrderData.SaveOrderDetails;
 import orderFlex.paymentCollection.Model.SaveOrderData.SaveOrderRequestBody;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListRequest;
@@ -49,7 +57,7 @@ import orderFlex.paymentCollection.Utility.Helper;
 import orderFlex.paymentCollection.Utility.LanguagePackage.BaseActivity;
 import orderFlex.paymentCollection.Utility.LanguagePackage.LocaleManager;
 import orderFlex.paymentCollection.Utility.SharedPrefManager;
-import orderFlex.paymentCollection.login.UserLogin;
+import orderFlex.paymentCollection.Activityes.login.UserLogin;
 
 public class OrderListActivity extends BaseActivity
         implements
@@ -57,7 +65,9 @@ public class OrderListActivity extends BaseActivity
         GetProductList.GetProductListListener,
         AdapterOrderForm.UpdateTotalBill,
         SaveOrderHandler.SaveOrderListener,
-        UpdatePassword.PassChangeListener
+        UpdatePassword.PassChangeListener,
+        PullPlantList.PlantListListener,
+        AdapterView.OnItemSelectedListener
 {
 
     private SharedPrefManager prefManager;
@@ -67,7 +77,7 @@ public class OrderListActivity extends BaseActivity
     private AdapterOrderForm adapter;
     private TextView totalBill,clientCode,name,presenterName,phoneNo,address,listTitle,totalTakenBill;
     private View containerView;
-    private LinearLayout orderCodeView,orderTakeSegment;
+    private LinearLayout orderCodeView,orderTakeSegment,deliveryLocation;
     private TextView orderDate;
     private RecyclerView bookedOrderList,takeCustomerOrderList;
     private TextView warningText;
@@ -75,11 +85,13 @@ public class OrderListActivity extends BaseActivity
     private RecyclerView.LayoutManager layoutManager;
     private AdapterListOfOrder adapterListOfOrder;
     private AdapterOrderForm adapterOrderForm;
-    private List<SaveOrderDetails> saveOrderDetails;
+    private List<SaveOrderDetails> saveOrderDetails=new ArrayList<>();
     //Order Save/Cancel
     private CardView cancelOrder,saveOrder,addNewOrder;
     private SaveOrderHandler saveOrderHandler;
     private int orderCount=1;
+    private PlantListResponse plantData;
+    private ImageView proImg;
     Locale english=null;
 
     @Override
@@ -95,6 +107,7 @@ public class OrderListActivity extends BaseActivity
         orderTakeSegment=findViewById(R.id.orderTakeSegment);
         listTitle=findViewById(R.id.listTitle);
         takeCustomerOrderList=findViewById(R.id.takeCustomerOrderList);
+        deliveryLocation=findViewById(R.id.deliveryLocation);
         //new order segment
         totalTakenBill=findViewById(R.id.totalTakenBill);
 
@@ -119,7 +132,15 @@ public class OrderListActivity extends BaseActivity
         addNewOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addNewOrderFormCall();
+                String setDate=orderDate.getText().toString();
+                String currentDate=helper.getDateInEnglish();
+                if (helper.isDate1LessDate2(setDate,currentDate)){
+                    helper.showSnakBar(containerView,"Sorry, You can't place order at previous date");
+                }else if (helper.isDate1GreaterDate2(setDate,currentDate)){
+                    helper.showSnakBar(containerView,"Sorry, You can't place order at advance date");
+                } else if (helper.isDate1EqualDate2(setDate, currentDate)) {
+                    addNewOrderFormCall();
+                }
             }
         });
         //save order
@@ -127,31 +148,7 @@ public class OrderListActivity extends BaseActivity
         saveOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                double totalBill=Double.parseDouble(totalTakenBill.getText().toString());
-                if (helper.isInternetAvailable()){
-                    if (totalBill>0.0){
-                        SaveOrderRequestBody requestBody=new SaveOrderRequestBody(
-                                helper.getDateInEnglish(),
-                                saveOrderDetails.get(0).getDelevery_date(),
-                                prefManager.getClientCode()+"-"+helper.getShortDateInEnglish()+"-"+String.valueOf(orderCount+1),
-                                helper.makeUniqueID(),
-                                saveOrderDetails.get(0).getTaker_id(),
-                                saveOrderDetails.get(0).getClient_id(),
-                                saveOrderDetails
-                        );
-
-                        Gson gson=new Gson();
-                        String response=gson.toJson(saveOrderDetails);
-                        Log.i(TAG,"Response Body: "+response);
-                        saveOrderHandler=new SaveOrderHandler(context);
-                        //need to change in API call for new order code
-                        saveOrderHandler.pushSaveOrder(prefManager.getUsername(),prefManager.getUserPassword(), requestBody);
-                    }else {
-                        helper.showSnakBar(containerView,"You did not give any quantity of any product!");
-                    }
-                }else {
-                    helper.showSnakBar(containerView,"No internet! Please check your internet connection!");
-                }
+                selectPlant();
             }
         });
         //cancel
@@ -164,6 +161,47 @@ public class OrderListActivity extends BaseActivity
         });
     }
 
+    private void selectPlant(){
+        List<String> plantNameList=new ArrayList<>();
+        final AlertDialog alertDialog;
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        ConstraintLayout customRoot = (ConstraintLayout) inflater.inflate(R.layout.plant_selection_spinner,null);
+        Spinner plantSpinner=customRoot.findViewById(R.id.plantSpinner);
+        CardView save=customRoot.findViewById(R.id.save_action);
+        CardView cancel=customRoot.findViewById(R.id.cancel_action);
+        int plantCount=0;
+        for (PlantListResponse.PlantList plant: plantData.getPlantList()) {
+            plantNameList.add(plant.getPlant());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item,plantNameList);
+        plantSpinner.setAdapter(adapter);
+        plantSpinner.setSelection(0);
+        plantSpinner.setOnItemSelectedListener(this);
+
+        builder.setTitle(R.string.plant_title);
+        builder.setView(customRoot);
+        builder.setCancelable(true);
+        alertDialog= builder.create();
+        alertDialog.show();
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                executeSaveRequest();
+                alertDialog.dismiss();
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+    }
+
+
     private void updateProfile(){
         clientCode=findViewById(R.id.clientCode);
         name=findViewById(R.id.name);
@@ -172,6 +210,7 @@ public class OrderListActivity extends BaseActivity
         address=findViewById(R.id.address);
         orderCodeView=findViewById(R.id.orderCodeView);
         orderDate=findViewById(R.id.orderDate);
+        proImg=findViewById(R.id.proImg);
 
         clientCode.setText(prefManager.getClientCode());
         name.setText(prefManager.getClientName());
@@ -179,9 +218,49 @@ public class OrderListActivity extends BaseActivity
         phoneNo.setText(prefManager.getClientContactNumber());
         address.setText(prefManager.getClientAddress());
         orderCodeView.setVisibility(View.GONE);
+        deliveryLocation.setVisibility(View.GONE);
         orderDate.setText(helper.getDateInEnglish());
         listTitle.setText("Order List");
+        if (prefManager.getProImgUrl()!=null){
+            Picasso.get()
+                    .load(prefManager.getProImgUrl())
+                    .placeholder(R.drawable.ic_person_sky)
+//                            .resize(100, 100)
+                    .priority(Picasso.Priority.HIGH)
+                    .into(proImg);
+            Log.i(TAG,"Image URL: "+prefManager.getProImgUrl());
+        }else {
+            Log.i(TAG,"No Image found!");
+        }
     }
+
+    private void executeSaveRequest(){
+        double totalBill=Double.parseDouble(totalTakenBill.getText().toString());
+        if (helper.isInternetAvailable()){
+            if (totalBill>0.0){
+                SaveOrderRequestBody requestBody=new SaveOrderRequestBody(
+                        helper.getDateInEnglish(),
+                        saveOrderDetails.get(0).getDelevery_date(),
+                        prefManager.getClientCode()+"-"+helper.getShortDateInEnglish()+"-"+String.valueOf(orderCount+1),
+                        helper.makeUniqueID(),
+                        saveOrderDetails.get(0).getTaker_id(),
+                        saveOrderDetails.get(0).getClient_id(),
+                        saveOrderDetails
+                );
+                Gson gson=new Gson();
+                String response=gson.toJson(saveOrderDetails);
+                Log.i(TAG,"Response Body: "+response);
+                saveOrderHandler=new SaveOrderHandler(context);
+                //need to change in API call for new order code
+                saveOrderHandler.pushSaveOrder(prefManager.getUsername(),prefManager.getUserPassword(), requestBody);
+            }else {
+                helper.showSnakBar(containerView,"You did not give any quantity of any product!");
+            }
+        }else {
+            helper.showSnakBar(containerView,"No internet! Please check your internet connection!");
+        }
+    }
+
     private void operationOrderPull(String startDate,String endDate){
         warningText.setVisibility(View.GONE);
         bookedOrderList.setVisibility(View.GONE);
@@ -228,6 +307,10 @@ public class OrderListActivity extends BaseActivity
             case R.id.change_password:
                 changePassword(this);
                 break;
+            case R.id.userProfile:
+                Intent intent1=new Intent(OrderListActivity.this, ProfileActivity.class);
+                startActivity(intent1);
+                break;
         }
         return true;
     }
@@ -269,6 +352,7 @@ public class OrderListActivity extends BaseActivity
         addNewOrder.setVisibility(View.GONE);
         listTitle.setText("Create new order");
         new GetProductList(this).pullProductListCall(prefManager.getUsername(),prefManager.getUserPassword());
+        new PullPlantList(this).plantListCall(prefManager.getUsername(),prefManager.getUserPassword());
     }
 //pre booked order list
     @Override
@@ -280,7 +364,7 @@ public class OrderListActivity extends BaseActivity
             orderTakeSegment.setVisibility(View.GONE);
             addNewOrder.setVisibility(View.VISIBLE);
             listTitle.setText("Order List");
-            orderCount=response.getOrderDetails().size();
+            orderCount=response.getOrderDetails().size()+1;
 
             adapterListOfOrder=new AdapterListOfOrder(this,response.getOrderDetails());
             layoutManager = new LinearLayoutManager(this);
@@ -296,7 +380,12 @@ public class OrderListActivity extends BaseActivity
             if (code==401){
                 helper.showSnakBar(containerView,"Unauthorized Username or Password!");
             }else {
-                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
+                if (code==202){
+                    helper.showSnakBar(containerView,"No order found!");
+                }else {
+                    helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
+                }
+
             }
 //            if (response==null){
 //                helper.showSnakBar(containerView,"Server not responding! Please check you internet connection.");
@@ -375,12 +464,14 @@ public class OrderListActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         operationOrderPull(helper.getDateInEnglish(),helper.getDateInEnglish());
+        updateProfile();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
         operationOrderPull(helper.getDateInEnglish(),helper.getDateInEnglish());
+        updateProfile();
     }
 
 //For multi-language operation
@@ -488,5 +579,33 @@ public class OrderListActivity extends BaseActivity
                 helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
             }
         }
+    }
+
+    @Override
+    public void onPlantListResponse(PlantListResponse response, int code) {
+        if (response!=null && code==202){
+            plantData=response;
+        }else {
+            if (code==401){
+                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
+            }else {
+                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
+            }
+        }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String plantID = plantData.getPlantList().get(position).getId();
+        Log.i(TAG,"Selected Plant ID: "+plantID+" Name: "+plantData.getPlantList().get(position).getPlant());
+        for (int i=0;i<saveOrderDetails.size();i++){
+            saveOrderDetails.get(i).setPlant(plantID);
+        }
+        Log.i(TAG,"Plant Selected Details: "+new Gson().toJson(saveOrderDetails));
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }

@@ -1,6 +1,5 @@
-package orderFlex.paymentCollection.login;
+package orderFlex.paymentCollection.Activityes.login;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -15,7 +14,7 @@ import java.util.Locale;
 
 import orderFlex.paymentCollection.Model.APICallings.LoginAPICalling;
 import orderFlex.paymentCollection.Model.LoginData.LoginResponse;
-import orderFlex.paymentCollection.CustomerOrderList.OrderListActivity;
+import orderFlex.paymentCollection.Activityes.CustomerOrderList.OrderListActivity;
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;
 import orderFlex.paymentCollection.Utility.LanguagePackage.BaseActivity;
@@ -138,6 +137,7 @@ public class UserLogin extends BaseActivity
                 prefManager.setClientCode(response.getClientCode());
                 prefManager.setHandlerId(response.getHandlerId());
                 prefManager.setClientVirtualAccountNumber(response.getVirtualAccountNo());
+                prefManager.setProImgUrl(response.getImage_url());
                 Intent intent=new Intent(UserLogin.this, OrderListActivity.class);
                 startActivity(intent);
                 finish();

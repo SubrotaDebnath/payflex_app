@@ -1,4 +1,4 @@
-package orderFlex.paymentCollection.OrderDetailsActivity;
+package orderFlex.paymentCollection.Activityes.OrderDetailsActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -17,16 +17,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import orderFlex.paymentCollection.CustomerOrderList.OrderListActivity;
+import orderFlex.paymentCollection.Activityes.CustomerOrderList.OrderListActivity;
 import orderFlex.paymentCollection.Model.APICallings.GetProductList;
 import orderFlex.paymentCollection.Model.APICallings.PullOrderDetailsByOrderCode;
 import orderFlex.paymentCollection.Model.APICallings.PullPaymentsList;
@@ -41,13 +42,13 @@ import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByD
 import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByCodeRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderRequestBody;
 import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderResponse;
-import orderFlex.paymentCollection.PaymentActivity.PaymentActivity;
+import orderFlex.paymentCollection.Activityes.PaymentActivity.PaymentActivity;
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;
 import orderFlex.paymentCollection.Utility.LanguagePackage.BaseActivity;
 import orderFlex.paymentCollection.Utility.LanguagePackage.LocaleManager;
 import orderFlex.paymentCollection.Utility.SharedPrefManager;
-import orderFlex.paymentCollection.login.UserLogin;
+import orderFlex.paymentCollection.Activityes.login.UserLogin;
 
 public class OrderDetailsActivity
         extends BaseActivity
@@ -82,6 +83,7 @@ public class OrderDetailsActivity
     private List<SaveOrderDetails> saveOrderRequestsBody;
     private SaveOrderHandler saveOrderHandler;
     private boolean isIndented=false;
+    private ImageView proImg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -231,6 +233,7 @@ public class OrderDetailsActivity
                 orderCode.setText(orderResponse.getOrderDetails().get(0).getOrderCode());
                 orderDate.setText(orderResponse.getOrderDetails().get(0).getDeliveryDate());
                 orderCode.setText(response.getOrderDetails().get(0).getOrderCode());
+                address.setText(response.getOrderDetails().get(0).getPlantName());
                 PaymentListRequest listRequest=new PaymentListRequest(prefManager.getClientId(),response.getOrderDetails().get(0).getOrderCode());
                 pullPaymentsList.pullPaymentListCall(prefManager.getUsername(),prefManager.getUserPassword(),listRequest);
             }else {
@@ -361,12 +364,24 @@ public class OrderDetailsActivity
         presenterName=findViewById(R.id.presenterName);
         phoneNo=findViewById(R.id.phoneNo);
         address=findViewById(R.id.address);
+        proImg=findViewById(R.id.proImg);
 
         clientCode.setText(prefManager.getClientCode());
         name.setText(prefManager.getClientName());
         presenterName.setText(prefManager.getPresenterName());
         phoneNo.setText(prefManager.getClientContactNumber());
         address.setText(prefManager.getClientAddress());
+        if (prefManager.getProImgUrl()!=null){
+            Picasso.get()
+                    .load(prefManager.getProImgUrl())
+                    .placeholder(R.drawable.ic_person_sky)
+//                            .resize(100, 100)
+                    .priority(Picasso.Priority.HIGH)
+                    .into(proImg);
+            Log.i(TAG,"Image URL: "+prefManager.getProImgUrl());
+        }else {
+            Log.i(TAG,"No Image found!");
+        }
     }
 
     @Override

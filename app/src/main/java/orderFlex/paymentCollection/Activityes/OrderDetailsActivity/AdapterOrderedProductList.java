@@ -1,4 +1,4 @@
-package orderFlex.paymentCollection.OrderDetailsActivity;
+package orderFlex.paymentCollection.Activityes.OrderDetailsActivity;
 
 import android.content.Context;
 import android.util.Log;

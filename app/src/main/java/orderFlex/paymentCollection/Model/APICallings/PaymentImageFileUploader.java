@@ -2,7 +2,6 @@ package orderFlex.paymentCollection.Model.APICallings;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
@@ -22,7 +21,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import orderFlex.paymentCollection.Model.DataBase.DatabaseOperation;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentQueueRequestData;
-import orderFlex.paymentCollection.OrderDetailsActivity.OrderDetailsActivity;
 import orderFlex.paymentCollection.Model.FileDataClass.FileUploadResponse;
 import orderFlex.paymentCollection.Utility.Constant;
 import orderFlex.paymentCollection.Utility.Helper;
@@ -31,7 +29,7 @@ import orderFlex.paymentCollection.Utility.SharedPrefManager;
 /**
  * Created by android on 3/29/2016.
  */
-public class ImageFileUploader extends AsyncTask<Void, Void, String> {
+public class PaymentImageFileUploader extends AsyncTask<Void, Void, String> {
     int TIMEOUT_MILLISEC = 30000;
     private Context context;
     ProgressDialog dialog;
@@ -55,7 +53,7 @@ public class ImageFileUploader extends AsyncTask<Void, Void, String> {
     protected void onPreExecute() {
         super.onPreExecute();
     }
-    public ImageFileUploader(Context context, PaymentQueueRequestData requestData,boolean isGalleryImg) {
+    public PaymentImageFileUploader(Context context, PaymentQueueRequestData requestData, boolean isGalleryImg) {
         this.context = context;
         helper=new Helper(context);
         db=new DatabaseOperation(context);

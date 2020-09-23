@@ -28,10 +28,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CustomerOrderList.OrderListActivity"></activity>
-        <activity android:name=".PaymentActivity.PaymentActivity" />
-        <activity android:name=".OrderDetailsActivity.OrderDetailsActivity" />
-        <activity android:name=".login.UserLogin">
+        <activity android:name=".Activityes.Profile.ProfileActivity"></activity>
+        <activity android:name=".Activityes.CustomerOrderList.OrderListActivity" />
+        <activity android:name=".Activityes.PaymentActivity.PaymentActivity" />
+        <activity android:name=".Activityes.OrderDetailsActivity.OrderDetailsActivity" />
+        <activity android:name=".Activityes.login.UserLogin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
