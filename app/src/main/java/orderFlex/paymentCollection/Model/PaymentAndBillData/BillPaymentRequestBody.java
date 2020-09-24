@@ -33,6 +33,18 @@ public class BillPaymentRequestBody implements Serializable {
     @Expose
     private String amount;
 
+    @SerializedName("isEditable")
+    @Expose
+    private int isEditable;
+
+    public int getIsEditable() {
+        return isEditable;
+    }
+
+    public void setIsEditable(int isEditable) {
+        this.isEditable = isEditable;
+    }
+
     public String getAmount() {
         return amount;
     }

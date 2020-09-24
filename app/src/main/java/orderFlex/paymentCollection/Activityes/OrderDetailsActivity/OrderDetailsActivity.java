@@ -82,7 +82,7 @@ public class OrderDetailsActivity
     private AdapterOrderTakeForm adapterOrderTakeForm;
     private List<SaveOrderDetails> saveOrderRequestsBody;
     private SaveOrderHandler saveOrderHandler;
-    private boolean isIndented=false;
+    private boolean isEditable =false;
     private ImageView proImg;
 
     @Override
@@ -117,7 +117,7 @@ public class OrderDetailsActivity
             Intent intent=getIntent();
             String message=intent.getStringExtra("payment_massege");
             booked_code=intent.getStringExtra("booked_code");
-            isIndented=intent.getBooleanExtra("is_indent",false);
+            isEditable =intent.getBooleanExtra("is_editable",false);
             if (message == null){
                 helper.showSnakBar(containerView,"Refreshing the dashboard...!");
             }else {
@@ -221,7 +221,7 @@ public class OrderDetailsActivity
             if (response.getOrderDetails().size()>0){
                 orderTitle.setText("ORDER DETAILS");
                 orderResponse=response;
-                adapter=new AdapterOrderedProductList(this,response.getOrderDetails(),isIndented);
+                adapter=new AdapterOrderedProductList(this,response.getOrderDetails(), isEditable);
                 layoutManager = new LinearLayoutManager(this);
                 orderList.setLayoutManager(layoutManager);
                 orderList.setAdapter(adapter);

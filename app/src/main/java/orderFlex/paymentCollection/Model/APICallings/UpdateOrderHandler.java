@@ -97,6 +97,7 @@ public class UpdateOrderHandler {
                 if (response.isSuccessful()){
                     updateOrderResponse=response.body();
                     gson=new Gson();
+                    Log.i(TAG,"Response Code: "+response.code());
                     String res= gson.toJson(updateOrderResponse);
                     Log.i(TAG,"Update Response: "+res);
                     listener.onUpdateResponse(updateOrderResponse,response.code());

@@ -25,12 +25,12 @@ public class AdapterOrderedProductList extends RecyclerView.Adapter<AdapterOrder
     private int counter=0;
     private boolean change=false;
     private Helper helper;
-    private boolean isIndented=false;
+    private boolean isEditable =false;
 
-    public AdapterOrderedProductList(Context context, List<TodayOrderDetailsByDataResponse.OrderDetail> list,boolean isIndented) {
+    public AdapterOrderedProductList(Context context, List<TodayOrderDetailsByDataResponse.OrderDetail> list,boolean isEditable) {
         this.context = context;
         this.list = list;
-        this.isIndented=isIndented;
+        this.isEditable =isEditable;
         updateTotalBill= (UpdateTotalBill) context;
         helper=new Helper(context);
         billCalculation(list);
@@ -55,7 +55,7 @@ public class AdapterOrderedProductList extends RecyclerView.Adapter<AdapterOrder
         holder.unitePrice.setText(list.get(position).getPWholesalePrice());
         //check is order can be updated
         if (helper.isEditableOrderOrPayment(helper.getDateInEnglish(),list.get(position).getDeliveryDate())){
-            if (isIndented){
+            if (!isEditable){
                 holder.quantity.setEnabled(false);
             }else {
                 holder.quantity.setEnabled(true);

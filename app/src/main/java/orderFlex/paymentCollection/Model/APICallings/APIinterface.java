@@ -5,12 +5,12 @@ import java.util.List;
 import orderFlex.paymentCollection.Model.LoginData.LoginResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentRequestBody;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentResponse;
+import orderFlex.paymentCollection.Model.PaymentAndBillData.BillReplaceRequestBody;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListRequest;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentMothodsResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.ProductListResponse;
 import orderFlex.paymentCollection.Model.SaveOrderData.PlantListResponse;
-import orderFlex.paymentCollection.Model.SaveOrderData.SaveOrderDetails;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.UpdatePaymenResponse;
 import orderFlex.paymentCollection.Model.SaveOrderData.SaveOrderRequestBody;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListRequest;
@@ -42,6 +42,9 @@ public interface APIinterface {
 
     @POST("SavePaymentData")
     Call<BillPaymentResponse>pushOrderBill(@Body BillPaymentRequestBody body);
+
+    @POST("ReplacePayment")
+    Call<BillPaymentResponse>replaceOrderBill(@Body BillReplaceRequestBody body);
 
     @POST("UpdatePaymentData")
     Call<UpdatePaymenResponse>updateOrderPayment(@Body BillPaymentRequestBody body);

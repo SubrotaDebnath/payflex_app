@@ -90,6 +90,18 @@ public class PaymentListResponse {
         @Expose
         private String action_flag;
 
+        @SerializedName("isEditable")
+        @Expose
+        private int isEditable;
+
+        public int getIsEditable() {
+            return isEditable;
+        }
+
+        public void setIsEditable(int isEditable) {
+            this.isEditable = isEditable;
+        }
+
         public String getAction_flag() {
             return action_flag;
         }

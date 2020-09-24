@@ -48,20 +48,16 @@ public class AdapterListOfOrder extends RecyclerView.Adapter<AdapterListOfOrder.
             public void onClick(View v) {
                 Intent intent=new Intent(context, OrderDetailsActivity.class);
                 intent.putExtra("booked_code",list.get(position).getOrderCode());
-                if (list.get(position).isIndent_flag()==1){
-                    intent.putExtra("is_indent",true);
+                if (list.get(position).getIsEditable()==1){
+                    intent.putExtra("is_editable",true);
+                    Log.i(TAG,"Editable");
                 }else {
-                    intent.putExtra("is_indent",false);
+                    intent.putExtra("is_editable",false);
+                    Log.i(TAG,"Not Editable");
                 }
-
                 context.startActivity(intent);
             }
         });
-        if (list.get(position).isIndent_flag()==1){
-            Log.i(TAG,"indented");
-        }else {
-            Log.i(TAG,"Not Indented");
-        }
     }
 
     @Override

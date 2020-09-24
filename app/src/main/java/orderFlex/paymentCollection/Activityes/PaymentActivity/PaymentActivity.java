@@ -39,17 +39,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import orderFlex.paymentCollection.Model.APICallings.ReplaceBills;
 import orderFlex.paymentCollection.Model.DataBase.DatabaseOperation;
+import orderFlex.paymentCollection.Model.PaymentAndBillData.BillReplaceRequestBody;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentQueueRequestData;
 import orderFlex.paymentCollection.Activityes.OrderDetailsActivity.OrderDetailsActivity;
 import orderFlex.paymentCollection.Model.APICallings.PaymentImageFileUploader;
 import orderFlex.paymentCollection.Model.APICallings.PullPaymentMethods;
 import orderFlex.paymentCollection.Model.APICallings.PushBills;
-import orderFlex.paymentCollection.Model.APICallings.UpdateBill;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentRequestBody;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentMothodsResponse;
-import orderFlex.paymentCollection.Model.PaymentAndBillData.UpdatePaymenResponse;
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;
 import orderFlex.paymentCollection.Utility.LanguagePackage.BaseActivity;
@@ -61,7 +61,7 @@ public class PaymentActivity
         implements PullPaymentMethods.PaymentMethodsListener,
         AdapterView.OnItemSelectedListener,
         PushBills.PushBillListener,
-        UpdateBill.UpdateBillListener {
+        ReplaceBills.ReplaceBillListener{
     private TextView paySubmit;
     private Spinner spinnerMethod, spinnerBank;
     private SharedPrefManager prefManager;
@@ -76,7 +76,8 @@ public class PaymentActivity
     private TextView payDate,virtualAccount;
     private String orderCode;
     private PushBills pushBills;
-    private UpdateBill updateBill;
+//    private UpdateBill updateBill;
+    private ReplaceBills replaceBills;
     private String imageName;
     private ImageView addImg,referenceImg;
     private LinearLayout payDatePick;
@@ -87,7 +88,11 @@ public class PaymentActivity
     private boolean is_attachment_active =true;
     private DatabaseOperation dbOperation;
     private boolean isGalleryImg=false;
+    private String preAmount,preMethod,preReference;
    // private ImageFileUploader imageFileUploader;
+    private BillReplaceRequestBody replaceRequestBody =new BillReplaceRequestBody();
+    private BillReplaceRequestBody.NewData newData =new BillReplaceRequestBody.NewData();
+    private BillReplaceRequestBody.OldData oldData=new BillReplaceRequestBody.OldData();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +122,8 @@ public class PaymentActivity
         paySubmit=findViewById(R.id.paySubmit);
 
         pushBills=new PushBills(this);
-        updateBill=new UpdateBill(this);
+//        updateBill=new UpdateBill(this);
+        replaceBills=new ReplaceBills(this);
 
         try {
             Intent intent=getIntent();
@@ -128,15 +134,22 @@ public class PaymentActivity
             }else {
                 requestBody= (BillPaymentRequestBody) intent.getSerializableExtra("payment_data");
                 Log.i(TAG,"Order Code From Payment List: "+ requestBody.getOrderCode());
-                referenceNo.setText(requestBody.getReferenceNo());
-                payAmount.setText(requestBody.getAmount());
+                preAmount=requestBody.getAmount();
+                preReference=requestBody.getReferenceNo();
+                referenceNo.setText(preReference);
+                payAmount.setText(preAmount);
                 paySubmit.setText("Update");
                 bankName=intent.getStringExtra("bank_name");
                 methodeName=intent.getStringExtra("method_name");
+                preMethod=methodeName;
                 String imgUrl=intent.getStringExtra("img_url");
                 orderCode=requestBody.getOrderCode();
                 paymentId=intent.getStringExtra("payment_id");
                 updateFlag=true;
+                oldData.setTrxid(requestBody.getTrxid());
+                oldData.setAmount(requestBody.getAmount());
+                oldData.setOrderCode(requestBody.getOrderCode());
+                oldData.setReferenceNo(requestBody.getReferenceNo());
                 if (imgUrl!=null){
                     Picasso.get()
                             .load(imgUrl)
@@ -183,15 +196,18 @@ public class PaymentActivity
                     requestBody.setTrxid(helper.makeUniqueID());
                 }
                 requestBody.setAmount(payed);
+                requestBody.setIsEditable(0);
                 requestBody.setSubmittedDateTime(helper.getDateTimeInEnglish());
                 if (payed.isEmpty()||paymentDate.isEmpty()){
                     helper.showSnakBar(containerView,"Some fields are empty!");
                     return;
                 }
 
-                if (!requestBody.getPaymentModeId().equals("13")
+                if (!requestBody.getPaymentModeId().equals("2")
                         && !requestBody.getPaymentModeId().equals("3")
-                        && !requestBody.getPaymentModeId().equals("2")){
+                        && !requestBody.getPaymentModeId().equals("4")
+                        && !requestBody.getPaymentModeId().equals("7")
+                        && !requestBody.getPaymentModeId().equals("13")){
                     Log.i(TAG,"Mode ID at save point: "+requestBody.getPaymentModeId());
                     if (refNo.isEmpty()||payed.isEmpty()||paymentDate.isEmpty()){
                         helper.showSnakBar(containerView,"Some fields are empty!");
@@ -204,7 +220,19 @@ public class PaymentActivity
                 if (helper.isInternetAvailable())
                     {
                         if (updateFlag){
-                            updateBill.updateBillCall(prefManager.getUsername(),prefManager.getUserPassword(),requestBody);
+                            newData.setTrxid(helper.makeUniqueID());
+                            newData.setPaymentModeId(requestBody.getPaymentModeId());
+                            newData.setFinancialInstitutionId(requestBody.getFinancial_institution_id());
+                            newData.setAmount(requestBody.getAmount());
+                            newData.setReferenceNo(requestBody.getReferenceNo());
+                            newData.setOrderCode(requestBody.getOrderCode());
+                            newData.setPaymentDateTime(requestBody.getPaymentDateTime());
+                            newData.setSubmittedDate(requestBody.getSubmittedDateTime());
+                            newData.setIsEditable("0");
+                            newData.setReplaceTag(preReference+"/"+preMethod+"/"+preAmount);
+                            replaceRequestBody.setNewData(newData);
+                            replaceRequestBody.setOldData(oldData);
+                            replaceBills.replaceBillCall(prefManager.getUsername(),prefManager.getUserPassword(),replaceRequestBody);
                         }else {
                             pushBills.pushBillCall(prefManager.getUsername(),prefManager.getUserPassword(),requestBody);
                         }
@@ -328,10 +356,12 @@ public class PaymentActivity
         if (parent.getId()==R.id.paymentMethod){
             Log.i(TAG,"Method");
             requestBody.setPaymentModeId(methodListData.get(position).getId());
-            if (methodListData.get(position).getId().equals("13")
-                    ||methodListData.get(position).getId().equals("12")
+            if (methodListData.get(position).getId().equals("2")
                     ||methodListData.get(position).getId().equals("3")
-                    ||methodListData.get(position).getId().equals("2")){
+                    ||methodListData.get(position).getId().equals("4")
+                    ||methodListData.get(position).getId().equals("7")
+                    |methodListData.get(position).getId().equals("12")
+                    |methodListData.get(position).getId().equals("13")){
                 Log.i(TAG, "Selected");
                 if (methodListData.get(position).getId().equals("12")){
                     is_attachment_active =false;
@@ -373,11 +403,15 @@ public class PaymentActivity
                 dbOperation.insertIMGQueue(requestData);
                 new PaymentImageFileUploader(this,requestData,isGalleryImg).execute();
             }
-            Intent intent=new Intent(PaymentActivity.this, OrderDetailsActivity.class);
-            intent.putExtra("payment_massege",response.getMessage());
-            intent.putExtra("booked_code",orderCode);
-            startActivity(intent);
-            finish();
+            if (response.isSuccessfull()){
+                Intent intent=new Intent(PaymentActivity.this, OrderDetailsActivity.class);
+                intent.putExtra("payment_massege",response.getMessage());
+                intent.putExtra("booked_code",orderCode);
+                startActivity(intent);
+                finish();
+            }else {
+                helper.showSnakBar(containerView,response.getMessage());
+            }
         }else {
             if (code==401){
                 helper.showSnakBar(containerView,"Unauthorized Username or Password!");
@@ -534,32 +568,6 @@ public class PaymentActivity
     }
     //////////////////////////////////////////////////////
 
-    @Override
-    public void onUpdateResponse(UpdatePaymenResponse response, int code) {
-        if (response!=null&&code==202){
-            helper.showSnakBar(containerView,response.getMessage());
-            if (imageOrginalPath!=null){
-                Log.i(TAG,"Update Image");
-                if (is_attachment_active){
-                    PaymentQueueRequestData requestData=new PaymentQueueRequestData(helper.makeUniqueID(),"2"
-                            ,prefManager.getClientId(), "",".jpg",orderCode,paymentId,imageOrginalPath,"0");
-                    dbOperation.insertIMGQueue(requestData);
-                    new PaymentImageFileUploader(this, requestData,isGalleryImg).execute();
-                }
-            }
-            Intent intent=new Intent(PaymentActivity.this, OrderDetailsActivity.class);
-            intent.putExtra("payment_massege","Payment Updated Successfully!");
-            intent.putExtra("booked_code",orderCode);
-            startActivity(intent);
-            finish();
-        }else {
-            if (code==401){
-                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
-            }else {
-                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
-            }
-        }
-    }
 
     //For multi-language operation
     private void setNewLocale(AppCompatActivity mContext, @LocaleManager.LocaleDef String language) {
@@ -574,5 +582,34 @@ public class PaymentActivity
         Locale.setDefault(locale);
         overrideConfiguration.setLocale(locale);
         super.applyOverrideConfiguration(overrideConfiguration);
+    }
+
+    @Override
+    public void onReplaceResponse(BillPaymentResponse response, int code) {
+        if (code==202 && response!=null){
+            helper.showSnakBar(containerView,"Thank you for your payment!");
+            paymentId=response.getInserted_code();
+            if (imageOrginalPath!=null&&is_attachment_active && response.isSuccessfull()){
+                PaymentQueueRequestData requestData=new PaymentQueueRequestData(helper.makeUniqueID(),"2"
+                        ,prefManager.getClientId(), "",".jpg",orderCode,paymentId,imageOrginalPath,"0");
+                dbOperation.insertIMGQueue(requestData);
+                new PaymentImageFileUploader(this,requestData,isGalleryImg).execute();
+            }
+            if (response.isSuccessfull()){
+                Intent intent=new Intent(PaymentActivity.this, OrderDetailsActivity.class);
+                intent.putExtra("payment_massege",response.getMessage());
+                intent.putExtra("booked_code",orderCode);
+                startActivity(intent);
+                finish();
+            }else {
+                helper.showSnakBar(containerView,response.getMessage());
+            }
+        }else {
+            if (code==401){
+                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
+            }else {
+                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
+            }
+        }
     }
 }
