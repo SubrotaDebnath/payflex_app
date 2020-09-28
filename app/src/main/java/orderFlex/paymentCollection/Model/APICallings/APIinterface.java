@@ -2,6 +2,8 @@ package orderFlex.paymentCollection.Model.APICallings;
 
 import java.util.List;
 
+import orderFlex.paymentCollection.Model.AppSetup.AppSetupRequestBody;
+import orderFlex.paymentCollection.Model.AppSetup.AppSetupResponse;
 import orderFlex.paymentCollection.Model.LoginData.LoginResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentRequestBody;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentResponse;
@@ -69,4 +71,7 @@ public interface APIinterface {
 
     @POST("UpdateUserPassword")
     Call<PassChangeResponseBody> passChange(@Body PassChangeReqBody body);
+
+    @POST("ApplicationSetupAndCheck")
+    Call<AppSetupResponse> appSetup(@Body AppSetupRequestBody body);
 }

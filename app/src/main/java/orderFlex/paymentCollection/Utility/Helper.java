@@ -244,4 +244,8 @@ public class Helper {
             return false;
         }
     }
+    public String getAnrdoidID(){
+        String id =Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        return id;
+    }
 }

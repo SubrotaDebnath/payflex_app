@@ -118,16 +118,18 @@ public class OrderListActivity extends BaseActivity
         addNewOrder=findViewById(R.id.addNewOrder);
         try {
             Intent intent=getIntent();
-            String add_order = intent.getStringExtra("add_order");
+            String add_order=" ";
+            add_order = intent.getStringExtra("add_order");
             Log.i(TAG,"Intent: "+add_order);
-
-            if (add_order.equals("take_order")){
-                addNewOrderFormCall();
+            if (add_order!=null){
+                if (add_order.equals("take_order")){
+                    addNewOrderFormCall();
+                }
             }else {
                 operationOrderPull(helper.getDateInEnglish(),helper.getDateInEnglish());
             }
         }catch (Exception e){
-
+            Log.i(TAG,"Intent Exception"+e.getMessage());
         }
         addNewOrder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -217,8 +219,11 @@ public class OrderListActivity extends BaseActivity
         presenterName.setText(prefManager.getPresenterName());
         phoneNo.setText(prefManager.getClientContactNumber());
         address.setText(prefManager.getClientAddress());
+
         orderCodeView.setVisibility(View.GONE);
         deliveryLocation.setVisibility(View.GONE);
+        orderTakeSegment.setVisibility(View.GONE);
+
         orderDate.setText(helper.getDateInEnglish());
         listTitle.setText("Order List");
         if (prefManager.getProImgUrl()!=null){
@@ -354,6 +359,7 @@ public class OrderListActivity extends BaseActivity
         new GetProductList(this).pullProductListCall(prefManager.getUsername(),prefManager.getUserPassword());
         new PullPlantList(this).plantListCall(prefManager.getUsername(),prefManager.getUserPassword());
     }
+
 //pre booked order list
     @Override
     public void onCustomerOrderListResponse(CustomerOrderListResponse response, int code) {
@@ -463,14 +469,14 @@ public class OrderListActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-        operationOrderPull(helper.getDateInEnglish(),helper.getDateInEnglish());
+//        operationOrderPull(helper.getDateInEnglish(),helper.getDateInEnglish());
         updateProfile();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        operationOrderPull(helper.getDateInEnglish(),helper.getDateInEnglish());
+//        operationOrderPull(helper.getDateInEnglish(),helper.getDateInEnglish());
         updateProfile();
     }
 
