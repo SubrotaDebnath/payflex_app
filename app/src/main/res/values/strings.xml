@@ -46,6 +46,7 @@
     <string name="save_new_order_btn">Save new order</string>
     <!--    Menu page -->
     <string name="logout">Logout</string>
+    <string name="revision_menu">Revision Submit </string>
 
     <!--    Payment page-->
     <string name="submit_btn">Submit</string>
@@ -78,5 +79,7 @@
     <!--    Plant Selection-->
     <string name="plant_title">Select Delivery Plant</string>
     <string name="next">NEXT STEP</string>
+<!--    loading message-->
+<!--    <string name="update__url">Please press OPEN button for update instruction of your app</string>-->
 
 </resources>

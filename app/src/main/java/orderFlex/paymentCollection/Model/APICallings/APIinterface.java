@@ -5,6 +5,8 @@ import java.util.List;
 import orderFlex.paymentCollection.Model.AppSetup.AppSetupRequestBody;
 import orderFlex.paymentCollection.Model.AppSetup.AppSetupResponse;
 import orderFlex.paymentCollection.Model.LoginData.LoginResponse;
+import orderFlex.paymentCollection.Model.OrderRevise.OrderReviseRequest;
+import orderFlex.paymentCollection.Model.OrderRevise.OrderReviseResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentRequestBody;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.BillReplaceRequestBody;
@@ -74,4 +76,7 @@ public interface APIinterface {
 
     @POST("ApplicationSetupAndCheck")
     Call<AppSetupResponse> appSetup(@Body AppSetupRequestBody body);
+
+    @POST("OrderReviseSubmit")
+    Call<OrderReviseResponse> orderRevise(@Body OrderReviseRequest body);
 }

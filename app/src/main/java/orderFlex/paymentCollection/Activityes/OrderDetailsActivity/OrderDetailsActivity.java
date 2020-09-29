@@ -29,10 +29,13 @@ import java.util.Locale;
 
 import orderFlex.paymentCollection.Activityes.CustomerOrderList.OrderListActivity;
 import orderFlex.paymentCollection.Model.APICallings.GetProductList;
+import orderFlex.paymentCollection.Model.APICallings.OrderReviseSubmit;
 import orderFlex.paymentCollection.Model.APICallings.PullOrderDetailsByOrderCode;
 import orderFlex.paymentCollection.Model.APICallings.PullPaymentsList;
 import orderFlex.paymentCollection.Model.APICallings.SaveOrderHandler;
 import orderFlex.paymentCollection.Model.APICallings.UpdateOrderHandler;
+import orderFlex.paymentCollection.Model.OrderRevise.OrderReviseRequest;
+import orderFlex.paymentCollection.Model.OrderRevise.OrderReviseResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListRequest;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.ProductListResponse;
@@ -59,13 +62,14 @@ public class OrderDetailsActivity
         UpdateOrderHandler.UpdateOrderListener,
         GetProductList.GetProductListListener,
         AdapterOrderTakeForm.UpdateTotalBill,
-        SaveOrderHandler.SaveOrderListener {
+        SaveOrderHandler.SaveOrderListener,
+        OrderReviseSubmit.OrderReviseListener{
 
     LinearLayout addNewPayment;
     private RecyclerView orderList,paymentList,takeOrderList;
     private RecyclerView.LayoutManager layoutManager;
     private SharedPrefManager prefManager;
-    private String TAG="MainActivity",booked_code="";
+    private String TAG="OrderDetailsActivity",booked_code="";
     private PullOrderDetailsByOrderCode pullTotadyOrder;
     private Helper helper;
     private AdapterOrderedProductList adapter;
@@ -82,8 +86,9 @@ public class OrderDetailsActivity
     private AdapterOrderTakeForm adapterOrderTakeForm;
     private List<SaveOrderDetails> saveOrderRequestsBody;
     private SaveOrderHandler saveOrderHandler;
-    private boolean isEditable =false;
+    private boolean isEditable =false, isSubmitted=false;
     private ImageView proImg;
+    private MenuItem submitMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +123,12 @@ public class OrderDetailsActivity
             String message=intent.getStringExtra("payment_massege");
             booked_code=intent.getStringExtra("booked_code");
             isEditable =intent.getBooleanExtra("is_editable",false);
+            isSubmitted =intent.getBooleanExtra("is_submitted",false);
+            if (isSubmitted){
+                Log.i(TAG,"Submitted");
+            }else {
+                Log.i(TAG,"Not submitted");
+            }
             if (message == null){
                 helper.showSnakBar(containerView,"Refreshing the dashboard...!");
             }else {
@@ -158,26 +169,21 @@ public class OrderDetailsActivity
                 }
             }
         });
-
-//        saveOrder.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (helper.isInternetAvailable()){
-//                    Gson gson=new Gson();
-//                    String response=gson.toJson(saveOrderRequestsBody);
-//                    Log.i(TAG,"Response Body: "+response);
-//                    saveOrderHandler.pushSaveOrder(prefManager.getUsername(),prefManager.getUserPassword(),saveOrderRequestsBody);
-//                }else {
-//                    helper.showSnakBar(containerView,"No internet! Please check your internet connection!");
-//                }
-//            }
-//        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        submitMenu=menu.findItem(R.id.revision_order);
+        if (isSubmitted){
+            submitMenu.setEnabled(false);
+        }
         return true;
     }
 
@@ -208,6 +214,10 @@ public class OrderDetailsActivity
                 intent1.putExtra("add_order","take_order");
                 startActivity(intent1);
                 finish();
+                break;
+            case R.id.revision_order:
+                OrderReviseRequest requestBody=new OrderReviseRequest(booked_code,prefManager.getClientId());
+                new OrderReviseSubmit(this).reviseSubmitCall(prefManager.getUsername(),prefManager.getUserPassword(),requestBody);
                 break;
 
         }
@@ -453,4 +463,18 @@ public class OrderDetailsActivity
         });
     }
 
+    @Override
+    public void onReviseResponse(OrderReviseResponse response, int code) {
+        if (response!=null && code==202){
+            helper.showSnakBar(containerView,response.getMessage());
+            isEditable=false;
+            operationOrderDetail();
+        }else {
+            if (code==401){
+                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
+            }else {
+                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
+            }
+        }
+    }
 }

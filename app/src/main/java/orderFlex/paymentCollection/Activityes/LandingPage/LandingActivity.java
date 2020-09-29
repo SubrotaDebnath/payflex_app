@@ -1,12 +1,19 @@
 package orderFlex.paymentCollection.Activityes.LandingPage;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.WebView;
+import android.widget.TextView;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -18,6 +25,8 @@ import orderFlex.paymentCollection.Model.AppSetup.AppSetupRequestBody;
 import orderFlex.paymentCollection.Model.AppSetup.AppSetupResponse;
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;
+import orderFlex.paymentCollection.Utility.LanguagePackage.LocaleManager;
+import orderFlex.paymentCollection.Utility.OnSwipeTouchListener;
 import orderFlex.paymentCollection.Utility.SharedPrefManager;
 
 public class LandingActivity extends AppCompatActivity implements PullAppSetup.AppSetupListener{
@@ -25,6 +34,7 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
     private SharedPrefManager prefManager;
     private String TAG="LandingActivity";
     private View containerView;
+    private ConstraintLayout mainView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +42,31 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
         setContentView(R.layout.activity_landing);
         getSupportActionBar().hide();
         containerView=findViewById(R.id.landingActivity);
+        mainView=findViewById(R.id.landingActivity);
 
         helper=new Helper(this);
         prefManager=new SharedPrefManager(this);
         Log.i(TAG,helper.getAnrdoidID());
-
         checkApplication();
+        mainView.setOnTouchListener(new OnSwipeTouchListener(this) {
+            public void onSwipeTop() {
+                Log.i(TAG,"TOP");
+                checkApplication();
+            }
+            public void onSwipeRight() {
+                Log.i(TAG,"RIGHT");
+                checkApplication();
+            }
+            public void onSwipeLeft() {
+                Log.i(TAG,"LEFT");
+                checkApplication();
+            }
+            public void onSwipeBottom() {
+                Log.i(TAG,"BOTTOM");
+                checkApplication();
+            }
 
+        });
     }
 
     private void checkApplication(){
@@ -72,21 +100,27 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
                 if (response.getData().getIsSystemUnderMaintenance()){
                     helper.showSnakBar(containerView,"Server under maintenance!");
                 }else {
-                    if (prefManager.isLoggedIn()){
-                    Intent intent =new Intent(LandingActivity.this, UserLogin.class);
-                    startActivity(intent);
-                    finish();
+                    if (response.getData().getIsMessageForUser()){
+                        showMessageDialog("Tutorial!",response.getData().getCustomWebViewURL(),
+                                "To see the user manual press GO button","GO","1");
                     }else {
-                        Intent intent2 =new Intent(LandingActivity.this, OrderListActivity.class);
-                        startActivity(intent2);
-                        finish();
+                        if (!prefManager.isLoggedIn()){
+                            Intent intent =new Intent(LandingActivity.this, UserLogin.class);
+                            startActivity(intent);
+                            finish();
+                        }else {
+                            Intent intent2 =new Intent(LandingActivity.this, OrderListActivity.class);
+                            startActivity(intent2);
+                            finish();
+                        }
                     }
                 }
                 if (response.getData().getIsMessageForUser()){
                    Log.i(TAG,"user have message");
                 }
             }else {
-                helper.showSnakBar(containerView,"App not Updated!");
+                showMessageDialog("Update!",response.getData().getUpdatedAppLink(),
+                        "Sorry! You are using the older version of application. Please press the UPDATE button to get the updated application","UPDATE","2");
             }
         }else {
             if (code==401){
@@ -95,5 +129,57 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
                 helper.showSnakBar(containerView,"Login error");
             }
         }
+    }
+
+    private void showMessageDialog(String title, final String url, String msg, String done, final String msgType){
+        final AlertDialog alertDialog;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        ConstraintLayout customRoot = (ConstraintLayout) inflater.inflate(R.layout.load_message_view,null);
+
+        CardView skip_key=customRoot.findViewById(R.id.skip_key);
+        CardView done_key=customRoot.findViewById(R.id.done_key);
+        TextView btnDone=customRoot.findViewById(R.id.btnDone);
+        btnDone.setText(done);
+
+        TextView msgView=customRoot.findViewById(R.id.messageText);
+        msgView.setText(msg);
+        builder.setView(customRoot);
+        builder.setTitle(title);
+        builder.setCancelable(true);
+        alertDialog= builder.create();
+        alertDialog.show();
+        skip_key.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (msgType.equals("1")){
+                    if (!prefManager.isLoggedIn()){
+                        Intent intent =new Intent(LandingActivity.this, UserLogin.class);
+                        startActivity(intent);
+                        finish();
+                    }else {
+                        Intent intent2 =new Intent(LandingActivity.this, OrderListActivity.class);
+                        startActivity(intent2);
+                        finish();
+                    }
+                }else if (msgType.equals("2")){
+                    checkApplication();
+                }
+                alertDialog.dismiss();
+            }
+        });
+        done_key.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (msgType.equals("1")){
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(browserIntent);
+                }else if (msgType.equals("2")){
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(browserIntent);
+                }
+                alertDialog.dismiss();
+            }
+        });
     }
 }

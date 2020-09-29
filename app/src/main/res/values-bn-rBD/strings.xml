@@ -47,6 +47,7 @@
     <string name="save_new_order_btn">নতুন ক্রয় সংযোজন</string>
     <!--    Menu page -->
     <string name="logout">বেরিয়ে জান</string>
+    <string name="revision_menu">রিভিশন সমর্পণ করুন</string>
     <!--    Payment page-->
     <string name="submit_btn">সংযোজন</string>
     <string name="payment_mode">পরিষদের ধরন:</string>
@@ -79,4 +80,6 @@
     <!--    Plant Selection-->
     <string name="plant_title">প্লান্ট নির্বাচন করুন</string>
     <string name="next">পরবর্তী ধাপে যান</string>
+    <!--    loading message-->
+<!--    <string name="update__url">Please open this URL for Update</string>-->
 </resources>

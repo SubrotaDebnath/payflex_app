@@ -48,6 +48,11 @@ public class AdapterListOfOrder extends RecyclerView.Adapter<AdapterListOfOrder.
             public void onClick(View v) {
                 Intent intent=new Intent(context, OrderDetailsActivity.class);
                 intent.putExtra("booked_code",list.get(position).getOrderCode());
+                if (list.get(position).getIsSubmitted()==1){
+                    intent.putExtra("is_submitted",true);
+                }else {
+                    intent.putExtra("is_submitted",false);
+                }
                 if (list.get(position).getIsEditable()==1){
                     intent.putExtra("is_editable",true);
                     Log.i(TAG,"Editable");

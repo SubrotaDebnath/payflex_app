@@ -5,6 +5,8 @@
         android:title="refresh"
         app:showAsAction="ifRoom|collapseActionView"
         android:icon="@drawable/ic_refresh_white"/>
+    <item android:id="@+id/revision_order"
+        android:title="@string/revision_menu" />
     <item android:id="@+id/add_new_order"
         android:title="@string/create_order" />
 

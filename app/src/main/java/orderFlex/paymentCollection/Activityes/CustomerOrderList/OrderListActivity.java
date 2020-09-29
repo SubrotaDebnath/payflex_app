@@ -469,7 +469,7 @@ public class OrderListActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-//        operationOrderPull(helper.getDateInEnglish(),helper.getDateInEnglish());
+        operationOrderPull(helper.getDateInEnglish(),helper.getDateInEnglish());
         updateProfile();
     }
 

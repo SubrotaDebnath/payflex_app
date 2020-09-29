@@ -30,6 +30,13 @@
             android:layout_height="wrap_content"
             app:SpinKit_Color="@color/colorPrimary"
             tools:ignore="MissingConstraints" />
+        <TextView
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="Developed by Onutitaive Ltd."/>
     </RelativeLayout>
 
 

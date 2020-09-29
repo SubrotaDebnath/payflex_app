@@ -11,6 +11,11 @@ public class OrderReviseRequest {
     @Expose
     private String userId;
 
+    public OrderReviseRequest(String orderCode, String userId) {
+        this.orderCode = orderCode;
+        this.userId = userId;
+    }
+
     public String getOrderCode() {
         return orderCode;
     }
