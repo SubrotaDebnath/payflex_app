@@ -14,11 +14,15 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
+import orderFlex.paymentCollection.Model.APILog.APILogData;
 import orderFlex.paymentCollection.Model.AppSetup.AppSetupRequestBody;
 import orderFlex.paymentCollection.Model.AppSetup.AppSetupResponse;
+import orderFlex.paymentCollection.Model.DataBase.DatabaseOperation;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListResponse;
 import orderFlex.paymentCollection.Utility.Constant;
+import orderFlex.paymentCollection.Utility.Helper;
+import orderFlex.paymentCollection.Utility.SharedPrefManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
@@ -32,10 +36,13 @@ public class PullAppSetup {
     private Context context;
     private ProgressDialog dialog;
     private AppSetupResponse setupResponse=null;
+    private DatabaseOperation db;
+    private APILogData logData=new APILogData();
 
 
     public PullAppSetup(Context context) {
         listener= (AppSetupListener) context;
+        db=new DatabaseOperation(context);
         this.context=context;
     }
 
@@ -44,6 +51,15 @@ public class PullAppSetup {
         // interceptor for runtime data checking
         //dialog.setMessage("Customer Order pull...");
 //        dialog.show();
+        //////////////log operation///////////
+        logData.setCallName("Application Check");
+        logData.setCallURL(Constant.BASE_URL_PAYFLEX+"ApplicationSetupAndCheck");
+        logData.setCallTime(new Helper(context).getDateTimeInEnglish());
+        logData.setRequestBody(new Gson().toJson(orderRequest));
+        logData.setResponseCode("");
+        logData.setResponseBody("");
+        logData.setException("");
+        /////////////////////////////////
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         final String authToken = Credentials.basic(username, password);
@@ -71,6 +87,15 @@ public class PullAppSetup {
         orderResponseCall.enqueue(new Callback<AppSetupResponse>() {
             @Override
             public void onResponse(Call<AppSetupResponse> call, retrofit2.Response<AppSetupResponse> response) {
+                //////////////log operation///////////
+                if (new SharedPrefManager(context).isDebugOn()){
+                    logData.setResponseCode(String.valueOf(response.code()));
+                    logData.setResponseBody(new Gson().toJson(response.body()));
+                    logData.setResponseTime(new Helper(context).getDateTimeInEnglish());
+                    db.insertAPILog(logData);
+                }
+                ///////////////////////////////////
+
                 if (response.isSuccessful()){
                     setupResponse=response.body();
                     gson=new Gson();
@@ -83,8 +108,11 @@ public class PullAppSetup {
             @Override
             public void onFailure(Call<AppSetupResponse> call, Throwable t) {
                 Log.i(TAG,t.getMessage());
+                if (new SharedPrefManager(context).isDebugOn()){
+                    logData.setException(t.getMessage());
+                    db.insertAPILog(logData);
+                }
                 listener.onAppSetupResponse(setupResponse,404);
-//                dialog.cancel();
             }
         });
         return;

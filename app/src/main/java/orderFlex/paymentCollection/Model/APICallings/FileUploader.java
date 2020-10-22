@@ -24,6 +24,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import orderFlex.paymentCollection.Activityes.OrderDetailsActivity.OrderDetailsActivity;
+import orderFlex.paymentCollection.Model.APILog.APILogData;
+import orderFlex.paymentCollection.Model.DataBase.DatabaseOperation;
 import orderFlex.paymentCollection.Model.FileDataClass.FileUploadResponse;
 import orderFlex.paymentCollection.Utility.Constant;
 import orderFlex.paymentCollection.Utility.Helper;
@@ -48,6 +50,8 @@ public class FileUploader extends AsyncTask<Void, Void, String> {
     private String extension;
     private String order_code;
     private String payment_id;
+    private DatabaseOperation db;
+    private APILogData logData=new APILogData();
 
     @Override
     protected void onPreExecute() {
@@ -71,6 +75,7 @@ public class FileUploader extends AsyncTask<Void, Void, String> {
         prefManager=new SharedPrefManager(context);
         dialog = new ProgressDialog(context);
         dialog.setMessage("Uploading file....");
+        db=new DatabaseOperation(context);
         dialog.show();
     }
     @Override
@@ -87,6 +92,8 @@ public class FileUploader extends AsyncTask<Void, Void, String> {
     protected String doInBackground(Void... params){
         String sourceFileUri = filePath+"/"+filename+".jpg";
         String sourceFileDirectory = filePath+"/";
+
+
 
         Log.i(TAG, "uri :"+sourceFileUri);
         File sourceFile = new File(sourceFileUri);
@@ -142,14 +149,15 @@ public class FileUploader extends AsyncTask<Void, Void, String> {
                             .addFormDataPart("uploaded_file", file_path.substring(file_path.lastIndexOf("/") + 1), file_body)
                             .build();
 
-
-//                    Request request = new Request.Builder()
-////                           //.url("http://tester.onuserver.com/callRecorder/")
-////                            .url(info.getUrl()+"/callRecordSave?audio="+filename)
-////                            .post(request_body)
-////                            .build();
-                    //Log.i(TAG,"Request body: "+request_body.toString());
-                    //new test
+                    //////////////log operation///////////
+                    logData.setCallName("Payment Image UP");
+                    logData.setCallURL(Constant.BASE_URL_PAYFLEX+"ImgFileSave");
+                    logData.setCallTime(new Helper(context).getDateTimeInEnglish());
+                    logData.setRequestBody(new Gson().toJson(request_body));
+                    logData.setResponseCode("");
+                    logData.setResponseBody("");
+                    logData.setException("");
+                    /////////////////////////////////
                     try{
                         String response = post(Constant.BASE_URL_PAYFLEX+"ImgFileSave?audio="+filename, request_body);
                         //String response = post(info.getUrl()+"/callRecordDemo?audio="+filename, request_body);
@@ -220,6 +228,14 @@ public class FileUploader extends AsyncTask<Void, Void, String> {
         Response response = client.newCall(request).execute();
         if (response.isSuccessful()){
             Log.i(TAG,"Successful Response: "+response.body().string());
+            //////////////log operation///////////
+            if (new SharedPrefManager(context).isDebugOn()){
+                logData.setResponseCode(String.valueOf(response.code()));
+                logData.setResponseBody(response.body().string());
+                logData.setResponseTime(new Helper(context).getDateTimeInEnglish());
+                db.insertAPILog(logData);
+            }
+            ///////////////////////////////////
             return response.body().string();
         }else {
             Log.i(TAG,"Failed Response: "+response.body().string());

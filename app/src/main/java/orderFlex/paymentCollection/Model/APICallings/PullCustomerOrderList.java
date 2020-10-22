@@ -14,9 +14,13 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
+import orderFlex.paymentCollection.Model.APILog.APILogData;
+import orderFlex.paymentCollection.Model.DataBase.DatabaseOperation;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListRequest;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListResponse;
 import orderFlex.paymentCollection.Utility.Constant;
+import orderFlex.paymentCollection.Utility.Helper;
+import orderFlex.paymentCollection.Utility.SharedPrefManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
@@ -30,10 +34,12 @@ public class PullCustomerOrderList {
     private Context context;
     private ProgressDialog dialog;
     private CustomerOrderListResponse orderListResponse=null;
-
+    private DatabaseOperation db;
+    private APILogData logData=new APILogData();
 
     public PullCustomerOrderList(Context context) {
         listener= (OrderListListener) context;
+        db=new DatabaseOperation(context);
         this.context=context;
     }
 
@@ -43,6 +49,15 @@ public class PullCustomerOrderList {
         dialog = new ProgressDialog(context);
         dialog.setMessage("Customer Order pull...");
         dialog.show();
+        //////////////log operation///////////
+        logData.setCallName("Order List");
+        logData.setCallURL(Constant.BASE_URL_PAYFLEX+"GetCustomerOrderList");
+        logData.setCallTime(new Helper(context).getDateTimeInEnglish());
+        logData.setRequestBody(new Gson().toJson(orderRequest));
+        logData.setResponseCode("");
+        logData.setResponseBody("");
+        logData.setException("");
+        /////////////////////////////////
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         final String authToken = Credentials.basic(username, password);
@@ -70,6 +85,15 @@ public class PullCustomerOrderList {
         orderResponseCall.enqueue(new Callback<CustomerOrderListResponse>() {
             @Override
             public void onResponse(Call<CustomerOrderListResponse> call, retrofit2.Response<CustomerOrderListResponse> response) {
+                //////////////log operation///////////
+                if (new SharedPrefManager(context).isDebugOn()){
+                    logData.setResponseCode(String.valueOf(response.code()));
+                    logData.setResponseBody(new Gson().toJson(response.body()));
+                    logData.setResponseTime(new Helper(context).getDateTimeInEnglish());
+                    db.insertAPILog(logData);
+                }
+                ///////////////////////////////////
+
                 if (response.isSuccessful()){
                     orderListResponse=response.body();
                     gson=new Gson();
@@ -82,6 +106,12 @@ public class PullCustomerOrderList {
             @Override
             public void onFailure(Call<CustomerOrderListResponse> call, Throwable t) {
                 Log.i(TAG,t.getMessage());
+                //////////////log operation///////////
+                if (new SharedPrefManager(context).isDebugOn()){
+                    logData.setException(t.getMessage());
+                    db.insertAPILog(logData);
+                }
+                ///////////////////////////////////////
                 listener.onCustomerOrderListResponse(orderListResponse,404);
                 dialog.cancel();
             }

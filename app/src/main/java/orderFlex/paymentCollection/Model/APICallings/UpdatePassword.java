@@ -14,9 +14,13 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
+import orderFlex.paymentCollection.Model.APILog.APILogData;
+import orderFlex.paymentCollection.Model.DataBase.DatabaseOperation;
 import orderFlex.paymentCollection.Model.UserData.PassChangeReqBody;
 import orderFlex.paymentCollection.Model.UserData.PassChangeResponseBody;
 import orderFlex.paymentCollection.Utility.Constant;
+import orderFlex.paymentCollection.Utility.Helper;
+import orderFlex.paymentCollection.Utility.SharedPrefManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
@@ -30,11 +34,13 @@ public class UpdatePassword {
     private Context context;
     private ProgressDialog dialog;
     private PassChangeResponseBody passChangeResponse =null;
-
+    private DatabaseOperation db;
+    private APILogData logData=new APILogData();
 
     public UpdatePassword(Context context) {
         listener= (PassChangeListener) context;
         this.context=context;
+        db=new DatabaseOperation(context);
     }
 
     public void updatePassCall(final String username, final String password, PassChangeReqBody body){
@@ -43,6 +49,15 @@ public class UpdatePassword {
         dialog = new ProgressDialog(context);
         dialog.setMessage("Update user password bills ...");
         dialog.show();
+        //////////////log operation///////////
+        logData.setCallName("Update Payment");
+        logData.setCallURL(Constant.BASE_URL_PAYFLEX+"UpdatePaymentData");
+        logData.setCallTime(new Helper(context).getDateTimeInEnglish());
+        logData.setRequestBody(new Gson().toJson(body));
+        logData.setResponseCode("");
+        logData.setResponseBody("");
+        logData.setException("");
+        /////////////////////////////////
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         final String authToken = Credentials.basic(username, password);
@@ -70,6 +85,14 @@ public class UpdatePassword {
         billPaymentResponseCall.enqueue(new Callback<PassChangeResponseBody>() {
             @Override
             public void onResponse(Call<PassChangeResponseBody> call, retrofit2.Response<PassChangeResponseBody> response) {
+                //////////////log operation///////////
+                if (new SharedPrefManager(context).isDebugOn()){
+                    logData.setResponseCode(String.valueOf(response.code()));
+                    logData.setResponseBody(new Gson().toJson(response.body()));
+                    logData.setResponseTime(new Helper(context).getDateTimeInEnglish());
+                    db.insertAPILog(logData);
+                }
+                ///////////////////////////////////
                 if (response.isSuccessful()){
                     passChangeResponse =response.body();
                     gson=new Gson();
@@ -82,6 +105,10 @@ public class UpdatePassword {
             }
             @Override
             public void onFailure(Call<PassChangeResponseBody> call, Throwable t) {
+                if (new SharedPrefManager(context).isDebugOn()){
+                    logData.setException(t.getMessage());
+                    db.insertAPILog(logData);
+                }
                 listener.onPasswordUpdateResponse(passChangeResponse,404);
                 dialog.cancel();
             }

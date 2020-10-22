@@ -79,7 +79,7 @@
     <!--    Plant Selection-->
     <string name="plant_title">Select Delivery Plant</string>
     <string name="next">NEXT STEP</string>
-<!--    loading message-->
-<!--    <string name="update__url">Please press OPEN button for update instruction of your app</string>-->
+    <!--    loading message-->
+    <!--    <string name="update__url">Please press OPEN button for update instruction of your app</string>-->
 
 </resources>

@@ -28,6 +28,7 @@ public class SharedPrefManager {
     private static final String HANDLER_ID="handler_id";
     private static final String LANGUAGE="app_language";
     private static final String PRO_IMG_URL="profile_url";
+    private static final String DEBUG_MODE="debug_mode";
 
 
 
@@ -165,5 +166,14 @@ public class SharedPrefManager {
     }
     public String getProImgUrl(){
         return preferences.getString(PRO_IMG_URL,null);
+    }
+
+    ///////////////////////
+    public boolean isDebugOn() {
+        return preferences.getBoolean(DEBUG_MODE, false);
+    }
+    public void setDebugMode(boolean flag){
+        editor.putBoolean(DEBUG_MODE,flag);
+        editor.commit();
     }
 }

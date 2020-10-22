@@ -15,10 +15,14 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
+import orderFlex.paymentCollection.Model.APILog.APILogData;
+import orderFlex.paymentCollection.Model.DataBase.DatabaseOperation;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentResponse;
 import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderRequestBody;
 import orderFlex.paymentCollection.Model.TodayOrder.UpdateOrderResponse;
 import orderFlex.paymentCollection.Utility.Constant;
+import orderFlex.paymentCollection.Utility.Helper;
+import orderFlex.paymentCollection.Utility.SharedPrefManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
@@ -32,11 +36,13 @@ public class UpdateOrderHandler {
     private Context context;
     private ProgressDialog dialog;
     private UpdateOrderResponse updateOrderResponse=null;
-
+    private DatabaseOperation db;
+    private APILogData logData=new APILogData();
 
     public UpdateOrderHandler(Context context) {
         listener= (UpdateOrderListener) context;
         this.context=context;
+        db=new DatabaseOperation(context);
     }
 
     public void pushUpdatedOrder(final String username, final String password, List<UpdateOrderRequestBody> body){
@@ -49,6 +55,15 @@ public class UpdateOrderHandler {
         dialog = new ProgressDialog(context);
         dialog.setMessage("Updating orders...");
         dialog.show();
+        //////////////log operation///////////
+        logData.setCallName("Update Order");
+        logData.setCallURL(Constant.BASE_URL_PAYFLEX+"update_order");
+        logData.setCallTime(new Helper(context).getDateTimeInEnglish());
+        logData.setRequestBody(new Gson().toJson(body));
+        logData.setResponseCode("");
+        logData.setResponseBody("");
+        logData.setException("");
+        /////////////////////////////////
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         final String authToken = Credentials.basic(username, password);
@@ -94,6 +109,14 @@ public class UpdateOrderHandler {
         updateOrderResponseCall.enqueue(new Callback<UpdateOrderResponse>() {
             @Override
             public void onResponse(Call<UpdateOrderResponse> call, retrofit2.Response<UpdateOrderResponse> response) {
+                //////////////log operation///////////
+                if (new SharedPrefManager(context).isDebugOn()){
+                    logData.setResponseCode(String.valueOf(response.code()));
+                    logData.setResponseBody(new Gson().toJson(response.body()));
+                    logData.setResponseTime(new Helper(context).getDateTimeInEnglish());
+                    db.insertAPILog(logData);
+                }
+                ///////////////////////////////////
                 if (response.isSuccessful()){
                     updateOrderResponse=response.body();
                     gson=new Gson();
@@ -107,6 +130,10 @@ public class UpdateOrderHandler {
             }
             @Override
             public void onFailure(Call<UpdateOrderResponse> call, Throwable t) {
+                if (new SharedPrefManager(context).isDebugOn()){
+                    logData.setException(t.getMessage());
+                    db.insertAPILog(logData);
+                }
                 listener.onUpdateResponse(updateOrderResponse,404);
                 dialog.cancel();
             }

@@ -151,10 +151,14 @@ public class OrderDetailsActivity
             @Override
             public void onClick(View view) {
                 if (orderResponse!=null){
-                    Intent intent =new Intent(OrderDetailsActivity.this, PaymentActivity.class);
-                    Log.i(TAG,"Order Code: "+orderResponse.getOrderDetails().get(0).getOrderCode());
-                    intent.putExtra("order_code",orderResponse.getOrderDetails().get(0).getOrderCode());
-                    startActivity(intent);
+                    if (isSubmitted){
+                        Intent intent =new Intent(OrderDetailsActivity.this, PaymentActivity.class);
+                        Log.i(TAG,"Order Code: "+orderResponse.getOrderDetails().get(0).getOrderCode());
+                        intent.putExtra("order_code",orderResponse.getOrderDetails().get(0).getOrderCode());
+                        startActivity(intent);
+                    }else {
+                        helper.showSnakBar(containerView,"Please submitted your revision from the menu option");
+                    }
                 }else {
                     helper.showSnakBar(containerView,"You don't have previous order! Please save an order first");
                 }
@@ -342,7 +346,6 @@ public class OrderDetailsActivity
                 count++;
             }
             count=0;
-
             for (SaveOrderDetails data:orderRequestList) {
                 Log.i(TAG,"Recheck: "+" Name: "+data.getProduct_name()+" Type: "+data.getProduct_type());
             }
@@ -468,6 +471,7 @@ public class OrderDetailsActivity
         if (response!=null && code==202){
             helper.showSnakBar(containerView,response.getMessage());
             isEditable=false;
+            isSubmitted=true;
             operationOrderDetail();
         }else {
             if (code==401){

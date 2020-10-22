@@ -14,9 +14,13 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
+import orderFlex.paymentCollection.Model.APILog.APILogData;
+import orderFlex.paymentCollection.Model.DataBase.DatabaseOperation;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentMothodsResponse;
 import orderFlex.paymentCollection.Model.SaveOrderData.PlantListResponse;
 import orderFlex.paymentCollection.Utility.Constant;
+import orderFlex.paymentCollection.Utility.Helper;
+import orderFlex.paymentCollection.Utility.SharedPrefManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,16 +35,28 @@ public class PullPlantList {
     private Context context;
     private ProgressDialog dialog;
     private PlantListResponse plantResponse =null;
+    private DatabaseOperation db;
+    private APILogData logData=new APILogData();
 
     public PullPlantList(Context context) {
         listener= (PlantListListener) context;
         this.context=context;
+        db=new DatabaseOperation(context);
     }
     public void plantListCall(final String username, final String password){
         Log.i(TAG,"Called.....");
 //        dialog = new ProgressDialog(context);
 //        dialog.setMessage("Updating...");
 //        dialog.show();
+        //////////////log operation///////////
+        logData.setCallName("Plant List");
+        logData.setCallURL(Constant.BASE_URL_PAYFLEX+"GetPlants");
+        logData.setCallTime(new Helper(context).getDateTimeInEnglish());
+        logData.setRequestBody("GET");
+        logData.setResponseCode("");
+        logData.setResponseBody("");
+        logData.setException("");
+        /////////////////////////////////
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         final String authToken = Credentials.basic(username, password);
@@ -67,6 +83,14 @@ public class PullPlantList {
         responseCall.enqueue(new Callback<PlantListResponse>() {
             @Override
             public void onResponse(Call<PlantListResponse> call, Response<PlantListResponse> response) {
+                //////////////log operation///////////
+                if (new SharedPrefManager(context).isDebugOn()){
+                    logData.setResponseCode(String.valueOf(response.code()));
+                    logData.setResponseBody(new Gson().toJson(response.body()));
+                    logData.setResponseTime(new Helper(context).getDateTimeInEnglish());
+                    db.insertAPILog(logData);
+                }
+                ///////////////////////////////////
                 if (response.isSuccessful()){
                     Log.i(TAG,"Response Code: "+response.code());
                     plantResponse =response.body();
@@ -81,6 +105,10 @@ public class PullPlantList {
 
             @Override
             public void onFailure(Call<PlantListResponse> call, Throwable t) {
+                if (new SharedPrefManager(context).isDebugOn()){
+                    logData.setException(t.getMessage());
+                    db.insertAPILog(logData);
+                }
                 listener.onPlantListResponse(plantResponse,404);
 //                dialog.cancel();
             }

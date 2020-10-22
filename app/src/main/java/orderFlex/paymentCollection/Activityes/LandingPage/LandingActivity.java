@@ -8,11 +8,15 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Timer;
@@ -35,6 +39,7 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
     private String TAG="LandingActivity";
     private View containerView;
     private ConstraintLayout mainView;
+    private ImageView splashImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +51,17 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
 
         helper=new Helper(this);
         prefManager=new SharedPrefManager(this);
+        //activate and deactivate debugging mode
+        prefManager.setDebugMode(true);
+
         Log.i(TAG,helper.getAnrdoidID());
-        checkApplication();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                checkApplication();
+            }
+        }, 3000);
+
         mainView.setOnTouchListener(new OnSwipeTouchListener(this) {
             public void onSwipeTop() {
                 Log.i(TAG,"TOP");
@@ -73,7 +87,12 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
         AppSetupRequestBody.ScreenDimensions screenDimensions=myScreen();
         AppSetupRequestBody requestBody=new AppSetupRequestBody("1v1",helper.getAnrdoidID(),"",
                 "",helper.getDateTimeInEnglish(),screenDimensions);
-        new PullAppSetup(this).pullSetup("app.admin@payflex","@ppd0t@dm1n",requestBody);
+        if (helper.isInternetAvailable()){
+            new PullAppSetup(this).pullSetup("app.admin@payflex","@ppd0t@dm1n",requestBody);
+        }else {
+            helper.showSnakBar(containerView,"No internet! Please check your internet connection!");
+        }
+
     }
 
     public AppSetupRequestBody.ScreenDimensions myScreen() {
@@ -101,8 +120,8 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
                     helper.showSnakBar(containerView,"Server under maintenance!");
                 }else {
                     if (response.getData().getIsMessageForUser()){
-                        showMessageDialog("Tutorial!",response.getData().getCustomWebViewURL(),
-                                "To see the user manual press GO button","GO","1");
+                        showMessageDialog("Important Massage!",response.getData().getCustomWebViewURL(),
+                                "To see the message press the GO button","GO","1");
                     }else {
                         if (!prefManager.isLoggedIn()){
                             Intent intent =new Intent(LandingActivity.this, UserLogin.class);
@@ -126,7 +145,7 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
             if (code==401){
                 helper.showSnakBar(containerView,"Unauthorized Username or Password!");
             }else {
-                helper.showSnakBar(containerView,"Login error");
+                helper.showSnakBar(containerView,String.valueOf(code)+": Loading error, Server not responding");
             }
         }
     }

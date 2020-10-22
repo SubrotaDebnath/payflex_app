@@ -14,10 +14,14 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
+import orderFlex.paymentCollection.Model.APILog.APILogData;
+import orderFlex.paymentCollection.Model.DataBase.DatabaseOperation;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListRequest;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.ProductListResponse;
 import orderFlex.paymentCollection.Utility.Constant;
+import orderFlex.paymentCollection.Utility.Helper;
+import orderFlex.paymentCollection.Utility.SharedPrefManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
@@ -31,10 +35,14 @@ public class GetProductList {
     private Context context;
     private ProgressDialog dialog;
     private ProductListResponse paymentListResponse=null;
+    private DatabaseOperation db;
+    private APILogData logData=new APILogData();
 
     public GetProductList(Context context) {
         listener= (GetProductListListener) context;
         this.context=context;
+        db
+                =new DatabaseOperation(context);
     }
 
     public void pullProductListCall(final String username, final String password){
@@ -43,6 +51,15 @@ public class GetProductList {
         dialog = new ProgressDialog(context);
         dialog.setMessage("Updating...");
         dialog.show();
+        //////////////log operation///////////
+        logData.setCallName("Product Details");
+        logData.setCallURL(Constant.BASE_URL_PAYFLEX+"GetProductDetails");
+        logData.setCallTime(new Helper(context).getDateTimeInEnglish());
+        logData.setRequestBody("GET Call");
+        logData.setResponseCode("");
+        logData.setResponseBody("");
+        logData.setException("");
+        /////////////////////////////////
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         final String authToken = Credentials.basic(username, password);
@@ -70,6 +87,14 @@ public class GetProductList {
         paymentListResponseCall.enqueue(new Callback<ProductListResponse>() {
             @Override
             public void onResponse(Call<ProductListResponse> call, retrofit2.Response<ProductListResponse> response) {
+                //////////////log operation///////////
+                if (new SharedPrefManager(context).isDebugOn()){
+                    logData.setResponseCode(String.valueOf(response.code()));
+                    logData.setResponseBody(new Gson().toJson(response.body()));
+                    logData.setResponseTime(new Helper(context).getDateTimeInEnglish());
+                    db.insertAPILog(logData);
+                }
+                ///////////////////////////////////
                 if (response.isSuccessful()){
                     paymentListResponse=response.body();
                     gson=new Gson();
@@ -83,6 +108,10 @@ public class GetProductList {
             @Override
             public void onFailure(Call<ProductListResponse> call, Throwable t) {
                 Log.i(TAG,t.getMessage());
+                if (new SharedPrefManager(context).isDebugOn()){
+                    logData.setException(t.getMessage());
+                    db.insertAPILog(logData);
+                }
                 listener.onProductListResponse(paymentListResponse,404);
                 dialog.cancel();
             }

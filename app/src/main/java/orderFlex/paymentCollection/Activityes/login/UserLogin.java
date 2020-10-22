@@ -39,6 +39,8 @@ public class UserLogin extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_login);
+        getSupportActionBar().hide();
+
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
 //        status = findViewById(R.id.loginStatus);

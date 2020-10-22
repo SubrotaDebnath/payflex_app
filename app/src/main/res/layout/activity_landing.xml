@@ -10,25 +10,25 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <TextView
+        <ImageView
+            android:layout_margin="20dp"
+            android:id="@+id/splashImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PayFlex"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorPrimary"
+            android:src="@drawable/pay_flex_logo"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             />
         <com.github.ybq.android.spinkit.SpinKitView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/spin_kit"
+            android:layout_margin="20dp"
             style="@style/SpinKitView.Large.DoubleBounce"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:layout_height="wrap_content"
-            app:SpinKit_Color="@color/colorPrimary"
+            android:layout_height="match_parent"
+            app:SpinKit_Color="#FF9800"
             tools:ignore="MissingConstraints" />
         <TextView
             android:layout_alignParentBottom="true"

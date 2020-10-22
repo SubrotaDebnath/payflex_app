@@ -21,7 +21,7 @@
             android:layout_height="200dp"
             android:layout_gravity="center"
             android:layout_marginBottom="100dp"
-            android:src="@drawable/total_payflex_logo_no_onu"
+            android:src="@drawable/pay_flex_logo"
             android:contentDescription="@string/todo" />
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
