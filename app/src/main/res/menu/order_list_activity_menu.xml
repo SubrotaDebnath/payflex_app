@@ -5,7 +5,7 @@
     <item android:id="@+id/calendarData"
         android:title="refresh"
         app:showAsAction="ifRoom|collapseActionView"
-        android:icon="@drawable/ic_baseline_calendar_today_24"/>
+        android:icon="@drawable/ic_baseline_calendar_today_white"/>
 
     <item android:id="@+id/refresh"
         android:title="refresh"
@@ -21,8 +21,8 @@
     <item android:id="@+id/change_password"
         android:title="@string/menu_pass" />
 
-    <item android:id="@+id/debugLog"
-        android:title="D-Logs" />
+<!--    <item android:id="@+id/debugLog"-->
+<!--        android:title="D-Logs" />-->
 
     <item android:id="@+id/logout"
         android:title="@string/logout" />

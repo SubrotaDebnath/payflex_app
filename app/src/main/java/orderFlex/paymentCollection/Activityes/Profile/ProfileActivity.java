@@ -32,9 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 
-import orderFlex.paymentCollection.Model.APICallings.PaymentImageFileUploader;
 import orderFlex.paymentCollection.Model.APICallings.ProfileImageFileUpload;
-import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentQueueRequestData;
 import orderFlex.paymentCollection.Model.UserData.ProfileQueueRequestData;
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;
@@ -144,7 +142,7 @@ public class ProfileActivity extends BaseActivity {
         if (prefManager.getProImgUrl()!=null){
             Picasso.get()
                     .load(prefManager.getProImgUrl())
-                    .placeholder(R.drawable.ic_person_sky)
+                    .placeholder(R.drawable.ic_person)
 //                            .resize(100, 100)
                     .priority(Picasso.Priority.HIGH)
                     .into(proImg);

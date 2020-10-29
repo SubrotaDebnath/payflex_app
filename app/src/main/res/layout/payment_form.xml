@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/paymentMethodeActivity"
-    android:background="@color/backgroundColor"
+    android:background="@color/light_backgroundColor"
     tools:context=".Activityes.PaymentActivity.PaymentActivity">
 
     <androidx.cardview.widget.CardView
@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:padding="10dp"
-                android:background="@drawable/back_squere_border"
+                android:background="@drawable/ashes_back_squere_border"
                 android:layout_gravity="center">
                 <ImageView
                     android:id="@+id/referenceImg"
@@ -39,7 +39,7 @@
                     android:layout_margin="5dp"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/ic_baseline_add_a_photo_24"
+                    android:src="@drawable/ic_baseline_add_a_photo"
                     android:layout_marginLeft="3dip"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true" />
@@ -58,7 +58,7 @@
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     android:paddingLeft="2dp"
-                    android:background="#79ECEAEA"
+                    android:background="@color/barColor"
                     android:orientation="horizontal">
                     <TextView
                         android:layout_width="0dp"
@@ -104,7 +104,7 @@
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     android:paddingLeft="2dp"
-                    android:background="#79ECEAEA"
+                    android:background="@color/barColor"
                     android:orientation="horizontal">
                     <TextView
                         android:layout_width="0dp"
@@ -136,7 +136,7 @@
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:layout_gravity="right"
-                            android:src="@drawable/ic_baseline_calendar_today_24"/>
+                            android:src="@drawable/ic_baseline_calendar_today_theam"/>
                     </LinearLayout>
 
                 </LinearLayout>
@@ -169,7 +169,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#79ECEAEA"
+                    android:background="@color/barColor"
                     android:paddingLeft="2dp"
                     android:orientation="horizontal">
                     <TextView

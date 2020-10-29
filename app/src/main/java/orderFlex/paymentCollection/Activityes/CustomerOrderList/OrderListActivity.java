@@ -36,7 +36,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import orderFlex.paymentCollection.Activityes.APIDebugLog.DebugLogs;
 import orderFlex.paymentCollection.Activityes.Profile.ProfileActivity;
 import orderFlex.paymentCollection.Model.APICallings.GetProductList;
 import orderFlex.paymentCollection.Model.APICallings.PullCustomerOrderList;
@@ -77,7 +76,8 @@ public class OrderListActivity extends BaseActivity
     private AdapterOrderForm adapter;
     private TextView totalBill,clientCode,name,presenterName,phoneNo,address,listTitle,totalTakenBill;
     private View containerView;
-    private LinearLayout orderCodeView,orderTakeSegment,deliveryLocation;
+    private LinearLayout orderTakeSegment;
+    private CardView orderCodeView,deliveryLocation;
     private TextView orderDate;
     private RecyclerView bookedOrderList,takeCustomerOrderList;
     private TextView warningText;
@@ -229,7 +229,7 @@ public class OrderListActivity extends BaseActivity
         if (prefManager.getProImgUrl()!=null){
             Picasso.get()
                     .load(prefManager.getProImgUrl())
-                    .placeholder(R.drawable.ic_person_sky)
+                    .placeholder(R.drawable.ic_person)
 //                            .resize(100, 100)
                     .priority(Picasso.Priority.HIGH)
                     .into(proImg);
@@ -316,10 +316,10 @@ public class OrderListActivity extends BaseActivity
                 Intent intent1=new Intent(OrderListActivity.this, ProfileActivity.class);
                 startActivity(intent1);
                 break;
-            case R.id.debugLog:
-                Intent intent2=new Intent(OrderListActivity.this, DebugLogs.class);
-                startActivity(intent2);
-                break;
+//            case R.id.debugLog:
+//                Intent intent2=new Intent(OrderListActivity.this, DebugLogs.class);
+//                startActivity(intent2);
+//                break;
         }
         return true;
     }

@@ -114,7 +114,7 @@ public class OrderDetailsActivity
         orderTakeSegment=findViewById(R.id.orderTakeSegment);
         takeOrderList=findViewById(R.id.takeOrderList);
         totalTakenBill=findViewById(R.id.totalTakenBill);
-        saveOrder=findViewById(R.id.saveOrder);
+//        saveOrder=findViewById(R.id.saveOrder);
         saveOrderHandler=new SaveOrderHandler(this);
         updateProfile();
         pullPaymentsList=new PullPaymentsList(this);
@@ -243,7 +243,7 @@ public class OrderDetailsActivity
                 orderDetailsBlock.setVisibility(View.VISIBLE);
                 noOrder.setVisibility(View.GONE);
                 orderTakeSegment.setVisibility(View.GONE);
-                saveOrder.setVisibility(View.GONE);
+//                saveOrder.setVisibility(View.GONE);
                 orderCode.setText(orderResponse.getOrderDetails().get(0).getOrderCode());
                 orderDate.setText(orderResponse.getOrderDetails().get(0).getDeliveryDate());
                 orderCode.setText(response.getOrderDetails().get(0).getOrderCode());
@@ -254,7 +254,7 @@ public class OrderDetailsActivity
                 //noOrder.setVisibility(View.VISIBLE);
                 orderDetailsBlock.setVisibility(View.GONE);
                 orderTakeSegment.setVisibility(View.VISIBLE);
-                saveOrder.setVisibility(View.VISIBLE);
+//                saveOrder.setVisibility(View.VISIBLE);
                 noOrder.setVisibility(View.GONE);
 //                new GetProductList(this).pullProductListCall(prefManager.getUsername(),prefManager.getUserPassword());
             }
@@ -267,7 +267,7 @@ public class OrderDetailsActivity
             noOrder.setVisibility(View.VISIBLE);
             orderDetailsBlock.setVisibility(View.GONE);
             noOrder.setVisibility(View.GONE);
-            saveOrder.setVisibility(View.GONE);
+//            saveOrder.setVisibility(View.GONE);
         }
     }
 
@@ -387,7 +387,7 @@ public class OrderDetailsActivity
         if (prefManager.getProImgUrl()!=null){
             Picasso.get()
                     .load(prefManager.getProImgUrl())
-                    .placeholder(R.drawable.ic_person_sky)
+                    .placeholder(R.drawable.ic_person)
 //                            .resize(100, 100)
                     .priority(Picasso.Priority.HIGH)
                     .into(proImg);
@@ -404,7 +404,7 @@ public class OrderDetailsActivity
             helper.showSnakBar(containerView,response.getMessage());
             if (helper.isInternetAvailable()){
                 operationOrderDetail();
-                saveOrder.setVisibility(View.GONE);
+//                saveOrder.setVisibility(View.GONE);
             }else {
                 helper.showSnakBar(containerView,"Please check your internet connection!");
             }

@@ -17,12 +17,12 @@
             android:padding="10dp"
             android:layout_gravity="center">
             <ImageView
-                android:background="@drawable/back_squere_border"
+                android:background="@drawable/ashes_back_squere_border"
                 android:padding="10dp"
                 android:id="@+id/proImg"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:src="@drawable/ic_person_sky"
+                android:src="@drawable/ic_person"
                 android:layout_marginStart="3dip"
                 android:contentDescription="@string/todo" />
             <ImageView

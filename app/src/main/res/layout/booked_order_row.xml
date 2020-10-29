@@ -17,7 +17,7 @@
             android:id="@+id/booked_index"
             android:layout_width="0dp"
             android:layout_weight=".1"
-            android:background="@color/backgroundColor"
+            android:background="@color/barColor"
             android:layout_marginRight="1dp"
             android:layout_height="match_parent"
             android:gravity="center"

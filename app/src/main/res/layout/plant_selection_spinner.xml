@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="15dp"
+        android:background="@color/barColor"
         tools:ignore="MissingConstraints">
         <Spinner
             android:id="@+id/plantSpinner"
@@ -73,7 +74,7 @@
                     android:paddingBottom="5dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:textColor="#000000"/>
+                    android:textColor="@color/white"/>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 

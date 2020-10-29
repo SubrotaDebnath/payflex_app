@@ -52,7 +52,7 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
         helper=new Helper(this);
         prefManager=new SharedPrefManager(this);
         //activate and deactivate debugging mode
-        prefManager.setDebugMode(true);
+        prefManager.setDebugMode(false);
 
         Log.i(TAG,helper.getAnrdoidID());
         new Handler().postDelayed(new Runnable() {

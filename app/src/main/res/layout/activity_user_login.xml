@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_margin="5dp"
         android:background="#ffffff"
         android:orientation="vertical">
         <ImageView
@@ -23,44 +22,69 @@
             android:layout_marginBottom="100dp"
             android:src="@drawable/pay_flex_logo"
             android:contentDescription="@string/todo" />
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            app:cardCornerRadius="10dp">
-            <LinearLayout
+            android:padding="2dp"
+            android:layout_marginRight="30dp"
+            android:background="@color/backgroundColor"
+            android:orientation="vertical">
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="2dp"
-                android:background="#0A2196F3"
-                android:orientation="vertical">
+                android:layout_margin="5dp"
+                android:elevation="5dp"
+                app:cardCornerRadius="5dp">
                 <EditText
                     android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/user_name"
                     android:gravity="center"
+                    android:textColor="@color/light_black"
                     android:inputType="text"
+                    android:textSize="18dp"
+                    android:padding="5dp"
+                    android:background="@drawable/ashes_back_squere_border"
                     android:autofillHints="" />
-                <!--        android:text="adiba-gas@total.com"-->
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:elevation="5dp"
+                app:cardCornerRadius="5dp">
                 <EditText
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/password"
                     android:gravity="center"
+                    android:textColor="@color/light_black"
                     android:inputType="textPassword"
-                    android:autofillHints="" />
-                <!--        android:text="abcdtotal"-->
-                <Button
-                    android:id="@+id/login_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/login"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:onClick="Login"/>
-            </LinearLayout>
+                    android:autofillHints=""
+                    android:textSize="18dp"
+                    android:padding="5dp"
+                    android:background="@drawable/ashes_back_squere_border"/>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="right"
+            app:cardCornerRadius="5dp">
+            <Button
+                android:id="@+id/login_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login"
+                android:background="@color/backgroundColor"
+                android:textColor="@color/white"
+                android:onClick="Login"/>
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
