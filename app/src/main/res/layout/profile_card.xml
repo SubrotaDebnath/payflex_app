@@ -242,6 +242,13 @@
                             android:layout_marginRight="10dp"
                             android:hint=""
                             android:layout_weight="1.5"/>
+                        <ImageView
+                            android:id="@+id/pickDate"
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:layout_gravity="center"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/ic_baseline_calendar_today_theam"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 

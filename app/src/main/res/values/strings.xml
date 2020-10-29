@@ -26,7 +26,7 @@
 
     <!--    Login Page-->
     <string name="payment_place_holder_text">Reference Image</string>
-    <string name="user_name">User Name</string>
+    <string name="user_name">Username</string>
     <string name="password">Password</string>
     <string name="login">LogIn</string>
     <string name="todo">TODO</string>

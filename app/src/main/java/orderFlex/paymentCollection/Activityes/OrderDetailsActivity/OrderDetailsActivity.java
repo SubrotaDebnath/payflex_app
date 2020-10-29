@@ -87,7 +87,7 @@ public class OrderDetailsActivity
     private List<SaveOrderDetails> saveOrderRequestsBody;
     private SaveOrderHandler saveOrderHandler;
     private boolean isEditable =false, isSubmitted=false;
-    private ImageView proImg;
+    private ImageView proImg,pickDate;
     private MenuItem submitMenu;
 
     @Override
@@ -114,6 +114,9 @@ public class OrderDetailsActivity
         orderTakeSegment=findViewById(R.id.orderTakeSegment);
         takeOrderList=findViewById(R.id.takeOrderList);
         totalTakenBill=findViewById(R.id.totalTakenBill);
+        pickDate=findViewById(R.id.pickDate);
+        pickDate.setVisibility(View.GONE);
+
 //        saveOrder=findViewById(R.id.saveOrder);
         saveOrderHandler=new SaveOrderHandler(this);
         updateProfile();
@@ -130,7 +133,7 @@ public class OrderDetailsActivity
                 Log.i(TAG,"Not submitted");
             }
             if (message == null){
-                helper.showSnakBar(containerView,"Refreshing the dashboard...!");
+                helper.showSnakBar(containerView,"Refreshing the order detail...!");
             }else {
                 helper.showSnakBar(containerView,message);
             }

@@ -10,6 +10,8 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.google.android.material.textfield.TextInputEditText;
+
 import java.util.Locale;
 
 import orderFlex.paymentCollection.Model.APICallings.LoginAPICalling;
@@ -23,7 +25,7 @@ import orderFlex.paymentCollection.Utility.SharedPrefManager;
 
 public class UserLogin extends BaseActivity
         implements LoginAPICalling.LoginListener{
-    private EditText username, password;
+    private TextInputEditText password,username;
 //    private TextView status;
     private LoginAPICalling apiCalling;
     private Helper helper;

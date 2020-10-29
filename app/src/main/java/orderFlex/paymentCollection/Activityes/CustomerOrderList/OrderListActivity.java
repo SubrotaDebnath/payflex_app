@@ -91,7 +91,7 @@ public class OrderListActivity extends BaseActivity
     private SaveOrderHandler saveOrderHandler;
     private int orderCount=1;
     private PlantListResponse plantData;
-    private ImageView proImg;
+    private ImageView proImg,pickDate;
     Locale english=null;
 
     @Override
@@ -110,6 +110,7 @@ public class OrderListActivity extends BaseActivity
         deliveryLocation=findViewById(R.id.deliveryLocation);
         //new order segment
         totalTakenBill=findViewById(R.id.totalTakenBill);
+        pickDate=findViewById(R.id.pickDate);
 
         //default operations
         updateProfile();
@@ -159,6 +160,12 @@ public class OrderListActivity extends BaseActivity
             @Override
             public void onClick(View v) {
                 operationOrderPull(helper.getDateInEnglish(),helper.getDateInEnglish());
+            }
+        });
+        pickDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getOrderAccordingToDate(orderDate);
             }
         });
     }
@@ -268,17 +275,20 @@ public class OrderListActivity extends BaseActivity
 
     private void operationOrderPull(String startDate,String endDate){
         warningText.setVisibility(View.GONE);
-        bookedOrderList.setVisibility(View.GONE);
         orderTakeSegment.setVisibility(View.GONE);
+        bookedOrderList.setVisibility(View.GONE);
         orderDate.setText(startDate);
         listTitle.setText("Order List");
+        addNewOrder.setVisibility(View.VISIBLE);
 
         CustomerOrderListRequest request=new CustomerOrderListRequest(prefManager.getClientId(),startDate,endDate);
         if (helper.isInternetAvailable()){
             helper.showSnakBar(containerView,"Refreshing the dashboard...!");
             new PullCustomerOrderList(this).pullCustomerOrderListCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
         }else {
-            helper.showSnakBar(containerView,"Please check your internet connection!");
+            warningText.setVisibility(View.VISIBLE);
+            warningText.setText("No Internet! Please check your internet connection and refresh again");
+            helper.showSnakBar(containerView,"No Internet! Please check your internet connection");
         }
     }
 
@@ -306,9 +316,9 @@ public class OrderListActivity extends BaseActivity
             case R.id.change_language:
                 selectLanguage(this);
                 break;
-            case R.id.calendarData:
-                getOrderAccordingToDate(orderDate);
-                break;
+//            case R.id.calendarData:
+//                getOrderAccordingToDate(orderDate);
+//                break;
             case R.id.change_password:
                 changePassword(this);
                 break;
@@ -368,19 +378,23 @@ public class OrderListActivity extends BaseActivity
     @Override
     public void onCustomerOrderListResponse(CustomerOrderListResponse response, int code) {
       //  Log.i(TAG,"Order List Response Code: "+code+" Array size: "+response.getOrderDetails().size());
-        if (response!=null && response.getOrderDetails().size()>0){
-            warningText.setVisibility(View.GONE);
-            bookedOrderList.setVisibility(View.VISIBLE);
-            orderTakeSegment.setVisibility(View.GONE);
-            addNewOrder.setVisibility(View.VISIBLE);
-            listTitle.setText("Order List");
-            orderCount=response.getOrderDetails().size()+1;
+        if (response!=null){
+            if (response.getOrderDetails().size()>0){
+                warningText.setVisibility(View.GONE);
+                bookedOrderList.setVisibility(View.VISIBLE);
+                orderTakeSegment.setVisibility(View.GONE);
+                addNewOrder.setVisibility(View.VISIBLE);
+                listTitle.setText("Order List");
+                orderCount=response.getOrderDetails().size()+1;
 
-            adapterListOfOrder=new AdapterListOfOrder(this,response.getOrderDetails());
-            layoutManager = new LinearLayoutManager(this);
-            bookedOrderList.setLayoutManager(layoutManager);
-            bookedOrderList.setAdapter(adapterListOfOrder);
-
+                adapterListOfOrder=new AdapterListOfOrder(this,response.getOrderDetails());
+                layoutManager = new LinearLayoutManager(this);
+                bookedOrderList.setLayoutManager(layoutManager);
+                bookedOrderList.setAdapter(adapterListOfOrder);
+            }else {
+                warningText.setVisibility(View.VISIBLE);
+                warningText.setText("You don't have any Order for today. Please book an Order first!");
+            }
         }else {
             listTitle.setText("Order List");
             warningText.setVisibility(View.VISIBLE);
@@ -393,6 +407,7 @@ public class OrderListActivity extends BaseActivity
                 if (code==202){
                     helper.showSnakBar(containerView,"No order found!");
                 }else {
+                    warningText.setText("Server not Responding! Please check your internet connection.");
                     helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
                 }
 

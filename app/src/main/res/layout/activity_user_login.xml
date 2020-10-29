@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -29,45 +30,49 @@
             android:layout_marginRight="30dp"
             android:background="@color/backgroundColor"
             android:orientation="vertical">
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/etPasswordLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:elevation="5dp"
-                app:cardCornerRadius="5dp">
-                <EditText
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp">
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/username"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="35dp"
                     android:hint="@string/user_name"
-                    android:gravity="center"
+                    android:gravity="left"
                     android:textColor="@color/light_black"
                     android:inputType="text"
                     android:textSize="18dp"
                     android:padding="5dp"
-                    android:background="@drawable/ashes_back_squere_border"
-                    android:autofillHints="" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+                    android:layout_marginTop="2dp"
+                    android:focusedByDefault="false"
+                    android:background="@drawable/ashes_squere_fill"
+                    android:autofillHints=""  />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:elevation="5dp"
-                app:cardCornerRadius="5dp">
-                <EditText
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="10dp"
+                app:passwordToggleEnabled="true">
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/password"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="35dp"
                     android:hint="@string/password"
-                    android:gravity="center"
+                    android:gravity="left"
+                    android:padding="5dp"
+                    android:layout_marginTop="2dp"
+                    android:focusedByDefault="false"
                     android:textColor="@color/light_black"
                     android:inputType="textPassword"
-                    android:autofillHints=""
-                    android:textSize="18dp"
-                    android:padding="5dp"
-                    android:background="@drawable/ashes_back_squere_border"/>
-            </androidx.cardview.widget.CardView>
+                    android:background="@drawable/ashes_squere_fill"
+                    android:textSize="18sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
 
         </LinearLayout>
         <androidx.cardview.widget.CardView
