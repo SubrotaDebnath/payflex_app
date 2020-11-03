@@ -5,18 +5,27 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.CookieManager;
+import android.webkit.HttpAuthHandler;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.util.Timer;
@@ -40,6 +49,10 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
     private View containerView;
     private ConstraintLayout mainView;
     private ImageView splashImage;
+    public static final String USER_AGENT_FAKE = "Mozilla/5.0 (Linux; Android 4.1.1; Galaxy Nexus Build/JRO03C) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19";
+    private String user_name="", user_pass="";
+    public ProgressDialog progressBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +65,7 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
         helper=new Helper(this);
         prefManager=new SharedPrefManager(this);
         //activate and deactivate debugging mode
-        prefManager.setDebugMode(false);
+        prefManager.setDebugMode(true);
 
         Log.i(TAG,helper.getAnrdoidID());
         new Handler().postDelayed(new Runnable() {
@@ -92,7 +105,6 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
         }else {
             helper.showSnakBar(containerView,"No internet! Please check your internet connection!");
         }
-
     }
 
     public AppSetupRequestBody.ScreenDimensions myScreen() {
@@ -120,7 +132,7 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
                     helper.showSnakBar(containerView,"Server under maintenance!");
                 }else {
                     if (response.getData().getIsMessageForUser()){
-                        showMessageDialog("Important Massage!",response.getData().getCustomWebViewURL(),
+                        showPopUp("Important Massage!",response.getData().getCustomWebViewURL(),
                                 "To see the message press the GO button","GO","1");
                     }else {
                         if (!prefManager.isLoggedIn()){
@@ -138,7 +150,7 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
                    Log.i(TAG,"user have message");
                 }
             }else {
-                showMessageDialog("Update!",response.getData().getUpdatedAppLink(),
+                showPopUp("Update!",response.getData().getUpdatedAppLink(),
                         "Sorry! You are using the older version of application. Please press the UPDATE button to get the updated application","UPDATE","2");
             }
         }else {
@@ -150,55 +162,132 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
         }
     }
 
-    private void showMessageDialog(String title, final String url, String msg, String done, final String msgType){
-        final AlertDialog alertDialog;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = LayoutInflater.from(this);
-        ConstraintLayout customRoot = (ConstraintLayout) inflater.inflate(R.layout.load_message_view,null);
 
-        CardView skip_key=customRoot.findViewById(R.id.skip_key);
-        CardView done_key=customRoot.findViewById(R.id.done_key);
-        TextView btnDone=customRoot.findViewById(R.id.btnDone);
-        btnDone.setText(done);
+    private void showPopUp(String title, final String url, String msg, String done, final String msgType){
+        progressBar = ProgressDialog.show(this, "Offer", "Loading...");
+        LayoutInflater inflater = (LayoutInflater)
+                getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.offer_popup_window, null);
+//        TextView heading=popupView.findViewById(R.id.popup_heading);
+        ImageView popUpCancel=popupView.findViewById(R.id.popUpCancel);
 
-        TextView msgView=customRoot.findViewById(R.id.messageText);
-        msgView.setText(msg);
-        builder.setView(customRoot);
-        builder.setTitle(title);
-        builder.setCancelable(true);
-        alertDialog= builder.create();
-        alertDialog.show();
-        skip_key.setOnClickListener(new View.OnClickListener() {
+        //set webview
+        WebView popupWebView=popupView.findViewById(R.id.popupWebView);
+        webViewOperation(popupWebView,url);
+
+        // create the popup window
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true; // lets taps outside the popup also dismiss it
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        // show the popup window
+        // which view you pass in doesn't matter, it is only used for the window tolken
+        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+        popUpCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (msgType.equals("1")){
-                    if (!prefManager.isLoggedIn()){
-                        Intent intent =new Intent(LandingActivity.this, UserLogin.class);
-                        startActivity(intent);
-                        finish();
-                    }else {
-                        Intent intent2 =new Intent(LandingActivity.this, OrderListActivity.class);
-                        startActivity(intent2);
-                        finish();
-                    }
-                }else if (msgType.equals("2")){
-                    checkApplication();
+                popupWindow.dismiss();
+                if (!prefManager.isLoggedIn()){
+                    Intent intent =new Intent(LandingActivity.this, UserLogin.class);
+                    startActivity(intent);
+                    finish();
+                }else {
+                    Intent intent2 =new Intent(LandingActivity.this, OrderListActivity.class);
+                    startActivity(intent2);
+                    finish();
                 }
-                alertDialog.dismiss();
             }
         });
-        done_key.setOnClickListener(new View.OnClickListener() {
+    }
+
+    void webViewOperation(WebView popupWebView, String url){
+        WebSettings setting= popupWebView.getSettings();
+        setting.setUserAgentString(USER_AGENT_FAKE);
+        popupWebView.setFocusable(true);
+        setting.setJavaScriptEnabled(true);
+        setting.setJavaScriptCanOpenWindowsAutomatically(true);
+        popupWebView.loadUrl(url);
+        CookieManager.getInstance().setAcceptCookie(true);
+        popupWebView.setWebViewClient(new WebViewClient(){
             @Override
-            public void onClick(View v) {
-                if (msgType.equals("1")){
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(browserIntent);
-                }else if (msgType.equals("2")){
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(browserIntent);
+            public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
+                handler.proceed(user_name,user_pass);
+            }
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.endsWith(".mp4")) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+
+                    startActivity(intent);
+                    return true;
+                } else {
+                    return super.shouldOverrideUrlLoading(view, url);
                 }
-                alertDialog.dismiss();
+            }
+            public void onPageFinished(WebView view, String url) {
+                if (progressBar.isShowing()) {
+                    progressBar.dismiss(); }
             }
         });
     }
 }
+
+
+
+
+
+
+
+//
+//    private void showMessageDialog(String title, final String url, String msg, String done, final String msgType){
+//        final AlertDialog alertDialog;
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        LayoutInflater inflater = LayoutInflater.from(this);
+//        ConstraintLayout customRoot = (ConstraintLayout) inflater.inflate(R.layout.load_message_view,null);
+//
+//        CardView skip_key=customRoot.findViewById(R.id.skip_key);
+//        CardView done_key=customRoot.findViewById(R.id.done_key);
+//        TextView btnDone=customRoot.findViewById(R.id.btnDone);
+//        btnDone.setText(done);
+//
+//        TextView msgView=customRoot.findViewById(R.id.messageText);
+//        msgView.setText(msg);
+//        builder.setView(customRoot);
+//        builder.setTitle(title);
+//        builder.setCancelable(true);
+//        alertDialog= builder.create();
+//        alertDialog.show();
+//        skip_key.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (msgType.equals("1")){
+//                    if (!prefManager.isLoggedIn()){
+//                        Intent intent =new Intent(LandingActivity.this, UserLogin.class);
+//                        startActivity(intent);
+//                        finish();
+//                    }else {
+//                        Intent intent2 =new Intent(LandingActivity.this, OrderListActivity.class);
+//                        startActivity(intent2);
+//                        finish();
+//                    }
+//                }else if (msgType.equals("2")){
+//                    checkApplication();
+//                }
+//                alertDialog.dismiss();
+//            }
+//        });
+//        done_key.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (msgType.equals("1")){
+//                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//                    startActivity(browserIntent);
+//                }else if (msgType.equals("2")){
+//                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//                    startActivity(browserIntent);
+//                }
+//                alertDialog.dismiss();
+//            }
+//        });
+//    }

@@ -37,7 +37,6 @@
                 android:layout_alignParentRight="true" />
         </RelativeLayout>
 
-
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -174,6 +173,7 @@
                                 android:text=""/>
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
+
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

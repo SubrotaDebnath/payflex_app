@@ -36,6 +36,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import orderFlex.paymentCollection.Activityes.APIDebugLog.DebugLogs;
 import orderFlex.paymentCollection.Activityes.Profile.ProfileActivity;
 import orderFlex.paymentCollection.Model.APICallings.GetProductList;
 import orderFlex.paymentCollection.Model.APICallings.PullCustomerOrderList;
@@ -326,10 +327,10 @@ public class OrderListActivity extends BaseActivity
                 Intent intent1=new Intent(OrderListActivity.this, ProfileActivity.class);
                 startActivity(intent1);
                 break;
-//            case R.id.debugLog:
-//                Intent intent2=new Intent(OrderListActivity.this, DebugLogs.class);
-//                startActivity(intent2);
-//                break;
+            case R.id.debugLog:
+                Intent intent2=new Intent(OrderListActivity.this, DebugLogs.class);
+                startActivity(intent2);
+                break;
         }
         return true;
     }
