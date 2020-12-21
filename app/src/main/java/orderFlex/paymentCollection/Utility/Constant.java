@@ -6,4 +6,5 @@ public class Constant {
 //    public static final String BASE_URL_ORDERFLEX = "https://clients.onukit.com/totalforecast/0v1/";//server link
     public static final String BANGLA="bn";
     public static final String ENGLISH="en";
+    //
 }
