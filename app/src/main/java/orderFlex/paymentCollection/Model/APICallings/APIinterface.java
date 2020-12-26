@@ -5,6 +5,8 @@ import java.util.List;
 import orderFlex.paymentCollection.Model.AppSetup.AppSetupRequestBody;
 import orderFlex.paymentCollection.Model.AppSetup.AppSetupResponse;
 import orderFlex.paymentCollection.Model.LoginData.LoginResponse;
+import orderFlex.paymentCollection.Model.OffersListDataClass.OfferPostResponse;
+import orderFlex.paymentCollection.Model.OffersListDataClass.OfferResponsePostBody;
 import orderFlex.paymentCollection.Model.OffersListDataClass.OffersListPojo;
 import orderFlex.paymentCollection.Model.OrderRevise.OrderReviseRequest;
 import orderFlex.paymentCollection.Model.OrderRevise.OrderReviseResponse;
@@ -74,6 +76,9 @@ public interface APIinterface {
 
     @GET("GetOffers")
     Call<OffersListPojo>getOffers();
+
+    @POST("SaveClientsOfferFeedback")
+    Call<OfferPostResponse>SaveClientsOfferFeedback(@Body OfferResponsePostBody body);
 
     @POST("UpdateUserPassword")
     Call<PassChangeResponseBody> passChange(@Body PassChangeReqBody body);

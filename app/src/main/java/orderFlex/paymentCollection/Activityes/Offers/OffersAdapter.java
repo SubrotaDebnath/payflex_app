@@ -22,17 +22,24 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import orderFlex.paymentCollection.Model.APICallings.SaveOfferFeedback;
+import orderFlex.paymentCollection.Model.OffersListDataClass.OfferResponsePostBody;
 import orderFlex.paymentCollection.Model.OffersListDataClass.OffersListPojo;
 import orderFlex.paymentCollection.R;
+import orderFlex.paymentCollection.Utility.Helper;
+import orderFlex.paymentCollection.Utility.SharedPrefManager;
 
 public class OffersAdapter extends RecyclerView.Adapter<OffersAdapter.ViewHolder>{
     private Context context;
     private List<OffersListPojo.Datum> datumList = new ArrayList<>();
+    private SharedPrefManager prefManager;
+    private Helper helper;
 
     public OffersAdapter(Context context, List<OffersListPojo.Datum> datumList) {
         this.context = context;
         this.datumList = datumList;
-
+        prefManager = new SharedPrefManager(context);
+        helper = new Helper(context);
     }
 
     public static Bitmap getBitmapFromURL(String src) {
@@ -59,7 +66,7 @@ public class OffersAdapter extends RecyclerView.Adapter<OffersAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
             holder.offerTitle.setText(datumList.get(position).getOfferTitle());
             holder.offerDescription.setText(datumList.get(position).getOfferDiscription());
         if (datumList.get(position).getImageUrl()!=null && !datumList.get(position).getImageUrl().equals("")){
@@ -79,7 +86,13 @@ public class OffersAdapter extends RecyclerView.Adapter<OffersAdapter.ViewHolder
         holder.offerAccepted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                OfferResponsePostBody postBody = new OfferResponsePostBody(datumList.get(position).getId(),
+                        prefManager.getClientId(), helper.getDateTimeInEnglish(), "1");
 
+                new SaveOfferFeedback(context).pushOfferFeedback(prefManager.getUsername(), prefManager.getUserPassword(), postBody);
+
+                holder.offerAccepted.setVisibility(View.GONE);
+                holder.offerDenied.setVisibility(View.GONE);
             }
         });
 
@@ -87,6 +100,13 @@ public class OffersAdapter extends RecyclerView.Adapter<OffersAdapter.ViewHolder
             @Override
             public void onClick(View v) {
 
+               OfferResponsePostBody postBody = new OfferResponsePostBody(datumList.get(position).getId(),
+                       prefManager.getClientId(), helper.getDateTimeInEnglish(), "0");
+
+                new SaveOfferFeedback(context).pushOfferFeedback(prefManager.getUsername(), prefManager.getUserPassword(), postBody);
+
+                holder.offerAccepted.setVisibility(View.GONE);
+                holder.offerDenied.setVisibility(View.GONE);
             }
         });
     }

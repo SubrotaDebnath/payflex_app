@@ -4,14 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import orderFlex.paymentCollection.Activityes.CustomerOrderList.OrderListActivity;
 import orderFlex.paymentCollection.Model.APICallings.PullOfferList;
 import orderFlex.paymentCollection.Model.OffersListDataClass.OffersListPojo;
 import orderFlex.paymentCollection.R;
@@ -24,6 +28,7 @@ public class Offers extends AppCompatActivity implements PullOfferList.OfferList
     private LinearLayoutManager layoutManager;
     private Helper helper;
     private SharedPrefManager prefManager;
+    private LinearLayout homeBTN;
     //private List<OffersListPojo> offersList = new ArrayList<>();
 
     @Override
@@ -31,11 +36,21 @@ public class Offers extends AppCompatActivity implements PullOfferList.OfferList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_offers);
 
+        homeBTN = findViewById(R.id.offerToHomeLL);
+
         helper = new Helper(this);
         prefManager = new SharedPrefManager(this);
         new PullOfferList(this).offerListCall(prefManager.getUsername(), prefManager.getUserPassword());
         recyclerView = findViewById(R.id.offers_recyclerView);
         layoutManager = new LinearLayoutManager(this);
+
+        homeBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Offers.this, OrderListActivity.class));
+                Log.i(TAG, "Home Button Click");
+            }
+        });
     }
 
     @Override
