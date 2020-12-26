@@ -16,4 +16,5 @@
     <color name="black">#000000</color>
     <color name="light_black">#4C4D4F</color>
     <color name="ashes">#A3C8C8C8</color>
+    <color name="backgroundColor_shadow">#6FF8981C</color>
 </resources>

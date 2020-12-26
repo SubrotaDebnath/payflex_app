@@ -28,8 +28,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activityes.APIDebugLog.DebugLogs"
-            android:label="Debug Log"></activity>
+        <activity android:name=".Activityes.Offers.Offers"></activity>
+        <activity
+            android:name=".Activityes.APIDebugLog.DebugLogs"
+            android:label="Debug Log" />
         <activity android:name=".Activityes.LandingPage.LandingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +43,7 @@
         <activity android:name=".Activityes.CustomerOrderList.OrderListActivity" />
         <activity android:name=".Activityes.PaymentActivity.PaymentActivity" />
         <activity android:name=".Activityes.OrderDetailsActivity.OrderDetailsActivity" />
-        <activity android:name=".Activityes.login.UserLogin"></activity>
+        <activity android:name=".Activityes.login.UserLogin" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

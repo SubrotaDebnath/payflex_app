@@ -58,6 +58,12 @@ public class AppSetupResponse {
         @SerializedName("customWebViewURL")
         @Expose
         private String customWebViewURL;
+        @SerializedName("isOffer")
+        @Expose
+        private Boolean isOffer;
+        @SerializedName("debugMode")
+        @Expose
+        private Boolean debugMode;
 
         public Boolean getIsUpdatedApp() {
             return isUpdatedApp;
@@ -107,5 +113,12 @@ public class AppSetupResponse {
             this.customWebViewURL = customWebViewURL;
         }
 
+        public Boolean getOffer() {
+            return isOffer;
+        }
+
+        public Boolean getDebugMode() {
+            return debugMode;
+        }
     }
 }

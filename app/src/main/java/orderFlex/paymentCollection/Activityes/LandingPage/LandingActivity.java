@@ -32,6 +32,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import orderFlex.paymentCollection.Activityes.CustomerOrderList.OrderListActivity;
+import orderFlex.paymentCollection.Activityes.Offers.Offers;
 import orderFlex.paymentCollection.Activityes.login.UserLogin;
 import orderFlex.paymentCollection.Model.APICallings.PullAppSetup;
 import orderFlex.paymentCollection.Model.AppSetup.AppSetupRequestBody;
@@ -98,7 +99,7 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
 
     private void checkApplication(){
         AppSetupRequestBody.ScreenDimensions screenDimensions=myScreen();
-        AppSetupRequestBody requestBody=new AppSetupRequestBody("1v1",helper.getAnrdoidID(),"",
+        AppSetupRequestBody requestBody=new AppSetupRequestBody("1v1.2",helper.getAnrdoidID(),"",
                 "",helper.getDateTimeInEnglish(),screenDimensions);
         if (helper.isInternetAvailable()){
             new PullAppSetup(this).pullSetup("app.admin@payflex","@ppd0t@dm1n",requestBody);
@@ -140,9 +141,15 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
                             startActivity(intent);
                             finish();
                         }else {
-                            Intent intent2 =new Intent(LandingActivity.this, OrderListActivity.class);
-                            startActivity(intent2);
-                            finish();
+                            if (response.getData().getOffer()){
+                                Intent intent3 =new Intent(LandingActivity.this, Offers.class);
+                                startActivity(intent3);
+                                finish();
+                            }else {
+                                Intent intent2 =new Intent(LandingActivity.this, OrderListActivity.class);
+                                startActivity(intent2);
+                                finish();
+                            }
                         }
                     }
                 }
@@ -168,7 +175,7 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
         LayoutInflater inflater = (LayoutInflater)
                 getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.offer_popup_window, null);
-//        TextView heading=popupView.findViewById(R.id.popup_heading);
+        //TextView heading=popupView.findViewById(R.id.popup_heading);
         ImageView popUpCancel=popupView.findViewById(R.id.popUpCancel);
 
         //set webview
