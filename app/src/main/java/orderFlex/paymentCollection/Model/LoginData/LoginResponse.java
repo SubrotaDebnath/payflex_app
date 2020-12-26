@@ -76,6 +76,12 @@ public class LoginResponse {
     @SerializedName("contacts")
     @Expose
     private List<Contact> contacts = null;
+    @SerializedName("isNewDevice")
+    @Expose
+    private Boolean isNewDevice;
+    @SerializedName("isValidDevice")
+    @Expose
+    private Boolean isValidDevice;
 
     public String getImage_url() {
         return image_url;
@@ -255,6 +261,21 @@ public class LoginResponse {
         this.contacts = contacts;
     }
 
+    public Boolean getNewDevice() {
+        return isNewDevice;
+    }
+
+    public void setNewDevice(Boolean newDevice) {
+        isNewDevice = newDevice;
+    }
+
+    public Boolean getValidDevice() {
+        return isValidDevice;
+    }
+
+    public void setValidDevice(Boolean validDevice) {
+        isValidDevice = validDevice;
+    }
 
     public class Contact {
 

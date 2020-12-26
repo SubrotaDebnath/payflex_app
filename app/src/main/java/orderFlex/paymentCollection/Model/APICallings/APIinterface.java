@@ -4,7 +4,10 @@ import java.util.List;
 
 import orderFlex.paymentCollection.Model.AppSetup.AppSetupRequestBody;
 import orderFlex.paymentCollection.Model.AppSetup.AppSetupResponse;
+import orderFlex.paymentCollection.Model.LoginData.LoginClientRequestBody;
 import orderFlex.paymentCollection.Model.LoginData.LoginResponse;
+import orderFlex.paymentCollection.Model.LoginData.OTP_Response;
+import orderFlex.paymentCollection.Model.LoginData.OTP_verificationRequestBody;
 import orderFlex.paymentCollection.Model.OffersListDataClass.OfferPostResponse;
 import orderFlex.paymentCollection.Model.OffersListDataClass.OfferResponsePostBody;
 import orderFlex.paymentCollection.Model.OffersListDataClass.OffersListPojo;
@@ -36,10 +39,13 @@ import retrofit2.http.POST;
 
 public interface APIinterface {
     @POST("Client_login")
-    Call<LoginResponse>login();
+    Call<LoginResponse>login(@Body LoginClientRequestBody body);
 
     @POST("GetClientTodaysOrder")
     Call<TodayOrderDetailsByDataResponse>getTodayOrder(@Body TodayOrderDetailsByDataRequest body);
+
+    @POST("OTP_verification")
+    Call<OTP_Response>getOTP_verification(@Body OTP_verificationRequestBody body);
 
     @POST("GetOrderDetailByOrderCode")
     Call<TodayOrderDetailsByDataResponse>getOrderByCode(@Body TodayOrderDetailsByCodeRequest body);

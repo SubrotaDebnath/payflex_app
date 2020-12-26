@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+
 import java.io.IOException;
 
 import okhttp3.Credentials;
@@ -15,8 +16,10 @@ import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import orderFlex.paymentCollection.Model.APILog.APILogData;
 import orderFlex.paymentCollection.Model.DataBase.DatabaseOperation;
-import orderFlex.paymentCollection.Model.LoginData.LoginClientRequestBody;
-import orderFlex.paymentCollection.Model.LoginData.LoginResponse;
+import orderFlex.paymentCollection.Model.LoginData.OTP_Response;
+import orderFlex.paymentCollection.Model.LoginData.OTP_verificationRequestBody;
+import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentRequestBody;
+import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentResponse;
 import orderFlex.paymentCollection.Utility.Constant;
 import orderFlex.paymentCollection.Utility.Helper;
 import orderFlex.paymentCollection.Utility.SharedPrefManager;
@@ -25,44 +28,40 @@ import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class LoginAPICalling {
-    private String TAG="LoginAPICalling";
+public class Send_OTP_ForVerification {
+    private String TAG="Send_OTP_ForVerification";
     private APIinterface apIinterface;
     private Gson gson;
-    private LoginListener listener;
+    private OTP_ResponseListener listener;
     private Context context;
     private ProgressDialog dialog;
-    private LoginResponse loginResponse=null;
+    private OTP_Response otpResponse=null;
     private DatabaseOperation db;
     private APILogData logData=new APILogData();
 
-    public LoginAPICalling(Context context) {
-        listener= (LoginListener) context;
-        this.context=context;
-        db=new DatabaseOperation(context);
+    public Send_OTP_ForVerification(Context context) {
+        this.context = context;
+        db = new DatabaseOperation(context);
+        listener = (OTP_ResponseListener) context;
     }
 
-    public void loginCall(final String username, final String password, LoginClientRequestBody body){
+    public void otpVerification(final String username, final String password, OTP_verificationRequestBody body){
         // preparing interceptor for retrofit
         // interceptor for runtime data checking
         dialog = new ProgressDialog(context);
-        dialog.setMessage("Loading...");
+        dialog.setMessage("Upload todays bills ...");
         dialog.show();
         //////////////log operation///////////
-        logData.setCallName("Login");
-        logData.setCallURL(Constant.BASE_URL_PAYFLEX+"Client_login");
+        logData.setCallName("Push Payment");
+        logData.setCallURL(Constant.BASE_URL_PAYFLEX+"SavePaymentData");
         logData.setCallTime(new Helper(context).getDateTimeInEnglish());
-        logData.setRequestBody(username+";"+password);
+        logData.setRequestBody(new Gson().toJson(body));
         logData.setResponseCode("");
         logData.setResponseBody("");
         logData.setException("");
         /////////////////////////////////
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        //generate auth token
-        //final String authToken = Credentials.basic(username,password);
-        //authentication interceptor
-        //LoginRequestBody body=new LoginRequestBody(username,password);
         final String authToken = Credentials.basic(username, password);
         OkHttpClient okHttpClient=new OkHttpClient.Builder()
                 .addInterceptor(new Interceptor() {
@@ -84,11 +83,10 @@ public class LoginAPICalling {
                 .build();
 
         apIinterface=retrofit.create(APIinterface.class);
-        final Call<LoginResponse> loginResponseCall=apIinterface.login(body);
-        loginResponseCall.enqueue(new Callback<LoginResponse>() {
+        final Call<OTP_Response> otpResponseCall=apIinterface.getOTP_verification(body);
+        otpResponseCall.enqueue(new Callback<OTP_Response>() {
             @Override
-            public void onResponse(Call<LoginResponse> call, retrofit2.Response<LoginResponse> response) {
-               Log.i(TAG,"Response Code: "+response.code());
+            public void onResponse(Call<OTP_Response> call, retrofit2.Response<OTP_Response> response) {
                 //////////////log operation///////////
                 if (new SharedPrefManager(context).isDebugOn()){
                     logData.setResponseCode(String.valueOf(response.code()));
@@ -98,30 +96,31 @@ public class LoginAPICalling {
                 }
                 ///////////////////////////////////
                 if (response.isSuccessful()){
-                    loginResponse=response.body();
+                    otpResponse=response.body();
                     gson=new Gson();
-                    String res= gson.toJson(loginResponse);
+                    String res= gson.toJson(otpResponse);
+                    Log.i(TAG,"Login Response code: "+response.code());
                     Log.i(TAG,"Login Response: "+res);
-                    listener.onResponse(loginResponse,response.code());
-                }else {
-                    listener.onResponse(loginResponse,response.code());
+                    listener.onResponse(otpResponse,response.code());
+                    dialog.cancel();
                 }
                 dialog.cancel();
             }
             @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
+            public void onFailure(Call<OTP_Response> call, Throwable t) {
+                Log.i(TAG,"Login OTP Response Exception: "+t.getMessage());
                 if (new SharedPrefManager(context).isDebugOn()){
                     logData.setException(t.getMessage());
                     db.insertAPILog(logData);
                 }
-                listener.onResponse(loginResponse,404);
+                listener.onResponse(otpResponse,404);
                 dialog.cancel();
             }
         });
         return;
     }
 
-    public interface LoginListener{
-        void onResponse(LoginResponse response,int code);
+    public interface OTP_ResponseListener{
+        void onResponse(OTP_Response response, int code);
     }
 }
