@@ -65,6 +65,22 @@ public class AppSetupResponse {
         @Expose
         private Boolean debugMode;
 
+        public Boolean getOffer() {
+            return isOffer;
+        }
+
+        public void setOffer(Boolean offer) {
+            isOffer = offer;
+        }
+
+        public Boolean getDebugMode() {
+            return debugMode;
+        }
+
+        public void setDebugMode(Boolean debugMode) {
+            this.debugMode = debugMode;
+        }
+
         public Boolean getIsUpdatedApp() {
             return isUpdatedApp;
         }
@@ -113,12 +129,5 @@ public class AppSetupResponse {
             this.customWebViewURL = customWebViewURL;
         }
 
-        public Boolean getOffer() {
-            return isOffer;
-        }
-
-        public Boolean getDebugMode() {
-            return debugMode;
-        }
     }
 }

@@ -34,6 +34,7 @@ public class OffersAdapter extends RecyclerView.Adapter<OffersAdapter.ViewHolder
     private List<OffersListPojo.Datum> datumList = new ArrayList<>();
     private SharedPrefManager prefManager;
     private Helper helper;
+    private int checkCount = 0;
 
     public OffersAdapter(Context context, List<OffersListPojo.Datum> datumList) {
         this.context = context;
@@ -88,8 +89,8 @@ public class OffersAdapter extends RecyclerView.Adapter<OffersAdapter.ViewHolder
             public void onClick(View v) {
                 OfferResponsePostBody postBody = new OfferResponsePostBody(datumList.get(position).getId(),
                         prefManager.getClientId(), helper.getDateTimeInEnglish(), "1");
-
-                new SaveOfferFeedback(context).pushOfferFeedback(prefManager.getUsername(), prefManager.getUserPassword(), postBody);
+                checkCount++;
+                new SaveOfferFeedback(context).pushOfferFeedback(prefManager.getUsername(), prefManager.getUserPassword(), postBody, checkCount, datumList.size());
 
                 holder.offerAccepted.setVisibility(View.GONE);
                 holder.offerDenied.setVisibility(View.GONE);
@@ -103,10 +104,11 @@ public class OffersAdapter extends RecyclerView.Adapter<OffersAdapter.ViewHolder
                OfferResponsePostBody postBody = new OfferResponsePostBody(datumList.get(position).getId(),
                        prefManager.getClientId(), helper.getDateTimeInEnglish(), "0");
 
-                new SaveOfferFeedback(context).pushOfferFeedback(prefManager.getUsername(), prefManager.getUserPassword(), postBody);
+                new SaveOfferFeedback(context).pushOfferFeedback(prefManager.getUsername(), prefManager.getUserPassword(), postBody, checkCount, datumList.size());
 
                 holder.offerAccepted.setVisibility(View.GONE);
                 holder.offerDenied.setVisibility(View.GONE);
+                checkCount++;
             }
         });
     }

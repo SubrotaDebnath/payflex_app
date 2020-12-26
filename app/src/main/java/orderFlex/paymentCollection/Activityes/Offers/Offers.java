@@ -29,6 +29,7 @@ public class Offers extends AppCompatActivity implements PullOfferList.OfferList
     private Helper helper;
     private SharedPrefManager prefManager;
     private LinearLayout homeBTN;
+
     //private List<OffersListPojo> offersList = new ArrayList<>();
 
     @Override
@@ -48,6 +49,7 @@ public class Offers extends AppCompatActivity implements PullOfferList.OfferList
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Offers.this, OrderListActivity.class));
+                finish();
                 Log.i(TAG, "Home Button Click");
             }
         });

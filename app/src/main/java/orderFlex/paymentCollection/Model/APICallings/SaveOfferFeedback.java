@@ -2,6 +2,7 @@ package orderFlex.paymentCollection.Model.APICallings;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -14,6 +15,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
+import orderFlex.paymentCollection.Activityes.CustomerOrderList.OrderListActivity;
 import orderFlex.paymentCollection.Model.APILog.APILogData;
 import orderFlex.paymentCollection.Model.DataBase.DatabaseOperation;
 import orderFlex.paymentCollection.Model.OffersListDataClass.OfferPostResponse;
@@ -27,6 +29,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
 
 public class SaveOfferFeedback {
     private String TAG="SaveOfferFeedback";
@@ -43,7 +47,7 @@ public class SaveOfferFeedback {
         db = new DatabaseOperation(context);
     }
 
-    public void pushOfferFeedback(final String username, final String password, OfferResponsePostBody body){
+    public void pushOfferFeedback(final String username, final String password, OfferResponsePostBody body, final int checkCount, final int totalCount){
         // preparing interceptor for retrofit
         // interceptor for runtime data checking
         dialog = new ProgressDialog(context);
@@ -85,6 +89,13 @@ public class SaveOfferFeedback {
         billPaymentResponseCall.enqueue(new Callback<OfferPostResponse>() {
             @Override
             public void onResponse(Call<OfferPostResponse> call, retrofit2.Response<OfferPostResponse> response) {
+
+                if (totalCount == checkCount){
+                    Intent intent = new Intent(context, OrderListActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    context.startActivity(intent);
+                }
                 //////////////log operation///////////
                 if (new SharedPrefManager(context).isDebugOn()){
                     logData.setResponseCode(String.valueOf(response.code()));

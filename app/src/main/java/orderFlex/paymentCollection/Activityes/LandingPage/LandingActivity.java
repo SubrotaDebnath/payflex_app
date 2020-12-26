@@ -98,14 +98,19 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
     }
 
     private void checkApplication(){
-        AppSetupRequestBody.ScreenDimensions screenDimensions=myScreen();
-        AppSetupRequestBody requestBody=new AppSetupRequestBody("1v1.2",helper.getAnrdoidID(),"",
-                "",helper.getDateTimeInEnglish(),screenDimensions);
-        if (helper.isInternetAvailable()){
-            new PullAppSetup(this).pullSetup("app.admin@payflex","@ppd0t@dm1n",requestBody);
+        if (prefManager.isLoggedIn()){
+            AppSetupRequestBody.ScreenDimensions screenDimensions=myScreen();
+            AppSetupRequestBody requestBody=new AppSetupRequestBody("1v1.2",helper.getAnrdoidID(),"",
+                    "",helper.getDateTimeInEnglish(),screenDimensions,prefManager.getClientId());
+            if (helper.isInternetAvailable()){
+                new PullAppSetup(this).pullSetup("app.admin@payflex","@ppd0t@dm1n",requestBody);
+            }else {
+                helper.showSnakBar(containerView,"No internet! Please check your internet connection!");
+            }
         }else {
-            helper.showSnakBar(containerView,"No internet! Please check your internet connection!");
+            startActivity(new Intent(LandingActivity.this, UserLogin.class));
         }
+
     }
 
     public AppSetupRequestBody.ScreenDimensions myScreen() {

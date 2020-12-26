@@ -22,16 +22,27 @@ public class AppSetupRequestBody {
     @SerializedName("screen_dimensions")
     @Expose
     private ScreenDimensions screenDimensions;
+    @SerializedName("client_id")
+    @Expose
+    private String client_id;
 
-    public AppSetupRequestBody(String appVersion, String androidId, String lat, String log, String dateTime, ScreenDimensions screenDimensions) {
+    public AppSetupRequestBody(String appVersion, String androidId, String lat, String log, String dateTime, ScreenDimensions screenDimensions, String client_id) {
         this.appVersion = appVersion;
         this.androidId = androidId;
         this.lat = lat;
         this.log = log;
         this.dateTime = dateTime;
         this.screenDimensions = screenDimensions;
+        this.client_id = client_id;
     }
 
+    public String getClient_id() {
+        return client_id;
+    }
+
+    public void setClient_id(String client_id) {
+        this.client_id = client_id;
+    }
 
     public String getAppVersion() {
         return appVersion;
