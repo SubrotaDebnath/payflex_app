@@ -13,6 +13,7 @@
         android:layout_margin="10dp"
         android:textColor="@color/black"/>
     <TextView
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Resend after "
@@ -23,6 +24,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <Button
+            android:visibility="gone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -40,7 +42,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="ok"
+            android:text="@string/submit_btn"
             android:layout_gravity="center"
             android:gravity="center"
             android:textColor="@color/white"

@@ -169,8 +169,10 @@ public class UserLogin extends BaseActivity
                     public void onClick(View v) {
                         String otp = otpET.getText().toString();
                         if (otp.length()>0){
-                            new Send_OTP_ForVerification(context).otpVerification(response.getUsername(),
-                                    response.getPassword(), new OTP_verificationRequestBody(response.getClientId(), helper.getAnrdoidID(), otpET.getText().toString()));
+                            new Send_OTP_ForVerification(context).otpVerification(prefManager.getUsername(),
+                                    prefManager.getUserPassword(),
+                                    new OTP_verificationRequestBody(prefManager.getClientId(),
+                                            helper.getAnrdoidID(), otpET.getText().toString()));
                             Log.i(TAG, "OTP: "+otpET.getText().toString());
 
                         }else {
