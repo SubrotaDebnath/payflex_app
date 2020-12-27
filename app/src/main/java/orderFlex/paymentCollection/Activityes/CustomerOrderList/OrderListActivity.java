@@ -327,10 +327,10 @@ public class OrderListActivity extends BaseActivity
                 Intent intent1=new Intent(OrderListActivity.this, ProfileActivity.class);
                 startActivity(intent1);
                 break;
-            case R.id.debugLog:
+            /*case R.id.debugLog:
                 Intent intent2=new Intent(OrderListActivity.this, DebugLogs.class);
                 startActivity(intent2);
-                break;
+                break;*/
         }
         return true;
     }
