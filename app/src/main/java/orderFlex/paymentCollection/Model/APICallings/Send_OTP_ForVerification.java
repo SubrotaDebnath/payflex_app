@@ -59,6 +59,7 @@ public class Send_OTP_ForVerification {
         logData.setResponseCode("");
         logData.setResponseBody("");
         logData.setException("");
+        Log.i(TAG, "OTP post request body: " + new Gson().toJson(body));
         /////////////////////////////////
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
