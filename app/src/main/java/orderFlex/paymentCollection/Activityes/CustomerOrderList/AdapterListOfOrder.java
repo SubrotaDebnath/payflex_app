@@ -61,6 +61,9 @@ public class AdapterListOfOrder extends RecyclerView.Adapter<AdapterListOfOrder.
                     Log.i(TAG,"Not Editable");
                 }
                 context.startActivity(intent);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                context.startActivity(intent);
             }
         });
     }

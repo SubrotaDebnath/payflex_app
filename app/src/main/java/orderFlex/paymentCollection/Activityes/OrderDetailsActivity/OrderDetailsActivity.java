@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Locale;
 
 import orderFlex.paymentCollection.Activityes.CustomerOrderList.OrderListActivity;
+import orderFlex.paymentCollection.Activityes.Offers.Offers;
 import orderFlex.paymentCollection.Model.APICallings.GetProductList;
 import orderFlex.paymentCollection.Model.APICallings.OrderReviseSubmit;
 import orderFlex.paymentCollection.Model.APICallings.PullOrderDetailsByOrderCode;
@@ -225,6 +226,11 @@ public class OrderDetailsActivity
             case R.id.revision_order:
                 OrderReviseRequest requestBody=new OrderReviseRequest(booked_code,prefManager.getClientId());
                 new OrderReviseSubmit(this).reviseSubmitCall(prefManager.getUsername(),prefManager.getUserPassword(),requestBody);
+                break;
+            case R.id.my_offer:
+                Intent intent2 = new Intent(OrderDetailsActivity.this, Offers.class);
+                intent2.putExtra("id", "orderDetails");
+                startActivity(intent2);
                 break;
 
         }
@@ -483,5 +489,10 @@ public class OrderDetailsActivity
                 helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(OrderDetailsActivity.this, OrderListActivity.class));
     }
 }

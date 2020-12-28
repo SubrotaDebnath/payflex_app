@@ -23,6 +23,8 @@
 
     <!--<item android:id="@+id/debugLog"
         android:title="D-Logs" />-->
+    <item android:id="@+id/my_offer"
+        android:title="My Offer" />
 
     <item android:id="@+id/logout"
         android:title="@string/logout" />

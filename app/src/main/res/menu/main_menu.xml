@@ -12,6 +12,8 @@
 
     <item android:id="@+id/change_language"
         android:title="@string/language_change_menu" />
+    <item android:id="@+id/my_offer"
+        android:title="My Offer" />
     <item android:id="@+id/logout"
         android:title="@string/logout" />
 </menu>

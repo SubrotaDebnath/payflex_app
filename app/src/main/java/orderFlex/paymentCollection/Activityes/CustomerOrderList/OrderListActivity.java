@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.Locale;
 
 import orderFlex.paymentCollection.Activityes.APIDebugLog.DebugLogs;
+import orderFlex.paymentCollection.Activityes.Offers.Offers;
 import orderFlex.paymentCollection.Activityes.Profile.ProfileActivity;
 import orderFlex.paymentCollection.Model.APICallings.GetProductList;
 import orderFlex.paymentCollection.Model.APICallings.PullCustomerOrderList;
@@ -326,6 +328,11 @@ public class OrderListActivity extends BaseActivity
             case R.id.userProfile:
                 Intent intent1=new Intent(OrderListActivity.this, ProfileActivity.class);
                 startActivity(intent1);
+                break;
+            case R.id.my_offer:
+                Intent intent2 = new Intent(OrderListActivity.this, Offers.class);
+                intent2.putExtra("id", "orderList");
+                startActivity(intent2);
                 break;
             /*case R.id.debugLog:
                 Intent intent2=new Intent(OrderListActivity.this, DebugLogs.class);
@@ -632,6 +639,26 @@ public class OrderListActivity extends BaseActivity
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.ic_baseline_info);
+        builder.setTitle("");
+        builder.setMessage("Do you want to exit?");
+        builder.setCancelable(true);
+        builder.setNegativeButton("No", null);
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                moveTaskToBack(true);
+                finish();
+            }
+        });
+        builder.show();
+        return;
 
     }
 }

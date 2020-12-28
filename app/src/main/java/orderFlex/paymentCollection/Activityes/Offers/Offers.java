@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import orderFlex.paymentCollection.Activityes.CustomerOrderList.OrderListActivity;
+import orderFlex.paymentCollection.Activityes.OrderDetailsActivity.OrderDetailsActivity;
 import orderFlex.paymentCollection.Model.APICallings.PullOfferList;
 import orderFlex.paymentCollection.Model.OffersListDataClass.OffersListPojo;
 import orderFlex.paymentCollection.R;
@@ -29,6 +32,7 @@ public class Offers extends AppCompatActivity implements PullOfferList.OfferList
     private Helper helper;
     private SharedPrefManager prefManager;
     private LinearLayout homeBTN;
+    private String destination;
 
     //private List<OffersListPojo> offersList = new ArrayList<>();
 
@@ -36,6 +40,11 @@ public class Offers extends AppCompatActivity implements PullOfferList.OfferList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_offers);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            destination = extras.getString("id");
+        }
 
         homeBTN = findViewById(R.id.offerToHomeLL);
 
@@ -73,5 +82,21 @@ public class Offers extends AppCompatActivity implements PullOfferList.OfferList
                 //helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (destination.equals("orderList")){
+            startActivity(new Intent(Offers.this, OrderListActivity.class));
+            finish();
+        }else if (destination.equals("orderDetails")){
+            startActivity(new Intent(Offers.this, OrderDetailsActivity.class));
+            finish();
+        }else {
+            startActivity(new Intent(Offers.this, OrderListActivity.class));
+            finish();
+        }
+
+
     }
 }
