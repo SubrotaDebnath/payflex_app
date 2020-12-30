@@ -70,6 +70,13 @@
     <string name="order_code">Order Code:</string>
     <string name="order_date">Delivery Date:</string>
 
+    <!--    Exit text-->
+    <string name="application_exit">Do you want to exit?</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+
+    <string name="my_offer">Offer</string>
+
     <!--    password change-->
     <string name="menu_pass">Update Password</string>
     <string name="current_pass">Current password</string>

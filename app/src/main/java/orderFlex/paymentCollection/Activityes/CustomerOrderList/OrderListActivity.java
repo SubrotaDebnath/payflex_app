@@ -647,10 +647,10 @@ public class OrderListActivity extends BaseActivity
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.ic_baseline_info);
         builder.setTitle("");
-        builder.setMessage("Do you want to exit?");
+        builder.setMessage(R.string.application_exit);
         builder.setCancelable(true);
-        builder.setNegativeButton("No", null);
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.no, null);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 moveTaskToBack(true);

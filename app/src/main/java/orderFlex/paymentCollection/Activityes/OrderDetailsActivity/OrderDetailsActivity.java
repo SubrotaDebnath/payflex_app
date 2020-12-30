@@ -227,11 +227,11 @@ public class OrderDetailsActivity
                 OrderReviseRequest requestBody=new OrderReviseRequest(booked_code,prefManager.getClientId());
                 new OrderReviseSubmit(this).reviseSubmitCall(prefManager.getUsername(),prefManager.getUserPassword(),requestBody);
                 break;
-            case R.id.my_offer:
-                Intent intent2 = new Intent(OrderDetailsActivity.this, Offers.class);
-                intent2.putExtra("id", "orderDetails");
-                startActivity(intent2);
-                break;
+//            case R.id.my_offer:
+//                Intent intent2 = new Intent(OrderDetailsActivity.this, Offers.class);
+//                intent2.putExtra("id", "orderDetails");
+//                startActivity(intent2);
+//                break;
 
         }
         return true;

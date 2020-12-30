@@ -46,7 +46,7 @@
     <string name="update_btn">পরিবর্তন করুন</string>
     <string name="save_new_order_btn">নতুন ক্রয় সংযোজন</string>
     <!--    Menu page -->
-    <string name="logout">বেরিয়ে জান</string>
+    <string name="logout">প্রস্থান</string>
     <string name="revision_menu">রিভিশন সমর্পণ করুন</string>
     <!--    Payment page-->
     <string name="submit_btn">সংযোজন</string>
@@ -70,6 +70,11 @@
     <string name="name_of_the_client"></string>
     <string name="order_code">ক্রয় কোড:</string>
     <string name="order_date">হস্তান্তরের তারিখ:</string>
+    <string name="my_offer">অফার</string>
+<!--    Exit text-->
+    <string name="application_exit">আপনি কি প্রস্থান করতে চান?</string>
+    <string name="yes">হ্যাঁ</string>
+    <string name="no">না</string>
 
     <!--    password change-->
     <string name="menu_pass">পাসওয়ার্ড পরিবর্তন</string>

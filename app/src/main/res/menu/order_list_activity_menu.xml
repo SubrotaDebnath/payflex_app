@@ -24,7 +24,7 @@
     <!--<item android:id="@+id/debugLog"
         android:title="D-Logs" />-->
     <item android:id="@+id/my_offer"
-        android:title="My Offer" />
+        android:title="@string/my_offer" />
 
     <item android:id="@+id/logout"
         android:title="@string/logout" />

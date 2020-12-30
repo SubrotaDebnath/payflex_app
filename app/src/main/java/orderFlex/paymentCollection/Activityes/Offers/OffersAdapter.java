@@ -103,12 +103,12 @@ public class OffersAdapter extends RecyclerView.Adapter<OffersAdapter.ViewHolder
 
                OfferResponsePostBody postBody = new OfferResponsePostBody(datumList.get(position).getId(),
                        prefManager.getClientId(), helper.getDateTimeInEnglish(), "0");
-
+                checkCount++;
                 new SaveOfferFeedback(context).pushOfferFeedback(prefManager.getUsername(), prefManager.getUserPassword(), postBody, checkCount, datumList.size());
 
                 holder.offerAccepted.setVisibility(View.GONE);
                 holder.offerDenied.setVisibility(View.GONE);
-                checkCount++;
+
             }
         });
     }
