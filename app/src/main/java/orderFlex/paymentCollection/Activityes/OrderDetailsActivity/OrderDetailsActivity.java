@@ -90,6 +90,7 @@ public class OrderDetailsActivity
     private boolean isEditable =false, isSubmitted=false;
     private ImageView proImg,pickDate;
     private MenuItem submitMenu;
+    private Context context=this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,7 +174,10 @@ public class OrderDetailsActivity
             @Override
             public void onClick(View v) {
                 if (updateOrderRequestBodyList.size()>0){
+                    isSubmitted=true;
                     updateOrderHandler.pushUpdatedOrder(prefManager.getUsername(),prefManager.getUserPassword(),updateOrderRequestBodyList);
+                    OrderReviseRequest requestBody=new OrderReviseRequest(booked_code,prefManager.getClientId());
+                    new OrderReviseSubmit(context).reviseSubmitCall(prefManager.getUsername(),prefManager.getUserPassword(),requestBody);
                 }
             }
         });
