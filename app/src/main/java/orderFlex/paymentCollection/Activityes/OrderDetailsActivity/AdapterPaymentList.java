@@ -21,7 +21,6 @@ import java.util.List;
 
 import orderFlex.paymentCollection.Model.PaymentAndBillData.BillPaymentRequestBody;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListResponse;
-import orderFlex.paymentCollection.Activityes.PaymentActivity.PaymentActivity;
 import orderFlex.paymentCollection.R;
 import orderFlex.paymentCollection.Utility.Helper;
 

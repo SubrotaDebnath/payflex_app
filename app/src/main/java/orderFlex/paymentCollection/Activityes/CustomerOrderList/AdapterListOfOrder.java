@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import orderFlex.paymentCollection.Activityes.OrderDetailsActivity.OrderDetailsActivity;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListResponse;
 import orderFlex.paymentCollection.R;
 

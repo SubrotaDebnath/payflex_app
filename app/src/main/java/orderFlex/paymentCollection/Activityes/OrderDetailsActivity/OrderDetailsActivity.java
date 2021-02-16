@@ -82,7 +82,7 @@ public class OrderDetailsActivity
     private PullOrderDetailsByOrderCode pullTotadyOrder;
     private Helper helper;
     private AdapterOrderedProductList adapter;
-    private TextView totalBill,clientCode,name,presenterName,phoneNo,address,orderTitle;
+    private TextView totalBill,clientCode,name,presenterName,phoneNo,address,orderTitle, updateTV;
     private View containerView;
     private TodayOrderDetailsByDataResponse orderResponse=null;
     private LinearLayout orderDetailsBlock,orderTakeSegment;
@@ -91,6 +91,7 @@ public class OrderDetailsActivity
     private PullPaymentsList pullPaymentsList;
     private AdapterPaymentList adapterPaymentList;
     private List<UpdateOrderRequestBody> updateOrderRequestBodyList;
+    private List<UpdateOrderRequestBody> updateOrderRequestBodyListWithPlantId;
     private UpdateOrderHandler updateOrderHandler=new UpdateOrderHandler(this);
     private AdapterOrderTakeForm adapterOrderTakeForm;
     private List<SaveOrderDetails> saveOrderRequestsBody;
@@ -102,7 +103,6 @@ public class OrderDetailsActivity
     private PlantListResponse plantData;
     private boolean isPlantSelected = false;
     private String plantId;
-    private Context context=this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +111,7 @@ public class OrderDetailsActivity
 
         prefManager=new SharedPrefManager(this);
         helper=new Helper(this);
+        
 
         addNewPayment=findViewById(R.id.addNewPayment);
         orderList=findViewById(R.id.orderList);
@@ -182,6 +183,9 @@ public class OrderDetailsActivity
                 }
             }
         });
+
+        //////////////pull plant list from subrota
+        new PullPlantList(this).plantListCall(prefManager.getUsername(),prefManager.getUserPassword());
 
         updateOrder.setOnClickListener(new View.OnClickListener() {
             @Override

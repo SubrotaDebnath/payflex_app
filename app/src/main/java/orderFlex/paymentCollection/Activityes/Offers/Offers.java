@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,11 +12,7 @@ import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import orderFlex.paymentCollection.Activityes.CustomerOrderList.OrderListActivity;
-import orderFlex.paymentCollection.Activityes.OrderDetailsActivity.OrderDetailsActivity;
 import orderFlex.paymentCollection.Model.APICallings.PullOfferList;
 import orderFlex.paymentCollection.Model.OffersListDataClass.OffersListPojo;
 import orderFlex.paymentCollection.R;

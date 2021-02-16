@@ -41,8 +41,6 @@
         </activity>
         <activity android:name=".Activityes.Profile.ProfileActivity" />
         <activity android:name=".Activityes.CustomerOrderList.OrderListActivity" />
-        <activity android:name=".Activityes.PaymentActivity.PaymentActivity" />
-        <activity android:name=".Activityes.OrderDetailsActivity.OrderDetailsActivity" />
         <activity android:name=".Activityes.login.UserLogin" />
 
         <provider
