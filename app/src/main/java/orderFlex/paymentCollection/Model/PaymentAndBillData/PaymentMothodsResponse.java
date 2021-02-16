@@ -69,6 +69,14 @@ public class PaymentMothodsResponse {
         @Expose
         private int isImgNeed;
 
+        @SerializedName("defaultRef")
+        @Expose
+        private String defaultRef;
+
+        public String getDefaultRef() {
+            return defaultRef;
+        }
+
         public int getIsRefNeed() {
             return isRefNeed;
         }
