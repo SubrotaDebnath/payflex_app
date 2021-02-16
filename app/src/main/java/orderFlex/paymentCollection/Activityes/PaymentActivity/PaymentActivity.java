@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import orderFlex.paymentCollection.Activityes.OrderDetailsActivity.OrderDetailsActivity;
 import orderFlex.paymentCollection.Model.APICallings.ReplaceBills;
 import orderFlex.paymentCollection.Model.DataBase.DatabaseOperation;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.BillReplaceRequestBody;
@@ -407,8 +408,8 @@ public class PaymentActivity
                     || methodListData.get(position).getId().equals("3")
                     || methodListData.get(position).getId().equals("4")
                     || methodListData.get(position).getId().equals("7")
-                    | methodListData.get(position).getId().equals("12")
-                    | methodListData.get(position).getId().equals("13")) {
+                    || methodListData.get(position).getId().equals("12")
+                    || methodListData.get(position).getId().equals("13")) {
                 Log.i(TAG, "Selected");
                 if (methodListData.get(position).getId().equals("12")) {
                     is_attachment_active = false;

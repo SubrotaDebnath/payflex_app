@@ -551,9 +551,8 @@ public class OrderDetailsActivity
             @Override
             public void onClick(View v) {
                 executePlantUpdate();
-                updateTV.setText("Update");
-                isPlantSelected = true;
                 alertDialog.dismiss();
+                pushOrderUpdate();
             }
         });
 
@@ -565,6 +564,10 @@ public class OrderDetailsActivity
             }
         });
 
+    }
+
+    private void pushOrderUpdate(){
+        updateOrderHandler.pushUpdatedOrder(prefManager.getUsername(),prefManager.getUserPassword(),updateOrderRequestBodyListWithPlantId);
     }
 
     @Override

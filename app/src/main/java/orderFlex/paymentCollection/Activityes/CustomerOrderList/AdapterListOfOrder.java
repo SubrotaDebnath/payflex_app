@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import orderFlex.paymentCollection.Activityes.OrderDetailsActivity.OrderDetailsActivity;
 import orderFlex.paymentCollection.Model.TodayOrder.CustomerOrderListResponse;
 import orderFlex.paymentCollection.R;
 
@@ -59,8 +60,6 @@ public class AdapterListOfOrder extends RecyclerView.Adapter<AdapterListOfOrder.
                     intent.putExtra("is_editable",false);
                     Log.i(TAG,"Not Editable");
                 }
-                context.startActivity(intent);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 context.startActivity(intent);
             }

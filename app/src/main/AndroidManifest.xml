@@ -42,6 +42,8 @@
         <activity android:name=".Activityes.Profile.ProfileActivity" />
         <activity android:name=".Activityes.CustomerOrderList.OrderListActivity" />
         <activity android:name=".Activityes.login.UserLogin" />
+        <activity android:name=".Activityes.OrderDetailsActivity.OrderDetailsActivity"/>
+        <activity android:name=".Activityes.PaymentActivity.PaymentActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

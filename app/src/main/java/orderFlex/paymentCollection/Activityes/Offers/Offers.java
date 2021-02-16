@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import com.google.gson.Gson;
 
 import orderFlex.paymentCollection.Activityes.CustomerOrderList.OrderListActivity;
+import orderFlex.paymentCollection.Activityes.OrderDetailsActivity.OrderDetailsActivity;
 import orderFlex.paymentCollection.Model.APICallings.PullOfferList;
 import orderFlex.paymentCollection.Model.OffersListDataClass.OffersListPojo;
 import orderFlex.paymentCollection.R;
