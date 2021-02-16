@@ -17,10 +17,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -33,6 +37,7 @@ import orderFlex.paymentCollection.Model.APICallings.GetProductList;
 import orderFlex.paymentCollection.Model.APICallings.OrderReviseSubmit;
 import orderFlex.paymentCollection.Model.APICallings.PullOrderDetailsByOrderCode;
 import orderFlex.paymentCollection.Model.APICallings.PullPaymentsList;
+import orderFlex.paymentCollection.Model.APICallings.PullPlantList;
 import orderFlex.paymentCollection.Model.APICallings.SaveOrderHandler;
 import orderFlex.paymentCollection.Model.APICallings.UpdateOrderHandler;
 import orderFlex.paymentCollection.Model.OrderRevise.OrderReviseRequest;
@@ -40,6 +45,7 @@ import orderFlex.paymentCollection.Model.OrderRevise.OrderReviseResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListRequest;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentListResponse;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.ProductListResponse;
+import orderFlex.paymentCollection.Model.SaveOrderData.PlantListResponse;
 import orderFlex.paymentCollection.Model.SaveOrderData.SaveOrderDetails;
 import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByDataRequest;
 import orderFlex.paymentCollection.Model.OrderDetailDataSet.TodayOrderDetailsByDataResponse;
@@ -64,17 +70,19 @@ public class OrderDetailsActivity
         GetProductList.GetProductListListener,
         AdapterOrderTakeForm.UpdateTotalBill,
         SaveOrderHandler.SaveOrderListener,
-        OrderReviseSubmit.OrderReviseListener{
+        OrderReviseSubmit.OrderReviseListener,
+        PullPlantList.PlantListListener,
+        AdapterView.OnItemSelectedListener{
 
-    LinearLayout addNewPayment;
+    private LinearLayout addNewPayment;
     private RecyclerView orderList,paymentList,takeOrderList;
     private RecyclerView.LayoutManager layoutManager;
     private SharedPrefManager prefManager;
-    private String TAG="OrderDetailsActivity",booked_code="";
+    private String TAG="OrderDetailsActivity", booked_code="";
     private PullOrderDetailsByOrderCode pullTotadyOrder;
     private Helper helper;
     private AdapterOrderedProductList adapter;
-    private TextView totalBill,clientCode,name,presenterName,phoneNo,address,orderTitle;
+    private TextView totalBill,clientCode,name,presenterName,phoneNo,address,orderTitle, updateTV;
     private View containerView;
     private TodayOrderDetailsByDataResponse orderResponse=null;
     private LinearLayout orderDetailsBlock,orderTakeSegment;
@@ -83,6 +91,7 @@ public class OrderDetailsActivity
     private PullPaymentsList pullPaymentsList;
     private AdapterPaymentList adapterPaymentList;
     private List<UpdateOrderRequestBody> updateOrderRequestBodyList;
+    private List<UpdateOrderRequestBody> updateOrderRequestBodyListWithPlantId;
     private UpdateOrderHandler updateOrderHandler=new UpdateOrderHandler(this);
     private AdapterOrderTakeForm adapterOrderTakeForm;
     private List<SaveOrderDetails> saveOrderRequestsBody;
@@ -90,6 +99,10 @@ public class OrderDetailsActivity
     private boolean isEditable =false, isSubmitted=false;
     private ImageView proImg,pickDate;
     private MenuItem submitMenu;
+    //////////////Subrota
+    private PlantListResponse plantData;
+    private boolean isPlantSelected = false;
+    private String plantId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +119,7 @@ public class OrderDetailsActivity
         noOrder=findViewById(R.id.noOrder);
         containerView =findViewById(R.id.mainActivity);
         updateOrder=findViewById(R.id.updateOrder);
+        updateTV = findViewById(R.id.updateTV);
         updateOrder.setVisibility(View.GONE);
         paymentList=findViewById(R.id.paymentList);
         orderTitle=findViewById(R.id.orderTitle);
@@ -169,12 +183,23 @@ public class OrderDetailsActivity
             }
         });
 
+        //////////////pull plant list from subrota
+        new PullPlantList(this).plantListCall(prefManager.getUsername(),prefManager.getUserPassword());
+
         updateOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (updateOrderRequestBodyList.size()>0){
-                    updateOrderHandler.pushUpdatedOrder(prefManager.getUsername(),prefManager.getUserPassword(),updateOrderRequestBodyList);
+                if (!isPlantSelected){
+                    updateTV.setText("Next");
+                    selectPlant();
+
+                }if (isPlantSelected){
+                    updateTV.setText("Update");
+                    if (updateOrderRequestBodyList.size()>0){
+                        updateOrderHandler.pushUpdatedOrder(prefManager.getUsername(),prefManager.getUserPassword(),updateOrderRequestBodyListWithPlantId);
+                    }
                 }
+
             }
         });
     }
@@ -286,6 +311,7 @@ public class OrderDetailsActivity
         Log.i(TAG,"Total bill: "+totalTaka);
         if (change){
             updateOrder.setVisibility(View.VISIBLE);
+            updateTV.setText("Next");
             Log.i(TAG,"Bill changed");
         }else {
             updateOrder.setVisibility(View.GONE);
@@ -494,5 +520,103 @@ public class OrderDetailsActivity
     @Override
     public void onBackPressed() {
         startActivity(new Intent(OrderDetailsActivity.this, OrderListActivity.class));
+    }
+
+    /////////////////////Subrota
+    private void selectPlant(){
+        List<String> plantNameList=new ArrayList<>();
+        final AlertDialog alertDialog;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        ConstraintLayout customRoot = (ConstraintLayout) inflater.inflate(R.layout.plant_selection_spinner,null);
+        Spinner plantSpinner=customRoot.findViewById(R.id.plantSpinner);
+        CardView save=customRoot.findViewById(R.id.save_action);
+        CardView cancel=customRoot.findViewById(R.id.cancel_action);
+        int plantCount=0;
+        for (PlantListResponse.PlantList plant: plantData.getPlantList()) {
+            plantNameList.add(plant.getPlant());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item,plantNameList);
+        plantSpinner.setAdapter(adapter);
+        plantSpinner.setSelection(0);
+        plantSpinner.setOnItemSelectedListener(this);
+
+        builder.setTitle(R.string.plant_title);
+        builder.setView(customRoot);
+        builder.setCancelable(true);
+        alertDialog= builder.create();
+        alertDialog.show();
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                executePlantUpdate();
+                updateTV.setText("Update");
+                isPlantSelected = true;
+                alertDialog.dismiss();
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isPlantSelected = false;
+                alertDialog.dismiss();
+            }
+        });
+
+    }
+
+    @Override
+    public void onPlantListResponse(PlantListResponse response, int code) {
+        if (response!=null && code==202){
+            plantData=response;
+        }else {
+            if (code==401){
+                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
+            }else {
+                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
+            }
+        }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+        plantId = plantData.getPlantList().get(position).getId();
+
+        /* String plantID = plantData.getPlantList().get(position).getId();
+        Log.i(TAG,"Selected Plant ID: "+plantID+" Name: "+plantData.getPlantList().get(position).getPlant());
+        for (int i=0;i<updateOrderRequestBodyList.size();i++){
+           // saveOrderDetails.get(i).setPlant(plantID);
+            updateOrderRequestBodyList.get(i).setPlant(plantID);
+        }*/
+        //Log.i(TAG,"Plant Selected Details: "+new Gson().toJson(updateOrderRequestBodyList));
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    private void executePlantUpdate(){
+        updateOrderRequestBodyListWithPlantId = new ArrayList<>();
+
+        for (UpdateOrderRequestBody updateData:updateOrderRequestBodyList){
+            UpdateOrderRequestBody data=new UpdateOrderRequestBody(
+                    updateData.getTxID(),
+                    updateData.getProduct_id(),
+                    updateData.getProduct_name(),
+                    updateData.getProduct_type(),
+                    updateData.getQuantities(),
+                    updateData.getClient_id(),
+                    updateData.getTaker_id(),
+                    updateData.getDelevery_date(),
+                    plantId,
+                    updateData.getOrdered_date(),
+                    updateData.getOrder_type());
+            updateOrderRequestBodyListWithPlantId.add(data);
+        }
+        Log.i(TAG,"Plant Selected Details: "+new Gson().toJson(updateOrderRequestBodyList));
+        Log.i(TAG,"Plant Selected Details after plant update: "+new Gson().toJson(updateOrderRequestBodyListWithPlantId));
     }
 }
