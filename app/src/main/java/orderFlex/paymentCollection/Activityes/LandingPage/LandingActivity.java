@@ -49,6 +49,7 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
     private String TAG="LandingActivity";
     private View containerView;
     private ConstraintLayout mainView;
+    private boolean goWithCheck=true;
     private ImageView splashImage;
     public static final String USER_AGENT_FAKE = "Mozilla/5.0 (Linux; Android 4.1.1; Galaxy Nexus Build/JRO03C) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19";
     private String user_name="", user_pass="";
@@ -132,6 +133,7 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
     @Override
     public void onAppSetupResponse(AppSetupResponse response, int code) {
         if (response!=null && code==202){
+            goWithCheck=response.getData().getGoWithCheck();
             if (response.getData().getIsUpdatedApp()){
                 if (response.getData().getIsSystemUnderMaintenance()){
                     helper.showSnakBar(containerView,"Server under maintenance!");
@@ -263,8 +265,21 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
         skip_key.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkApplication();
-                alertDialog.dismiss();
+                if (!goWithCheck){
+                    if (!prefManager.isLoggedIn()){
+                        Intent intent =new Intent(LandingActivity.this, UserLogin.class);
+                        startActivity(intent);
+                        finish();
+                    }else {
+                        Intent intent2 =new Intent(LandingActivity.this, OrderListActivity.class);
+                        startActivity(intent2);
+                        finish();
+                    }
+                }else {
+                    checkApplication();
+                    alertDialog.dismiss();
+                }
+
             }
         });
         done_key.setOnClickListener(new View.OnClickListener() {

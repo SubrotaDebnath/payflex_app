@@ -64,6 +64,25 @@ public class AppSetupResponse {
         @SerializedName("debugMode")
         @Expose
         private Boolean debugMode;
+        @SerializedName("goWithCheck")
+        @Expose
+        private Boolean goWithCheck;
+
+        public Boolean getSystemUnderMaintenance() {
+            return isSystemUnderMaintenance;
+        }
+
+        public Boolean getMessageForUser() {
+            return isMessageForUser;
+        }
+
+        public Boolean getGoWithCheck() {
+            return goWithCheck;
+        }
+
+        public Boolean getUpdatedApp() {
+            return isUpdatedApp;
+        }
 
         public Boolean getOffer() {
             return isOffer;
