@@ -11,8 +11,17 @@ public class TodayOrderDetailsByDataResponse {
     @SerializedName("message")
     @Expose
     private String message;
+    @SerializedName("isEditable")
+    @Expose
+    private boolean isEditable;
+
+    public boolean getIsEditable() {
+        return isEditable;
+    }
+
     @SerializedName("order_details")
     @Expose
+
     private List<OrderDetail> orderDetails = null;
 
     public Integer getCode() {

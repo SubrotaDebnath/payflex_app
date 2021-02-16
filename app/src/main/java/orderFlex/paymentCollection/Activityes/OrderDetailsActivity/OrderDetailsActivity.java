@@ -142,7 +142,7 @@ public class OrderDetailsActivity
             String message=intent.getStringExtra("payment_massege");
             booked_code=intent.getStringExtra("booked_code");
             isEditable =intent.getBooleanExtra("is_editable",false);
-            isSubmitted =intent.getBooleanExtra("is_submitted",false);
+            isSubmitted =intent.getBooleanExtra("is_submitted",true);
             if (isSubmitted){
                 Log.i(TAG,"Submitted");
             }else {
@@ -269,6 +269,7 @@ public class OrderDetailsActivity
         if (response!=null && code==202){
             if (response.getOrderDetails().size()>0){
                 orderTitle.setText("ORDER DETAILS");
+                isEditable=response.getIsEditable();
                 orderResponse=response;
                 adapter=new AdapterOrderedProductList(this,response.getOrderDetails(), isEditable);
                 layoutManager = new LinearLayoutManager(this);

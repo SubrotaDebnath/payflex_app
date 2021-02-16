@@ -80,7 +80,6 @@ public class PullOrderDetailsByOrderCode {
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();
-
         apIinterface=retrofit.create(APIinterface.class);
         final Call<TodayOrderDetailsByDataResponse> orderResponseCall = apIinterface.getOrderByCode(orderRequest);
         orderResponseCall.enqueue(new Callback<TodayOrderDetailsByDataResponse>() {
