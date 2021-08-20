@@ -100,7 +100,7 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
     private void checkApplication(){
         if (prefManager.isLoggedIn()){
             AppSetupRequestBody.ScreenDimensions screenDimensions=myScreen();
-            AppSetupRequestBody requestBody=new AppSetupRequestBody("1v1.2",helper.getAnrdoidID(),"",
+            AppSetupRequestBody requestBody=new AppSetupRequestBody("1v1.3",helper.getAnrdoidID(),"",
                     "",helper.getDateTimeInEnglish(),screenDimensions,prefManager.getClientId());
             if (helper.isInternetAvailable()){
                 new PullAppSetup(this).pullSetup("app.admin@payflex","@ppd0t@dm1n",requestBody);
@@ -176,42 +176,48 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
 
 
     private void showPopUp(String title, final String url, String msg, String done, final String msgType){
-        progressBar = ProgressDialog.show(this, "Offer", "Loading...");
-        LayoutInflater inflater = (LayoutInflater)
-                getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.offer_popup_window, null);
-        //TextView heading=popupView.findViewById(R.id.popup_heading);
-        ImageView popUpCancel=popupView.findViewById(R.id.popUpCancel);
+        helper.showSnakBar(containerView,msg);
+        if (msgType.equals("1")){
+            progressBar = ProgressDialog.show(this, "Offer", "Loading...");
+            LayoutInflater inflater = (LayoutInflater)
+                    getSystemService(LAYOUT_INFLATER_SERVICE);
+            View popupView = inflater.inflate(R.layout.offer_popup_window, null);
+            //TextView heading=popupView.findViewById(R.id.popup_heading);
+            ImageView popUpCancel=popupView.findViewById(R.id.popUpCancel);
 
-        //set webview
-        WebView popupWebView=popupView.findViewById(R.id.popupWebView);
-        webViewOperation(popupWebView,url);
+            //set webview
+            WebView popupWebView=popupView.findViewById(R.id.popupWebView);
+            webViewOperation(popupWebView,url);
 
-        // create the popup window
-        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        boolean focusable = true; // lets taps outside the popup also dismiss it
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+            // create the popup window
+            int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+            int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            boolean focusable = true; // lets taps outside the popup also dismiss it
+            final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
 
-        // show the popup window
-        // which view you pass in doesn't matter, it is only used for the window tolken
-        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+            // show the popup window
+            // which view you pass in doesn't matter, it is only used for the window tolken
+            popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
 
-        popUpCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-                if (!prefManager.isLoggedIn()){
-                    Intent intent =new Intent(LandingActivity.this, UserLogin.class);
-                    startActivity(intent);
-                    finish();
-                }else {
-                    Intent intent2 =new Intent(LandingActivity.this, OrderListActivity.class);
-                    startActivity(intent2);
-                    finish();
+            popUpCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popupWindow.dismiss();
+                    if (!prefManager.isLoggedIn()){
+                        Intent intent =new Intent(LandingActivity.this, UserLogin.class);
+                        startActivity(intent);
+                        finish();
+                    }else {
+                        Intent intent2 =new Intent(LandingActivity.this, OrderListActivity.class);
+                        startActivity(intent2);
+                        finish();
+                    }
                 }
-            }
-        });
+            });
+        } else if (msgType.equals("2")) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(browserIntent);
+        }
     }
 
     void webViewOperation(WebView popupWebView, String url){
