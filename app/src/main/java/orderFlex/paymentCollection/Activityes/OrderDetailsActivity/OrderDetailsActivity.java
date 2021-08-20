@@ -72,32 +72,32 @@ public class OrderDetailsActivity
         SaveOrderHandler.SaveOrderListener,
         OrderReviseSubmit.OrderReviseListener,
         PullPlantList.PlantListListener,
-        AdapterView.OnItemSelectedListener{
+        AdapterView.OnItemSelectedListener {
 
     private LinearLayout addNewPayment;
-    private RecyclerView orderList,paymentList,takeOrderList;
+    private RecyclerView orderList, paymentList, takeOrderList;
     private RecyclerView.LayoutManager layoutManager;
     private SharedPrefManager prefManager;
-    private String TAG="OrderDetailsActivity", booked_code="";
+    private String TAG = "OrderDetailsActivity", booked_code = "";
     private PullOrderDetailsByOrderCode pullTotadyOrder;
     private Helper helper;
     private AdapterOrderedProductList adapter;
-    private TextView totalBill,clientCode,name,presenterName,phoneNo,address,orderTitle, updateTV;
+    private TextView totalBill, clientCode, name, presenterName, phoneNo, address, orderTitle, updateTV;
     private View containerView;
-    private TodayOrderDetailsByDataResponse orderResponse=null;
-    private LinearLayout orderDetailsBlock,orderTakeSegment;
-    private CardView updateOrder,saveOrder;
-    private TextView noOrder,totalTakenBill,orderCode,orderDate;
+    private TodayOrderDetailsByDataResponse orderResponse = null;
+    private LinearLayout orderDetailsBlock, orderTakeSegment;
+    private CardView updateOrder, saveOrder;
+    private TextView noOrder, totalTakenBill, orderCode, orderDate;
     private PullPaymentsList pullPaymentsList;
     private AdapterPaymentList adapterPaymentList;
     private List<UpdateOrderRequestBody> updateOrderRequestBodyList;
     private List<UpdateOrderRequestBody> updateOrderRequestBodyListWithPlantId;
-    private UpdateOrderHandler updateOrderHandler=new UpdateOrderHandler(this);
+    private UpdateOrderHandler updateOrderHandler = new UpdateOrderHandler(this);
     private AdapterOrderTakeForm adapterOrderTakeForm;
     private List<SaveOrderDetails> saveOrderRequestsBody;
     private SaveOrderHandler saveOrderHandler;
-    private boolean isEditable =false, isSubmitted=false;
-    private ImageView proImg,pickDate;
+    private boolean isEditable = false, isSubmitted = false;
+    private ImageView proImg, pickDate;
     private MenuItem submitMenu;
     //////////////Subrota
     private PlantListResponse plantData;
@@ -109,95 +109,95 @@ public class OrderDetailsActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_details);
 
-        prefManager=new SharedPrefManager(this);
-        helper=new Helper(this);
-        
+        prefManager = new SharedPrefManager(this);
+        helper = new Helper(this);
 
-        addNewPayment=findViewById(R.id.addNewPayment);
-        orderList=findViewById(R.id.orderList);
-        totalBill=findViewById(R.id.totalBill);
-        orderDetailsBlock=findViewById(R.id.orderDetailsBlock);
-        noOrder=findViewById(R.id.noOrder);
-        containerView =findViewById(R.id.mainActivity);
-        updateOrder=findViewById(R.id.updateOrder);
+
+        addNewPayment = findViewById(R.id.addNewPayment);
+        orderList = findViewById(R.id.orderList);
+        totalBill = findViewById(R.id.totalBill);
+        orderDetailsBlock = findViewById(R.id.orderDetailsBlock);
+        noOrder = findViewById(R.id.noOrder);
+        containerView = findViewById(R.id.mainActivity);
+        updateOrder = findViewById(R.id.updateOrder);
         updateTV = findViewById(R.id.updateTV);
         updateOrder.setVisibility(View.GONE);
-        paymentList=findViewById(R.id.paymentList);
-        orderTitle=findViewById(R.id.orderTitle);
-        orderCode=findViewById(R.id.orderCode);
-        orderDate=findViewById(R.id.orderDate);
+        paymentList = findViewById(R.id.paymentList);
+        orderTitle = findViewById(R.id.orderTitle);
+        orderCode = findViewById(R.id.orderCode);
+        orderDate = findViewById(R.id.orderDate);
 
-        orderTakeSegment=findViewById(R.id.orderTakeSegment);
-        takeOrderList=findViewById(R.id.takeOrderList);
-        totalTakenBill=findViewById(R.id.totalTakenBill);
-        pickDate=findViewById(R.id.pickDate);
+        orderTakeSegment = findViewById(R.id.orderTakeSegment);
+        takeOrderList = findViewById(R.id.takeOrderList);
+        totalTakenBill = findViewById(R.id.totalTakenBill);
+        pickDate = findViewById(R.id.pickDate);
         pickDate.setVisibility(View.GONE);
 
 //        saveOrder=findViewById(R.id.saveOrder);
-        saveOrderHandler=new SaveOrderHandler(this);
+        saveOrderHandler = new SaveOrderHandler(this);
         updateProfile();
-        pullPaymentsList=new PullPaymentsList(this);
+        pullPaymentsList = new PullPaymentsList(this);
         try {
-            Intent intent=getIntent();
-            String message=intent.getStringExtra("payment_massege");
-            booked_code=intent.getStringExtra("booked_code");
-            isEditable =intent.getBooleanExtra("is_editable",false);
-            isSubmitted =intent.getBooleanExtra("is_submitted",false);
-            if (isSubmitted){
-                Log.i(TAG,"Submitted");
-            }else {
-                Log.i(TAG,"Not submitted");
+            Intent intent = getIntent();
+            String message = intent.getStringExtra("payment_massege");
+            booked_code = intent.getStringExtra("booked_code");
+            isEditable = intent.getBooleanExtra("is_editable", false);
+            isSubmitted = intent.getBooleanExtra("is_submitted", false);
+            if (isSubmitted) {
+                Log.i(TAG, "Submitted");
+            } else {
+                Log.i(TAG, "Not submitted");
             }
-            if (message == null){
-                helper.showSnakBar(containerView,"Refreshing the order detail...!");
-            }else {
-                helper.showSnakBar(containerView,message);
+            if (message == null) {
+                helper.showSnakBar(containerView, "Refreshing the order detail...!");
+            } else {
+                helper.showSnakBar(containerView, message);
             }
-        }catch (Exception e){
-            Log.i(TAG,"Intent Exception: "+ e.toString());
+        } catch (Exception e) {
+            Log.i(TAG, "Intent Exception: " + e.toString());
         }
 
         orderDate.setText(helper.getDateInEnglish());
 
         if (helper.isInternetAvailable()) {
             operationOrderDetail();
-        }
-        else {
-            helper.showSnakBar(containerView,"No internet! Please check your internet connection!");
+        } else {
+            helper.showSnakBar(containerView, "No internet! Please check your internet connection!");
         }
 
         addNewPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (orderResponse!=null){
-                    if (isSubmitted){
-                        Intent intent =new Intent(OrderDetailsActivity.this, PaymentActivity.class);
-                        Log.i(TAG,"Order Code: "+orderResponse.getOrderDetails().get(0).getOrderCode());
-                        intent.putExtra("order_code",orderResponse.getOrderDetails().get(0).getOrderCode());
+                if (orderResponse != null) {
+                    if (isSubmitted) {
+                        Intent intent = new Intent(OrderDetailsActivity.this, PaymentActivity.class);
+                        Log.i(TAG, "Order Code: " + orderResponse.getOrderDetails().get(0).getOrderCode());
+                        intent.putExtra("order_code", orderResponse.getOrderDetails().get(0).getOrderCode());
                         startActivity(intent);
-                    }else {
-                        helper.showSnakBar(containerView,"Please submitted your revision from the menu option");
+                    } else {
+                        helper.showSnakBar(containerView, "Please submitted your revision from the menu option");
                     }
-                }else {
-                    helper.showSnakBar(containerView,"You don't have previous order! Please save an order first");
+                } else {
+                    helper.showSnakBar(containerView, "You don't have previous order! Please save an order first");
                 }
             }
         });
 
         //////////////pull plant list from subrota
-        new PullPlantList(this).plantListCall(prefManager.getUsername(),prefManager.getUserPassword());
+        new PullPlantList(this).plantListCall(prefManager.getUsername(), prefManager.getUserPassword());
 
         updateOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isPlantSelected){
+                if (!isPlantSelected) {
                     updateTV.setText("Next");
                     selectPlant();
 
-                }if (isPlantSelected){
+                }
+                if (isPlantSelected) {
                     updateTV.setText("Update");
-                    if (updateOrderRequestBodyList.size()>0){
-                        updateOrderHandler.pushUpdatedOrder(prefManager.getUsername(),prefManager.getUserPassword(),updateOrderRequestBodyListWithPlantId);
+                    if (updateOrderRequestBodyList.size() > 0) {
+                        updateOrderHandler.pushUpdatedOrder(prefManager.getUsername(), prefManager.getUserPassword(), updateOrderRequestBodyListWithPlantId);
                     }
                 }
 
@@ -214,8 +214,8 @@ public class OrderDetailsActivity
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        submitMenu=menu.findItem(R.id.revision_order);
-        if (isSubmitted){
+        submitMenu = menu.findItem(R.id.revision_order);
+        if (isSubmitted) {
             submitMenu.setEnabled(false);
         }
         return true;
@@ -226,17 +226,17 @@ public class OrderDetailsActivity
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.refresh:
-                if (helper.isInternetAvailable()){
-                    helper.showSnakBar(containerView,"Refreshing the dashboard...!");
+                if (helper.isInternetAvailable()) {
+                    helper.showSnakBar(containerView, "Refreshing the dashboard...!");
                     operationOrderDetail();
-                }else {
-                    helper.showSnakBar(containerView,"Please check your internet connection!");
+                } else {
+                    helper.showSnakBar(containerView, "Please check your internet connection!");
                 }
                 //updateOrder.setVisibility(View.GONE);
                 break;
             case R.id.logout:
                 prefManager.setLoggedInFlag(false);
-                Intent intent=new Intent(OrderDetailsActivity.this, UserLogin.class);
+                Intent intent = new Intent(OrderDetailsActivity.this, UserLogin.class);
                 startActivity(intent);
                 finish();
                 break;
@@ -244,14 +244,14 @@ public class OrderDetailsActivity
                 selectLanguage(this);
                 break;
             case R.id.add_new_order:
-                Intent intent1=new Intent(OrderDetailsActivity.this, OrderListActivity.class);
-                intent1.putExtra("add_order","take_order");
+                Intent intent1 = new Intent(OrderDetailsActivity.this, OrderListActivity.class);
+                intent1.putExtra("add_order", "take_order");
                 startActivity(intent1);
                 finish();
                 break;
             case R.id.revision_order:
-                OrderReviseRequest requestBody=new OrderReviseRequest(booked_code,prefManager.getClientId());
-                new OrderReviseSubmit(this).reviseSubmitCall(prefManager.getUsername(),prefManager.getUserPassword(),requestBody);
+                OrderReviseRequest requestBody = new OrderReviseRequest(booked_code, prefManager.getClientId());
+                new OrderReviseSubmit(this).reviseSubmitCall(prefManager.getUsername(), prefManager.getUserPassword(), requestBody);
                 break;
 //            case R.id.my_offer:
 //                Intent intent2 = new Intent(OrderDetailsActivity.this, Offers.class);
@@ -265,20 +265,20 @@ public class OrderDetailsActivity
 
     @Override
     public void onResponse(TodayOrderDetailsByDataResponse response, int code) {
-        Log.i(TAG,"Response Code:"+code);
-        if (response!=null && code==202){
-            if (response.getOrderDetails().size()>0){
+        Log.i(TAG, "Response Code:" + code);
+        if (response != null && code == 202) {
+            if (response.getOrderDetails().size() > 0) {
                 orderTitle.setText("ORDER DETAILS");
-                orderResponse=response;
-                Log.i(TAG,"Editable: "+orderResponse.getOrderDetails().get(0).isEditable());
-                if (orderResponse.getOrderDetails().get(0).isEditable()==1){
-                    isEditable=true;
-                }else {
-                    isEditable=false;
+                orderResponse = response;
+                Log.i(TAG, "Editable: " + orderResponse.getOrderDetails().get(0).isEditable());
+                if (orderResponse.getOrderDetails().get(0).isEditable() == 1) {
+                    isEditable = true;
+                } else {
+                    isEditable = false;
                 }
 //                isEditable=;
 
-                adapter=new AdapterOrderedProductList(this,response.getOrderDetails(), isEditable);
+                adapter = new AdapterOrderedProductList(this, response.getOrderDetails(), isEditable);
                 layoutManager = new LinearLayoutManager(this);
                 orderList.setLayoutManager(layoutManager);
                 orderList.setAdapter(adapter);
@@ -291,9 +291,9 @@ public class OrderDetailsActivity
                 orderDate.setText(orderResponse.getOrderDetails().get(0).getDeliveryDate());
                 orderCode.setText(response.getOrderDetails().get(0).getOrderCode());
                 address.setText(response.getOrderDetails().get(0).getPlantName());
-                PaymentListRequest listRequest=new PaymentListRequest(prefManager.getClientId(),response.getOrderDetails().get(0).getOrderCode());
-                pullPaymentsList.pullPaymentListCall(prefManager.getUsername(),prefManager.getUserPassword(),listRequest);
-            }else {
+                PaymentListRequest listRequest = new PaymentListRequest(prefManager.getClientId(), response.getOrderDetails().get(0).getOrderCode());
+                pullPaymentsList.pullPaymentListCall(prefManager.getUsername(), prefManager.getUserPassword(), listRequest);
+            } else {
                 //noOrder.setVisibility(View.VISIBLE);
                 orderDetailsBlock.setVisibility(View.GONE);
                 orderTakeSegment.setVisibility(View.VISIBLE);
@@ -301,11 +301,11 @@ public class OrderDetailsActivity
                 noOrder.setVisibility(View.GONE);
 //                new GetProductList(this).pullProductListCall(prefManager.getUsername(),prefManager.getUserPassword());
             }
-        }else {
-            if (code==401){
-                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
-            }else {
-                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
+        } else {
+            if (code == 401) {
+                helper.showSnakBar(containerView, "Unauthorized Username or Password!");
+            } else {
+                helper.showSnakBar(containerView, "Server not Responding! Please check your internet connection.");
             }
             noOrder.setVisibility(View.VISIBLE);
             orderDetailsBlock.setVisibility(View.GONE);
@@ -317,154 +317,154 @@ public class OrderDetailsActivity
     @Override
     public void billUpdate(List<TodayOrderDetailsByDataResponse.OrderDetail> list, float totalTaka, boolean change) {
         totalBill.setText(String.valueOf(totalTaka));
-        Log.i(TAG,"Total bill: "+totalTaka);
-        if (change){
+        Log.i(TAG, "Total bill: " + totalTaka);
+        if (change) {
             updateOrder.setVisibility(View.VISIBLE);
             updateTV.setText("Next");
-            Log.i(TAG,"Bill changed");
-        }else {
+            Log.i(TAG, "Bill changed");
+        } else {
             updateOrder.setVisibility(View.GONE);
-            Log.i(TAG,"Bill has no change");
+            Log.i(TAG, "Bill has no change");
         }
 
-        updateOrderRequestBodyList=new ArrayList<>();
-        for (TodayOrderDetailsByDataResponse.OrderDetail updateData:list){
-            UpdateOrderRequestBody data=new UpdateOrderRequestBody(updateData.getTxid(),updateData.getProductId(),updateData.getPName(),
-                    updateData.getPType(),updateData.getQuantityes(),updateData.getOrderForClientId(),updateData.getTakerId(),updateData.getDeliveryDate(),
-                    updateData.getPlant(),updateData.getTakingDate(),updateData.getOrderType());
+        updateOrderRequestBodyList = new ArrayList<>();
+        for (TodayOrderDetailsByDataResponse.OrderDetail updateData : list) {
+            UpdateOrderRequestBody data = new UpdateOrderRequestBody(updateData.getTxid(), updateData.getProductId(), updateData.getPName(),
+                    updateData.getPType(), updateData.getQuantityes(), updateData.getOrderForClientId(), updateData.getTakerId(), updateData.getDeliveryDate(),
+                    updateData.getPlant(), updateData.getTakingDate(), updateData.getOrderType());
             updateOrderRequestBodyList.add(data);
         }
     }
 
     @Override
     public void onPaymentListResponse(PaymentListResponse response, int code) {
-        if (response!=null && code==202){
-            boolean flag=helper.isEditableOrderOrPayment(helper.getDateInEnglish(),orderDate.getText().toString());
-            adapterPaymentList=new AdapterPaymentList(this,response.getPaymentList(),flag, containerView);
+        if (response != null && code == 202) {
+            boolean flag = helper.isEditableOrderOrPayment(helper.getDateInEnglish(), orderDate.getText().toString());
+            adapterPaymentList = new AdapterPaymentList(this, response.getPaymentList(), flag, containerView);
             layoutManager = new LinearLayoutManager(this);
             paymentList.setLayoutManager(layoutManager);
             paymentList.setAdapter(adapterPaymentList);
-        }else {
-            if (code==401){
-                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
-            }else {
-                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
+        } else {
+            if (code == 401) {
+                helper.showSnakBar(containerView, "Unauthorized Username or Password!");
+            } else {
+                helper.showSnakBar(containerView, "Server not Responding! Please check your internet connection.");
             }
         }
     }
 
     @Override
     public void onUpdateResponse(UpdateOrderResponse response, int code) {
-        if (response!=null && code==202){
-            TodayOrderDetailsByDataRequest request=new TodayOrderDetailsByDataRequest(prefManager.getClientId(),helper.getDateInEnglish());
-            helper.showSnakBar(containerView,response.getMessage());
-            if (helper.isInternetAvailable()){
+        if (response != null && code == 202) {
+            TodayOrderDetailsByDataRequest request = new TodayOrderDetailsByDataRequest(prefManager.getClientId(), helper.getDateInEnglish());
+            helper.showSnakBar(containerView, response.getMessage());
+            if (helper.isInternetAvailable()) {
                 operationOrderDetail();
                 updateOrder.setVisibility(View.GONE);
-            }else {
-                helper.showSnakBar(containerView,"Please check your internet connection!");
+            } else {
+                helper.showSnakBar(containerView, "Please check your internet connection!");
             }
-        }else {
-            if (code==401){
-                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
-            }else {
-                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
+        } else {
+            if (code == 401) {
+                helper.showSnakBar(containerView, "Unauthorized Username or Password!");
+            } else {
+                helper.showSnakBar(containerView, "Server not Responding! Please check your internet connection.");
             }
         }
     }
 
     @Override
     public void onProductListResponse(ProductListResponse response, int code) {
-        if (response!=null&&code==202){
+        if (response != null && code == 202) {
             orderTitle.setText("NEW ORDER DETAILS");
-            final List<SaveOrderDetails> orderRequestList=new ArrayList<>();
+            final List<SaveOrderDetails> orderRequestList = new ArrayList<>();
 
-            int count=0;
-            for (final ProductListResponse.ProductList product:response.getProductList()) {
-                SaveOrderDetails order=new SaveOrderDetails(helper.makeUniqueID()+String.valueOf(count),
-                        product.getId(),product.getPName(),product.getPType(),
-                        "0",prefManager.getClientId(),prefManager.getHandlerId(),
-                        helper.getDateInEnglish(),"1",helper.getDateInEnglish(),"2");
+            int count = 0;
+            for (final ProductListResponse.ProductList product : response.getProductList()) {
+                SaveOrderDetails order = new SaveOrderDetails(helper.makeUniqueID() + String.valueOf(count),
+                        product.getId(), product.getPName(), product.getPType(),
+                        "0", prefManager.getClientId(), prefManager.getHandlerId(),
+                        helper.getDateInEnglish(), "1", helper.getDateInEnglish(), "2");
                 orderRequestList.add(order);
-                Log.i(TAG,"Name: "+product.getPName()+" Type: "+product.getPType());
+                Log.i(TAG, "Name: " + product.getPName() + " Type: " + product.getPType());
                 count++;
             }
-            count=0;
-            for (SaveOrderDetails data:orderRequestList) {
-                Log.i(TAG,"Recheck: "+" Name: "+data.getProduct_name()+" Type: "+data.getProduct_type());
+            count = 0;
+            for (SaveOrderDetails data : orderRequestList) {
+                Log.i(TAG, "Recheck: " + " Name: " + data.getProduct_name() + " Type: " + data.getProduct_type());
             }
             //adapter operation 01726574448 hadibur zaman
-            Log.i(TAG,"Total products: "+response.getProductList().size());
-            adapterOrderTakeForm=new AdapterOrderTakeForm(this,orderRequestList,response.getProductList());
+            Log.i(TAG, "Total products: " + response.getProductList().size());
+            adapterOrderTakeForm = new AdapterOrderTakeForm(this, orderRequestList, response.getProductList());
             layoutManager = new LinearLayoutManager(this);
             takeOrderList.setLayoutManager(layoutManager);
             takeOrderList.setAdapter(adapterOrderTakeForm);
             //
-        }else {
-            if (code==401){
-                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
-            }else {
-                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
+        } else {
+            if (code == 401) {
+                helper.showSnakBar(containerView, "Unauthorized Username or Password!");
+            } else {
+                helper.showSnakBar(containerView, "Server not Responding! Please check your internet connection.");
             }
         }
     }
 
     @Override
     public void saveBillUpdate(List<SaveOrderDetails> list, float totalTaka, boolean change) {
-        saveOrderRequestsBody=list;
+        saveOrderRequestsBody = list;
         totalTakenBill.setText(String.valueOf(totalTaka));
     }
 
-    private void updateProfile(){
-        clientCode=findViewById(R.id.clientCode);
-        name=findViewById(R.id.name);
-        presenterName=findViewById(R.id.presenterName);
-        phoneNo=findViewById(R.id.phoneNo);
-        address=findViewById(R.id.address);
-        proImg=findViewById(R.id.proImg);
+    private void updateProfile() {
+        clientCode = findViewById(R.id.clientCode);
+        name = findViewById(R.id.name);
+        presenterName = findViewById(R.id.presenterName);
+        phoneNo = findViewById(R.id.phoneNo);
+        address = findViewById(R.id.address);
+        proImg = findViewById(R.id.proImg);
 
         clientCode.setText(prefManager.getClientCode());
         name.setText(prefManager.getClientName());
         presenterName.setText(prefManager.getPresenterName());
         phoneNo.setText(prefManager.getClientContactNumber());
         address.setText(prefManager.getClientAddress());
-        if (prefManager.getProImgUrl()!=null){
+        if (prefManager.getProImgUrl() != null) {
             Picasso.get()
                     .load(prefManager.getProImgUrl())
                     .placeholder(R.drawable.ic_person)
 //                            .resize(100, 100)
                     .priority(Picasso.Priority.HIGH)
                     .into(proImg);
-            Log.i(TAG,"Image URL: "+prefManager.getProImgUrl());
-        }else {
-            Log.i(TAG,"No Image found!");
+            Log.i(TAG, "Image URL: " + prefManager.getProImgUrl());
+        } else {
+            Log.i(TAG, "No Image found!");
         }
     }
 
     @Override
     public void onSaveResponse(UpdateOrderResponse response, int code) {
-        if (response!=null && code==202){
-            TodayOrderDetailsByDataRequest request=new TodayOrderDetailsByDataRequest(prefManager.getClientId(),helper.getDateInEnglish());
-            helper.showSnakBar(containerView,response.getMessage());
-            if (helper.isInternetAvailable()){
+        if (response != null && code == 202) {
+            TodayOrderDetailsByDataRequest request = new TodayOrderDetailsByDataRequest(prefManager.getClientId(), helper.getDateInEnglish());
+            helper.showSnakBar(containerView, response.getMessage());
+            if (helper.isInternetAvailable()) {
                 operationOrderDetail();
 //                saveOrder.setVisibility(View.GONE);
-            }else {
-                helper.showSnakBar(containerView,"Please check your internet connection!");
+            } else {
+                helper.showSnakBar(containerView, "Please check your internet connection!");
             }
-        }else {
-            if (code==401){
-            helper.showSnakBar(containerView,"Unauthorized Username or Password!");
-        }else {
-            helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
-        }
+        } else {
+            if (code == 401) {
+                helper.showSnakBar(containerView, "Unauthorized Username or Password!");
+            } else {
+                helper.showSnakBar(containerView, "Server not Responding! Please check your internet connection.");
+            }
         }
     }
 
-    private void operationOrderDetail(){
-        TodayOrderDetailsByCodeRequest request=new TodayOrderDetailsByCodeRequest(prefManager.getClientId(),booked_code);
-        pullTotadyOrder=new PullOrderDetailsByOrderCode(this);
-        pullTotadyOrder.pullOrderCall(prefManager.getUsername(),prefManager.getUserPassword(),request);
+    private void operationOrderDetail() {
+        TodayOrderDetailsByCodeRequest request = new TodayOrderDetailsByCodeRequest(prefManager.getClientId(), booked_code);
+        pullTotadyOrder = new PullOrderDetailsByOrderCode(this);
+        pullTotadyOrder.pullOrderCall(prefManager.getUsername(), prefManager.getUserPassword(), request);
     }
 
     //For multi-language operation
@@ -481,30 +481,32 @@ public class OrderDetailsActivity
         overrideConfiguration.setLocale(locale);
         super.applyOverrideConfiguration(overrideConfiguration);
     }
-    private void selectLanguage(final Context context){
+
+    private void selectLanguage(final Context context) {
         final AlertDialog alertDialog;
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = LayoutInflater.from(context);
-        ConstraintLayout customRoot = (ConstraintLayout) inflater.inflate(R.layout.language_selection_layout,null);
+        ConstraintLayout customRoot = (ConstraintLayout) inflater.inflate(R.layout.language_selection_layout, null);
 
-        CardView bangle_key=customRoot.findViewById(R.id.bangle_key);
-        CardView english_key=customRoot.findViewById(R.id.english_key);
+        CardView bangle_key = customRoot.findViewById(R.id.bangle_key);
+        CardView english_key = customRoot.findViewById(R.id.english_key);
         builder.setView(customRoot);
         builder.setTitle(R.string.language_change_menu);
         builder.setCancelable(true);
-        alertDialog= builder.create();
+        alertDialog = builder.create();
         alertDialog.show();
         bangle_key.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setNewLocale((AppCompatActivity) context,LocaleManager.BANGLA);
+                setNewLocale((AppCompatActivity) context, LocaleManager.BANGLA);
                 alertDialog.dismiss();
             }
         });
         english_key.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setNewLocale((AppCompatActivity) context,LocaleManager.ENGLISH);;
+                setNewLocale((AppCompatActivity) context, LocaleManager.ENGLISH);
+                ;
                 alertDialog.dismiss();
             }
         });
@@ -512,16 +514,16 @@ public class OrderDetailsActivity
 
     @Override
     public void onReviseResponse(OrderReviseResponse response, int code) {
-        if (response!=null && code==202){
-            helper.showSnakBar(containerView,response.getMessage());
-            isEditable=false;
-            isSubmitted=true;
+        if (response != null && code == 202) {
+            helper.showSnakBar(containerView, response.getMessage());
+            isEditable = false;
+            isSubmitted = true;
             operationOrderDetail();
-        }else {
-            if (code==401){
-                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
-            }else {
-                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
+        } else {
+            if (code == 401) {
+                helper.showSnakBar(containerView, "Unauthorized Username or Password!");
+            } else {
+                helper.showSnakBar(containerView, "Server not Responding! Please check your internet connection.");
             }
         }
     }
@@ -532,20 +534,20 @@ public class OrderDetailsActivity
     }
 
     /////////////////////Subrota
-    private void selectPlant(){
-        List<String> plantNameList=new ArrayList<>();
+    private void selectPlant() {
+        List<String> plantNameList = new ArrayList<>();
         final AlertDialog alertDialog;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(this);
-        ConstraintLayout customRoot = (ConstraintLayout) inflater.inflate(R.layout.plant_selection_spinner,null);
-        Spinner plantSpinner=customRoot.findViewById(R.id.plantSpinner);
-        CardView save=customRoot.findViewById(R.id.save_action);
-        CardView cancel=customRoot.findViewById(R.id.cancel_action);
-        int plantCount=0;
-        for (PlantListResponse.PlantList plant: plantData.getPlantList()) {
+        ConstraintLayout customRoot = (ConstraintLayout) inflater.inflate(R.layout.plant_selection_spinner, null);
+        Spinner plantSpinner = customRoot.findViewById(R.id.plantSpinner);
+        CardView save = customRoot.findViewById(R.id.save_action);
+        CardView cancel = customRoot.findViewById(R.id.cancel_action);
+        int plantCount = 0;
+        for (PlantListResponse.PlantList plant : plantData.getPlantList()) {
             plantNameList.add(plant.getPlant());
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item,plantNameList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, plantNameList);
         plantSpinner.setAdapter(adapter);
         plantSpinner.setSelection(0);
         plantSpinner.setOnItemSelectedListener(this);
@@ -553,7 +555,7 @@ public class OrderDetailsActivity
         builder.setTitle(R.string.plant_title);
         builder.setView(customRoot);
         builder.setCancelable(true);
-        alertDialog= builder.create();
+        alertDialog = builder.create();
         alertDialog.show();
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -577,13 +579,13 @@ public class OrderDetailsActivity
 
     @Override
     public void onPlantListResponse(PlantListResponse response, int code) {
-        if (response!=null && code==202){
-            plantData=response;
-        }else {
-            if (code==401){
-                helper.showSnakBar(containerView,"Unauthorized Username or Password!");
-            }else {
-                helper.showSnakBar(containerView,"Server not Responding! Please check your internet connection.");
+        if (response != null && code == 202) {
+            plantData = response;
+        } else {
+            if (code == 401) {
+                helper.showSnakBar(containerView, "Unauthorized Username or Password!");
+            } else {
+                helper.showSnakBar(containerView, "Server not Responding! Please check your internet connection.");
             }
         }
     }
@@ -603,15 +605,13 @@ public class OrderDetailsActivity
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {
+    public void onNothingSelected(AdapterView<?> parent) { }
 
-    }
-
-    private void executePlantUpdate(){
+    private void executePlantUpdate() {
         updateOrderRequestBodyListWithPlantId = new ArrayList<>();
 
-        for (UpdateOrderRequestBody updateData:updateOrderRequestBodyList){
-            UpdateOrderRequestBody data=new UpdateOrderRequestBody(
+        for (UpdateOrderRequestBody updateData : updateOrderRequestBodyList) {
+            UpdateOrderRequestBody data = new UpdateOrderRequestBody(
                     updateData.getTxID(),
                     updateData.getProduct_id(),
                     updateData.getProduct_name(),
@@ -625,7 +625,7 @@ public class OrderDetailsActivity
                     updateData.getOrder_type());
             updateOrderRequestBodyListWithPlantId.add(data);
         }
-        Log.i(TAG,"Plant Selected Details: "+new Gson().toJson(updateOrderRequestBodyList));
-        Log.i(TAG,"Plant Selected Details after plant update: "+new Gson().toJson(updateOrderRequestBodyListWithPlantId));
+        Log.i(TAG, "Plant Selected Details: " + new Gson().toJson(updateOrderRequestBodyList));
+        Log.i(TAG, "Plant Selected Details after plant update: " + new Gson().toJson(updateOrderRequestBodyListWithPlantId));
     }
 }
