@@ -49,7 +49,6 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
     private String TAG="LandingActivity";
     private View containerView;
     private ConstraintLayout mainView;
-    private boolean goWithCheck=true;
     private ImageView splashImage;
     public static final String USER_AGENT_FAKE = "Mozilla/5.0 (Linux; Android 4.1.1; Galaxy Nexus Build/JRO03C) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19";
     private String user_name="", user_pass="";
@@ -101,7 +100,7 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
     private void checkApplication(){
         if (prefManager.isLoggedIn()){
             AppSetupRequestBody.ScreenDimensions screenDimensions=myScreen();
-            AppSetupRequestBody requestBody=new AppSetupRequestBody("1v1.3",helper.getAnrdoidID(),"",
+            AppSetupRequestBody requestBody=new AppSetupRequestBody("1v1.2",helper.getAnrdoidID(),"",
                     "",helper.getDateTimeInEnglish(),screenDimensions,prefManager.getClientId());
             if (helper.isInternetAvailable()){
                 new PullAppSetup(this).pullSetup("app.admin@payflex","@ppd0t@dm1n",requestBody);
@@ -111,6 +110,7 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
         }else {
             startActivity(new Intent(LandingActivity.this, UserLogin.class));
         }
+
     }
 
     public AppSetupRequestBody.ScreenDimensions myScreen() {
@@ -133,7 +133,6 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
     @Override
     public void onAppSetupResponse(AppSetupResponse response, int code) {
         if (response!=null && code==202){
-            goWithCheck=response.getData().getGoWithCheck();
             if (response.getData().getIsUpdatedApp()){
                 if (response.getData().getIsSystemUnderMaintenance()){
                     helper.showSnakBar(containerView,"Server under maintenance!");
@@ -163,7 +162,7 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
                    Log.i(TAG,"user have message");
                 }
             }else {
-                showUpdateMessageDialog("Update!",response.getData().getUpdatedAppLink(),
+                showPopUp("Update!",response.getData().getUpdatedAppLink(),
                         "Sorry! You are using the older version of application. Please press the UPDATE button to get the updated application","UPDATE","2");
             }
         }else {
@@ -231,6 +230,7 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.endsWith(".mp4")) {
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+
                     startActivity(intent);
                     return true;
                 } else {
@@ -243,54 +243,6 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
             }
         });
     }
-    //
-    private void showUpdateMessageDialog(String title, final String url, String msg, String done, final String msgType){
-        final AlertDialog alertDialog;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = LayoutInflater.from(this);
-        ConstraintLayout customRoot = (ConstraintLayout) inflater.inflate(R.layout.load_message_view,null);
-
-        CardView skip_key=customRoot.findViewById(R.id.skip_key);
-        CardView done_key=customRoot.findViewById(R.id.done_key);
-        TextView btnDone=customRoot.findViewById(R.id.btnDone);
-        btnDone.setText(done);
-
-        TextView msgView=customRoot.findViewById(R.id.messageText);
-        msgView.setText(msg);
-        builder.setView(customRoot);
-        builder.setTitle(title);
-        builder.setCancelable(true);
-        alertDialog= builder.create();
-        alertDialog.show();
-        skip_key.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!goWithCheck){
-                    if (!prefManager.isLoggedIn()){
-                        Intent intent =new Intent(LandingActivity.this, UserLogin.class);
-                        startActivity(intent);
-                        finish();
-                    }else {
-                        Intent intent2 =new Intent(LandingActivity.this, OrderListActivity.class);
-                        startActivity(intent2);
-                        finish();
-                    }
-                }else {
-                    checkApplication();
-                    alertDialog.dismiss();
-                }
-
-            }
-        });
-        done_key.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(browserIntent);
-                alertDialog.dismiss();
-            }
-        });
-    }
 }
 
 
@@ -299,3 +251,55 @@ public class LandingActivity extends AppCompatActivity implements PullAppSetup.A
 
 
 
+//
+//    private void showMessageDialog(String title, final String url, String msg, String done, final String msgType){
+//        final AlertDialog alertDialog;
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        LayoutInflater inflater = LayoutInflater.from(this);
+//        ConstraintLayout customRoot = (ConstraintLayout) inflater.inflate(R.layout.load_message_view,null);
+//
+//        CardView skip_key=customRoot.findViewById(R.id.skip_key);
+//        CardView done_key=customRoot.findViewById(R.id.done_key);
+//        TextView btnDone=customRoot.findViewById(R.id.btnDone);
+//        btnDone.setText(done);
+//
+//        TextView msgView=customRoot.findViewById(R.id.messageText);
+//        msgView.setText(msg);
+//        builder.setView(customRoot);
+//        builder.setTitle(title);
+//        builder.setCancelable(true);
+//        alertDialog= builder.create();
+//        alertDialog.show();
+//        skip_key.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (msgType.equals("1")){
+//                    if (!prefManager.isLoggedIn()){
+//                        Intent intent =new Intent(LandingActivity.this, UserLogin.class);
+//                        startActivity(intent);
+//                        finish();
+//                    }else {
+//                        Intent intent2 =new Intent(LandingActivity.this, OrderListActivity.class);
+//                        startActivity(intent2);
+//                        finish();
+//                    }
+//                }else if (msgType.equals("2")){
+//                    checkApplication();
+//                }
+//                alertDialog.dismiss();
+//            }
+//        });
+//        done_key.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (msgType.equals("1")){
+//                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//                    startActivity(browserIntent);
+//                }else if (msgType.equals("2")){
+//                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//                    startActivity(browserIntent);
+//                }
+//                alertDialog.dismiss();
+//            }
+//        });
+//    }

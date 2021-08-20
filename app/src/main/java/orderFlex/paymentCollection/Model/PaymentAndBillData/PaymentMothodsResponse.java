@@ -62,36 +62,6 @@ public class PaymentMothodsResponse {
         @SerializedName("custom_methode")
         @Expose
         private Object customMethode;
-        @SerializedName("isRefNeed")
-        @Expose
-        private int isRefNeed;
-        @SerializedName("isImgNeed")
-        @Expose
-        private int isImgNeed;
-
-        @SerializedName("defaultRef")
-        @Expose
-        private String defaultRef;
-
-        public String getDefaultRef() {
-            return defaultRef;
-        }
-
-        public int getIsRefNeed() {
-            return isRefNeed;
-        }
-
-        public void setIsRefNeed(int isRefNeed) {
-            this.isRefNeed = isRefNeed;
-        }
-
-        public int getIsImgNeed() {
-            return isImgNeed;
-        }
-
-        public void setIsImgNeed(int isImgNeed) {
-            this.isImgNeed = isImgNeed;
-        }
 
         public String getId() {
             return id;

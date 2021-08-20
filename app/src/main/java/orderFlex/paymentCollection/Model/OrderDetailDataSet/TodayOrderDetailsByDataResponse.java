@@ -11,17 +11,8 @@ public class TodayOrderDetailsByDataResponse {
     @SerializedName("message")
     @Expose
     private String message;
-    @SerializedName("isEditable")
-    @Expose
-    private boolean isEditable;
-
-    public boolean getIsEditable() {
-        return isEditable;
-    }
-
     @SerializedName("order_details")
     @Expose
-
     private List<OrderDetail> orderDetails = null;
 
     public Integer getCode() {
@@ -110,6 +101,22 @@ public class TodayOrderDetailsByDataResponse {
         @SerializedName("p_discription")
         @Expose
         private Object pDiscription;
+
+        @SerializedName("isEditable")
+        @Expose
+        private int isEditable;
+
+        public String getpName() {
+            return pName;
+        }
+
+        public String getpType() {
+            return pType;
+        }
+
+        public int isEditable() {
+            return isEditable;
+        }
 
         public String getPlantName() {
             return plantName;

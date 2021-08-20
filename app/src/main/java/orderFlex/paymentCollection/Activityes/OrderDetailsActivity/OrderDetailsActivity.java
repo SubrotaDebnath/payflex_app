@@ -142,7 +142,7 @@ public class OrderDetailsActivity
             String message=intent.getStringExtra("payment_massege");
             booked_code=intent.getStringExtra("booked_code");
             isEditable =intent.getBooleanExtra("is_editable",false);
-            isSubmitted =intent.getBooleanExtra("is_submitted",true);
+            isSubmitted =intent.getBooleanExtra("is_submitted",false);
             if (isSubmitted){
                 Log.i(TAG,"Submitted");
             }else {
@@ -269,8 +269,15 @@ public class OrderDetailsActivity
         if (response!=null && code==202){
             if (response.getOrderDetails().size()>0){
                 orderTitle.setText("ORDER DETAILS");
-                isEditable=response.getIsEditable();
                 orderResponse=response;
+                Log.i(TAG,"Editable: "+orderResponse.getOrderDetails().get(0).isEditable());
+                if (orderResponse.getOrderDetails().get(0).isEditable()==1){
+                    isEditable=true;
+                }else {
+                    isEditable=false;
+                }
+//                isEditable=;
+
                 adapter=new AdapterOrderedProductList(this,response.getOrderDetails(), isEditable);
                 layoutManager = new LinearLayoutManager(this);
                 orderList.setLayoutManager(layoutManager);
@@ -552,8 +559,9 @@ public class OrderDetailsActivity
             @Override
             public void onClick(View v) {
                 executePlantUpdate();
+                updateTV.setText("Update");
+                isPlantSelected = true;
                 alertDialog.dismiss();
-                pushOrderUpdate();
             }
         });
 
@@ -565,10 +573,6 @@ public class OrderDetailsActivity
             }
         });
 
-    }
-
-    private void pushOrderUpdate(){
-        updateOrderHandler.pushUpdatedOrder(prefManager.getUsername(),prefManager.getUserPassword(),updateOrderRequestBodyListWithPlantId);
     }
 
     @Override

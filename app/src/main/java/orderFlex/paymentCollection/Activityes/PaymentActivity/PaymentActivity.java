@@ -16,6 +16,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -39,11 +40,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import orderFlex.paymentCollection.Activityes.OrderDetailsActivity.OrderDetailsActivity;
 import orderFlex.paymentCollection.Model.APICallings.ReplaceBills;
 import orderFlex.paymentCollection.Model.DataBase.DatabaseOperation;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.BillReplaceRequestBody;
 import orderFlex.paymentCollection.Model.PaymentAndBillData.PaymentQueueRequestData;
+import orderFlex.paymentCollection.Activityes.OrderDetailsActivity.OrderDetailsActivity;
 import orderFlex.paymentCollection.Model.APICallings.PaymentImageFileUploader;
 import orderFlex.paymentCollection.Model.APICallings.PullPaymentMethods;
 import orderFlex.paymentCollection.Model.APICallings.PushBills;
@@ -85,11 +86,10 @@ public class PaymentActivity
     private boolean updateFlag = false;
     private String paymentId = "";
     private String imageOrginalPath;
-    private boolean is_attachment_active = true,isRefneed=true;
+    private boolean is_attachment_active = true;
     private DatabaseOperation dbOperation;
     private boolean isGalleryImg = false;
     private String preAmount, preMethod, preReference;
-    private String selectedMethod="";
     // private ImageFileUploader imageFileUploader;
     private BillReplaceRequestBody replaceRequestBody = new BillReplaceRequestBody();
     private BillReplaceRequestBody.NewData newData = new BillReplaceRequestBody.NewData();
@@ -200,6 +200,20 @@ public class PaymentActivity
                 String paymentDate = payDate.getText().toString();
                 requestBody.setPaymentDateTime(paymentDate);
                 requestBody.setReferenceNo(refNo);
+                ////////codded by subrota
+//                if (methodListData.equals("2")
+//                        ||methodListData.equals("3")
+//                        ||methodListData.equals("4")
+//                        ||methodListData.equals("12")) {
+//                    requestBody.setReferenceNo("");
+//                }else {
+//                    if (refNo == null || refNo.equals("")){
+//                        referenceNo.setError("This Field could not be empty");
+//                    }else {
+//                        requestBody.setReferenceNo(refNo);
+//                    }
+//                }
+                ///end
 
                 if (requestBody.getTrxid() == null) {
                     requestBody.setTrxid(helper.makeUniqueID());
@@ -212,9 +226,13 @@ public class PaymentActivity
                     return;
                 }
 //////////////////////////////codded by subrota as replacement bellow commented previous code
-                if (!isRefneed) {
+                if (requestBody.getPaymentModeId().equals("2")
+                        || requestBody.getPaymentModeId().equals("3")
+                        || requestBody.getPaymentModeId().equals("4")
+                        || requestBody.getPaymentModeId().equals("12")) {
                     //in case of condition no required any reference number, so we can set empty string as reference number
                     requestBody.setReferenceNo("");
+
                     ///now bew condition checking other empty field which can't be empty
                     if (payed.isEmpty() || paymentDate.isEmpty()) {
                         helper.showSnakBar(containerView, "Some fields are empty!");
@@ -233,6 +251,22 @@ public class PaymentActivity
                         Log.i(TAG, "Mode ID at else in save point: " + requestBody.getPaymentModeId());
                     }
                 }
+///////////////////////////commented section is previous code
+                /*if (!requestBody.getPaymentModeId().equals("2")
+                        && !requestBody.getPaymentModeId().equals("3")
+                        && !requestBody.getPaymentModeId().equals("4")
+                        && !requestBody.getPaymentModeId().equals("7")
+                        && !requestBody.getPaymentModeId().equals("13")) {
+                    Log.i(TAG, "Mode ID at save point: " + requestBody.getPaymentModeId());
+
+                    if (refNo.isEmpty() || payed.isEmpty() || paymentDate.isEmpty()) {
+                        helper.showSnakBar(containerView, "Some fields are empty!");
+                        return;
+                    }
+                } else {
+                    Log.i(TAG, "Mode ID at else in save point: " + requestBody.getPaymentModeId());
+                }*/
+
                 if (helper.isInternetAvailable()) {
                     if (updateFlag) {
                         newData.setTrxid(helper.makeUniqueID());
@@ -300,7 +334,7 @@ public class PaymentActivity
                         }
                     }
                 } else {
-                    helper.showSnakBar(containerView, "Sorry! You can't submits attachment in "+selectedMethod);
+                    helper.showSnakBar(containerView, "Sorry! You can't submits attachment in ACCOUNT BALANCE");
                 }
             }
         });
@@ -371,29 +405,50 @@ public class PaymentActivity
         if (parent.getId() == R.id.paymentMethod) {
             Log.i(TAG, "Method");
             requestBody.setPaymentModeId(methodListData.get(position).getId());
-            selectedMethod=methodListData.get(position).getMethodeName();
-            if (methodListData.get(position).getIsImgNeed()==1){
-                is_attachment_active = true;
-            }else {
-                is_attachment_active = false;
-            }
-
-            if (methodListData.get(position).getIsRefNeed()==1){
-                isRefneed=true;
-                referenceNo.setEnabled(true);
-                referenceNo.setText("");
-                referenceBlockLL.setVisibility(View.VISIBLE);
-                if (!methodListData.get(position).getDefaultRef().equals("0")){
-                    referenceNo.setEnabled(false);
-                    referenceNo.setText(methodListData.get(position).getDefaultRef());
+            if (methodListData.get(position).getId().equals("2")
+                    || methodListData.get(position).getId().equals("3")
+                    || methodListData.get(position).getId().equals("4")
+                    || methodListData.get(position).getId().equals("7")
+                    | methodListData.get(position).getId().equals("12")
+                    | methodListData.get(position).getId().equals("13")) {
+                Log.i(TAG, "Selected");
+                if (methodListData.get(position).getId().equals("12")) {
+                    is_attachment_active = false;
+                } else {
+                    is_attachment_active = true;
+                    referenceNo.setText("");
                 }
-            }else {
-                referenceBlockLL.setVisibility(View.GONE);
-                isRefneed=false;
-                referenceNo.setEnabled(false);
-                referenceNo.setText("");
+                //add referenceNo
+//                if (methodListData.get(position).getId().equals("12")){
+//                    referenceNo.setText("111");
+//                    referenceNo.setEnabled(false);
+//                }
+            } else {
+                referenceNo.setEnabled(true);
+                Log.i(TAG, "Not advance Selected");
+//                if (is_attachment_active){
+//                    referenceNo.setText("");
+//                }
+                is_attachment_active = true;
             }
         }
+        // codded by Subrota
+        if (methodListData.get(position).getId().equals("2")
+                || methodListData.get(position).getId().equals("3")
+                || methodListData.get(position).getId().equals("4")
+                || methodListData.get(position).getId().equals("12")) {
+
+            referenceBlockLL.setVisibility(View.GONE);
+            amountBlockLL.setBackgroundColor(getResources().getColor(R.color.barColor));
+
+        } else {
+            referenceBlockLL.setVisibility(View.VISIBLE);
+            amountBlockLL.setBackgroundColor(getResources().getColor(R.color.white));
+        }
+
+        ////end subrota
+
+
         Log.i(TAG, bankListData.get(position).getBankName());
         Log.i(TAG, "Selected: " + position);
     }
