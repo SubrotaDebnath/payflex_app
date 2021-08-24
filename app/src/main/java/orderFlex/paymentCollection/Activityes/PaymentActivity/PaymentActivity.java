@@ -431,22 +431,21 @@ public class PaymentActivity
 //                }
                 is_attachment_active = true;
             }
+            // codded by Subrota
+            if (methodListData.get(position).getId().equals("2")
+                    || methodListData.get(position).getId().equals("3")
+                    || methodListData.get(position).getId().equals("4")
+                    || methodListData.get(position).getId().equals("12")) {
+
+                referenceBlockLL.setVisibility(View.GONE);
+                amountBlockLL.setBackgroundColor(getResources().getColor(R.color.barColor));
+
+            } else {
+                referenceBlockLL.setVisibility(View.VISIBLE);
+                amountBlockLL.setBackgroundColor(getResources().getColor(R.color.white));
+            }
+            ////end subrota
         }
-        // codded by Subrota
-        if (methodListData.get(position).getId().equals("2")
-                || methodListData.get(position).getId().equals("3")
-                || methodListData.get(position).getId().equals("4")
-                || methodListData.get(position).getId().equals("12")) {
-
-            referenceBlockLL.setVisibility(View.GONE);
-            amountBlockLL.setBackgroundColor(getResources().getColor(R.color.barColor));
-
-        } else {
-            referenceBlockLL.setVisibility(View.VISIBLE);
-            amountBlockLL.setBackgroundColor(getResources().getColor(R.color.white));
-        }
-
-        ////end subrota
 
 
         Log.i(TAG, bankListData.get(position).getBankName());
