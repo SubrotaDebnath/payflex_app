@@ -102,9 +102,31 @@ public class TodayOrderDetailsByDataResponse {
         @Expose
         private Object pDiscription;
 
+        public int getIsEditable() {
+            return isEditable;
+        }
+
+        public int getIsSubmitted() {
+            return isSubmitted;
+        }
+
         @SerializedName("isEditable")
         @Expose
         private int isEditable;
+
+        @SerializedName("isSubmitted")
+        @Expose
+        private int isSubmitted;
+
+
+
+        @SerializedName("indent_no")
+        @Expose
+        private String indent_no;
+
+        public String getIndent_no() {
+            return indent_no;
+        }
 
         public String getpName() {
             return pName;

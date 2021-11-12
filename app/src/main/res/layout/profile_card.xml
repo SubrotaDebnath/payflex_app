@@ -219,6 +219,38 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:elevation="5dp"
+                    android:id="@+id/indentNoCard"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginTop="2dp"
+                    app:cardCornerRadius="2dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="1dp"
+                        android:background="@color/barColor"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center"
+                            android:text="@string/indent_number"
+                            android:textColor="#000000"/>
+                        <TextView
+                            android:id="@+id/indentNumber"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.5"
+                            android:layout_marginRight="10dp"
+                            android:text=""/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:elevation="5dp"
                     android:layout_marginBottom="2dp"
                     android:layout_marginTop="2dp"
                     app:cardCornerRadius="2dp">

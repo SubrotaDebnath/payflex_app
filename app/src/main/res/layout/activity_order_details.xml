@@ -18,9 +18,10 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <include
                 android:id="@+id/userProfile"
-                layout="@layout/profile_card"/>
+                layout="@layout/profile_card" />
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

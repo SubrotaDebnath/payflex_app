@@ -68,6 +68,7 @@
     <string name="Address">Address:</string>
     <string name="name_of_the_client">Profile Information</string>
     <string name="order_code">Order Code:</string>
+    <string name="indent_number">Indent Number:</string>
     <string name="order_date">Delivery Date:</string>
 
     <!--    Exit text-->

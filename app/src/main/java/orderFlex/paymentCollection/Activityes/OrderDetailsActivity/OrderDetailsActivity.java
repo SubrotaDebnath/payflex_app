@@ -87,7 +87,7 @@ public class OrderDetailsActivity
     private TodayOrderDetailsByDataResponse orderResponse = null;
     private LinearLayout orderDetailsBlock, orderTakeSegment;
     private CardView updateOrder, saveOrder;
-    private TextView noOrder, totalTakenBill, orderCode, orderDate;
+    private TextView noOrder, totalTakenBill, orderCode, orderDate,indentNumber;
     private PullPaymentsList pullPaymentsList;
     private AdapterPaymentList adapterPaymentList;
     private List<UpdateOrderRequestBody> updateOrderRequestBodyList;
@@ -126,6 +126,7 @@ public class OrderDetailsActivity
         orderTitle = findViewById(R.id.orderTitle);
         orderCode = findViewById(R.id.orderCode);
         orderDate = findViewById(R.id.orderDate);
+        indentNumber=findViewById(R.id.indentNumber);
 
         orderTakeSegment = findViewById(R.id.orderTakeSegment);
         takeOrderList = findViewById(R.id.takeOrderList);
@@ -276,6 +277,13 @@ public class OrderDetailsActivity
                 } else {
                     isEditable = false;
                 }
+
+                if (orderResponse.getOrderDetails().get(0).getIsSubmitted() == 1) {
+                    isSubmitted = true;
+                } else {
+                    isSubmitted = false;
+                }
+
 //                isEditable=;
 
                 adapter = new AdapterOrderedProductList(this, response.getOrderDetails(), isEditable);
@@ -288,6 +296,10 @@ public class OrderDetailsActivity
                 orderTakeSegment.setVisibility(View.GONE);
 //                saveOrder.setVisibility(View.GONE);
                 orderCode.setText(orderResponse.getOrderDetails().get(0).getOrderCode());
+                if (orderResponse.getOrderDetails().get(0).getIndent_no()!=null){
+                    indentNumber.setText(orderResponse.getOrderDetails().get(0).getIndent_no());
+                }
+
                 orderDate.setText(orderResponse.getOrderDetails().get(0).getDeliveryDate());
                 orderCode.setText(response.getOrderDetails().get(0).getOrderCode());
                 address.setText(response.getOrderDetails().get(0).getPlantName());

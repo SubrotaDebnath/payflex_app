@@ -80,7 +80,7 @@ public class OrderListActivity extends BaseActivity
     private TextView totalBill,clientCode,name,presenterName,phoneNo,address,listTitle,totalTakenBill;
     private View containerView;
     private LinearLayout orderTakeSegment;
-    private CardView orderCodeView,deliveryLocation;
+    private CardView orderCodeView,deliveryLocation,indentNoCard;
     private TextView orderDate;
     private RecyclerView bookedOrderList,takeCustomerOrderList;
     private TextView warningText;
@@ -223,6 +223,7 @@ public class OrderListActivity extends BaseActivity
         orderCodeView=findViewById(R.id.orderCodeView);
         orderDate=findViewById(R.id.orderDate);
         proImg=findViewById(R.id.proImg);
+        indentNoCard=findViewById(R.id.indentNoCard);
 
         clientCode.setText(prefManager.getClientCode());
         name.setText(prefManager.getClientName());
@@ -231,6 +232,7 @@ public class OrderListActivity extends BaseActivity
         address.setText(prefManager.getClientAddress());
 
         orderCodeView.setVisibility(View.GONE);
+        indentNoCard.setVisibility(View.GONE);
         deliveryLocation.setVisibility(View.GONE);
         orderTakeSegment.setVisibility(View.GONE);
 
