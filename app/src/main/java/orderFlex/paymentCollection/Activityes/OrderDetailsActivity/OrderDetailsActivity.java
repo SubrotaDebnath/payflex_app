@@ -464,6 +464,7 @@ public class OrderDetailsActivity
     private void operationOrderDetail() {
         TodayOrderDetailsByCodeRequest request = new TodayOrderDetailsByCodeRequest(prefManager.getClientId(), booked_code);
         pullTotadyOrder = new PullOrderDetailsByOrderCode(this);
+
         pullTotadyOrder.pullOrderCall(prefManager.getUsername(), prefManager.getUserPassword(), request);
     }
 

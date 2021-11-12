@@ -40,9 +40,9 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/ic_baseline_add_a_photo"
-                    android:layout_marginLeft="3dip"
+                    android:layout_marginStart="3dp"
                     android:layout_alignParentBottom="true"
-                    android:layout_alignParentRight="true" />
+                    android:layout_alignParentEnd="true" />
             </RelativeLayout>
 
             <LinearLayout
@@ -57,7 +57,8 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
-                    android:paddingLeft="2dp"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="0dp"
                     android:background="@color/barColor"
                     android:orientation="horizontal">
                     <TextView
@@ -80,7 +81,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:paddingLeft="2dp"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="0dp"
                     android:orientation="horizontal">
                     <TextView
                         android:layout_width="0dp"
@@ -103,7 +105,8 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
-                    android:paddingLeft="2dp"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="0dp"
                     android:background="@color/barColor"
                     android:orientation="horizontal">
                     <TextView

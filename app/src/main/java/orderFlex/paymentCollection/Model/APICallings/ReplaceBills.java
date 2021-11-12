@@ -27,7 +27,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ReplaceBills {
-    private String TAG="LoginAPICalling";
+    private String TAG="ReplaceBillAPICall";
     private APIinterface apIinterface;
     private Gson gson;
     private ReplaceBillListener listener;
@@ -58,6 +58,7 @@ public class ReplaceBills {
         logData.setResponseCode("");
         logData.setResponseBody("");
         logData.setException("");
+        Log.i(TAG, "Replace Bill: "+new Gson().toJson(body));
         /////////////////////////////////
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);

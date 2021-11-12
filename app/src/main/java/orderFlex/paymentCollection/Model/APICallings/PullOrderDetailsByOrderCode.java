@@ -57,8 +57,9 @@ public class PullOrderDetailsByOrderCode {
         logData.setResponseCode("");
         logData.setResponseBody("");
         logData.setException("");
+//        Log.i(TAG, "Pull Order Details By Order Code Request Body: "+new Gson().toJson(orderRequest));
         /////////////////////////////////
-        Log.i(TAG,"Pull Order details called");
+        //Log.i(TAG,"Pull Order details called");
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         final String authToken = Credentials.basic(username, password);
@@ -87,6 +88,7 @@ public class PullOrderDetailsByOrderCode {
             @Override
             public void onResponse(Call<TodayOrderDetailsByDataResponse> call, retrofit2.Response<TodayOrderDetailsByDataResponse> response) {
                 //////////////log operation///////////
+//                Log.i(TAG,"Code: "+response.code());
                 if (new SharedPrefManager(context).isDebugOn()){
                     logData.setResponseCode(String.valueOf(response.code()));
                     logData.setResponseBody(new Gson().toJson(response.body()));
@@ -94,12 +96,13 @@ public class PullOrderDetailsByOrderCode {
                     db.insertAPILog(logData);
                 }
                 ///////////////////////////////////
-                Log.i(TAG,"Code: "+response.code());
+//                Log.i(TAG,"Code: "+response.code());
+//                Log.i(TAG, "Pull Order Details By Order Code Response Body: "+response.body().toString());
                 if (response.isSuccessful()){
                     todayOrderResponse=response.body();
                     gson=new Gson();
                     String res= gson.toJson(todayOrderResponse);
-                    Log.i(TAG,"Login Response: "+res);
+//                    Log.i(TAG,"Login Response: "+res);
                     listener.onResponse(todayOrderResponse,response.code());
 //                    dialog.cancel();
                 }
